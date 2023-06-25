@@ -2,6 +2,7 @@
 #define OVERALLWINDOW
 
 #include "MenuLayertop.h"
+#include <QVBoxLayout>
 
 class OverallWindow :public QWidget
 {
@@ -10,10 +11,14 @@ public:
 	OverallWindow();
 	~OverallWindow();
 	const QSize getMonitorsz() const;
-	void setQssStyle();
+	void init();
 private:
-	MenuLayertop* layer_periphery;
+	QVBoxLayout* _owlayout;
+	MenuLayertop* _menubar;
+
 	QSize windowsz;
+	static QString qssPath;
+	static QString iconPath;
 	QSize monitor_resolution;
 };
 

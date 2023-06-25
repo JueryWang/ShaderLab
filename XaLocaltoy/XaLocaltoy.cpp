@@ -3,10 +3,14 @@
 XaLocaltoy::XaLocaltoy()
 {
 	_window = new OverallWindow();
-	qDebug() << _window->getMonitorsz();
 }
 
 XaLocaltoy::~XaLocaltoy()
 {
 
+}
+
+void XaLocaltoy::run()
+{
+	_window->show();
 }

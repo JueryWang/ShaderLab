@@ -1,14 +1,15 @@
 #ifndef  MENULAYERTOP_H
 #define  MENULAYERTOP_H
 
-#include <QMenu>
+#include "uimodule_filemenu.h"
+#include <QMenuBar>
 #include <QList>
 
-class MenuLayertop : public QMenu
+class MenuLayertop : public QMenuBar
 {
 	Q_OBJECT
 public: 
-	MenuLayertop(QMenu* parent = NULL);
+	MenuLayertop(QMenuBar* parent = NULL);
 private:
 	QList<QMenu*> menu_list;
 };

@@ -17,6 +17,8 @@ class XaLocaltoy : public QObject
 public:
 	XaLocaltoy();
 	~XaLocaltoy();
+
+	void run();
 private:
 	OverallWindow* _window;
 };
