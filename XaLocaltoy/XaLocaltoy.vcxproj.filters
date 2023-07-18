@@ -51,6 +51,9 @@
     <QtMoc Include="OverallWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="uimodule_customIconStyle.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="XaLocaltoy.ui">

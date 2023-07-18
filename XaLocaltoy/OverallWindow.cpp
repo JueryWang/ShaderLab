@@ -21,6 +21,8 @@ OverallWindow::OverallWindow()
 	QRect monitorRct;
 	monitorRct = QGuiApplication::primaryScreen()->geometry();
 	monitor_resolution = QSize(monitorRct.width(), monitorRct.height());
+	this->setWindowIcon(QIcon("Resources/icon/ShaderLabIco.png"));
+	this->setWindowTitle("ShaderLab v1.0");
 }
 
 OverallWindow::~OverallWindow()

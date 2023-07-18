@@ -5,7 +5,7 @@
 class XA_UIModule_FileMenu : public QMenu
 {
 public:
-	XA_UIModule_FileMenu(QString title);
+	XA_UIModule_FileMenu(QString title, bool showIcon, const char* iconpath);
 	~XA_UIModule_FileMenu();
 
 	void on_FileOpen();
