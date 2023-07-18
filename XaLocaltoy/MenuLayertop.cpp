@@ -1,11 +1,11 @@
 #include "MenuLayertop.h"
-#include "uimodule_customIconStyle.h"
+#include "UI/uimodule_customIconStyle.h"
 
 MenuLayertop::MenuLayertop(QMenuBar* parent /*= NULL*/)
 {
 	CustomIconStyle* style = new CustomIconStyle();
 	this->setStyle(style);
-	QMenu *about_menu = new XA_UIModule_FileMenu("About&Update",true,"Resources/icon/ShaderLabIco.png");
+	QMenu *about_menu = new XA_UIModule_AboutMenu("About&Update",true,"Resources/icon/ShaderLabIco.png");
 
 	about_menu->setObjectName("About&Update");
 	about_menu->setProperty("class", "blackMenu");

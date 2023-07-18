@@ -90,7 +90,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MenuLayertop.cpp" />
-    <ClCompile Include="uimodule_filemenu.cpp" />
+    <ClCompile Include="uimodule_aboutmenu.cpp" />
     <ClCompile Include="OverallWindow.cpp" />
     <ClCompile Include="XaLocaltoy.cpp" />
   </ItemGroup>
@@ -110,7 +110,7 @@
     <QtMoc Include="OverallWindow.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="uimodule_filemenu.h" />
+    <ClInclude Include="uimodule_aboutmenu.h" />
     <QtMoc Include="uimodule_customIconStyle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
