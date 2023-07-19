@@ -37,7 +37,10 @@
     <ClCompile Include="OverallWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="uimodule_aboutmenu.cpp">
+    <ClCompile Include="UI\uimodule_filemenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\uimodule_aboutmenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -51,7 +54,7 @@
     <QtMoc Include="OverallWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="uimodule_customIconStyle.h">
+    <QtMoc Include="UI\uimodule_customIconStyle.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -66,7 +69,16 @@
     </QtRcc>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="uimodule_aboutmenu.h">
+    <ClInclude Include="UI\uimodule_filemenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\uimodule_aboutmenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ui_defaultDfs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilitys\uitilityDfs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

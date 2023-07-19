@@ -1,9 +1,9 @@
-#include "UI/uimodule_aboutmenu.h"
-#include "OverallWindow.h"
+#include "uimodule_aboutmenu.h"
+#include "../Utilitys/uitilityDfs.h"
 #include <QAction>
 #include <QLabel>
 
-XA_UIModule_AboutMenu::XA_UIModule_AboutMenu(QString title, bool showIcon = false,const char* iconpath = nullptr)
+XA_UIModule_AboutMenu::XA_UIModule_AboutMenu(QString title, bool showIcon,const char* iconpath)
 {
 	setTitle(title);
 	setProperty("class", "blackMenu");
@@ -15,13 +15,17 @@ XA_UIModule_AboutMenu::XA_UIModule_AboutMenu(QString title, bool showIcon = fals
 		this->setIcon(QIcon(iconpath));
 	}
 
-	QAction* openAction = new QAction(QStringLiteral("关于ShaderLab"));
-	connect(openAction, &QAction::triggered, this, &XA_UIModule_AboutMenu::on_clcAbout);
-	this->addAction(openAction);
+	QAction* aboutAction = new QAction(_STRING_WRAPPER("关于ShaderLab"));
+	connect(aboutAction, &QAction::triggered, this, &XA_UIModule_AboutMenu::on_clcAbout);
+	this->addAction(aboutAction);
 
-	QAction* saveAction = new QAction(QStringLiteral("获取Shader"));
-	connect(saveAction, &QAction::triggered, this, &XA_UIModule_AboutMenu::on_clcGatherShader);
-	this->addAction(saveAction);
+	QAction* getAction = new QAction(_STRING_WRAPPER("获取Shader"));
+	connect(getAction, &QAction::triggered, this, &XA_UIModule_AboutMenu::on_clcGatherShader);
+	this->addAction(getAction);
+
+	QAction* donateAction = new QAction(_STRING_WRAPPER("捐赠"));
+	connect(getAction, &QAction::triggered, this, &XA_UIModule_AboutMenu::on_clcDonate);
+	this->addAction(donateAction);
 
 }
 
@@ -36,6 +40,11 @@ void XA_UIModule_AboutMenu::on_clcAbout()
 }
 
 void XA_UIModule_AboutMenu::on_clcGatherShader()
+{
+
+}
+
+void XA_UIModule_AboutMenu::on_clcDonate()
 {
 
 }

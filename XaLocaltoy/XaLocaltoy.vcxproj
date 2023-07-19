@@ -90,8 +90,9 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MenuLayertop.cpp" />
-    <ClCompile Include="uimodule_aboutmenu.cpp" />
     <ClCompile Include="OverallWindow.cpp" />
+    <ClCompile Include="UI\uimodule_aboutmenu.cpp" />
+    <ClCompile Include="UI\uimodule_filemenu.cpp" />
     <ClCompile Include="XaLocaltoy.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -110,8 +111,11 @@
     <QtMoc Include="OverallWindow.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="uimodule_aboutmenu.h" />
-    <QtMoc Include="uimodule_customIconStyle.h" />
+    <ClInclude Include="UI\uimodule_aboutmenu.h" />
+    <QtMoc Include="UI\uimodule_customIconStyle.h" />
+    <ClInclude Include="UI\uimodule_filemenu.h" />
+    <ClInclude Include="UI\ui_defaultDfs.h" />
+    <ClInclude Include="Utilitys\uitilityDfs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
