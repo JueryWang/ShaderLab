@@ -93,6 +93,7 @@
     <ClCompile Include="OverallWindow.cpp" />
     <ClCompile Include="UI\uimodule_aboutmenu.cpp" />
     <ClCompile Include="UI\uimodule_filemenu.cpp" />
+    <ClCompile Include="UI\uimodule_lookmenu.cpp" />
     <ClCompile Include="XaLocaltoy.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -115,6 +116,7 @@
     <QtMoc Include="UI\uimodule_customIconStyle.h" />
     <ClInclude Include="UI\uimodule_filemenu.h" />
     <ClInclude Include="UI\ui_defaultDfs.h" />
+    <ClInclude Include="UI\uimodule_lookmenu.h" />
     <ClInclude Include="Utilitys\uitilityDfs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

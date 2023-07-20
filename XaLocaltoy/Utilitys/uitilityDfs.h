@@ -4,6 +4,8 @@
 
 #ifdef  _WIN32
 #define _STRING_WRAPPER(str) QStringLiteral(str)
+
+#include <QUuid>
 #endif
 
 #ifndef UI_DEFAULT_DFS1

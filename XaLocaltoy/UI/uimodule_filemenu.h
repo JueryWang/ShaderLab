@@ -20,6 +20,7 @@ private:
 	void on_clcImport3D();
 	void on_clcImportTexture();
 	void on_clcImportAudio();
+	void on_clcImportFont();
 	void on_clcExportSDL();
 	void on_clcExportViedo();
 	void on_clcQuit();

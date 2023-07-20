@@ -28,10 +28,10 @@ XA_UIModule_FILEMenu::XA_UIModule_FILEMenu(QString title, bool showIcon, const c
 	openMenu->setStyle(style);
 	openMenu->setProperty("class", "blackMenu");
 	openMenu->setIcon(QIcon(ICOPATH(open.svg)));
-	QAction* openFromHistory = new QAction(_STRING_WRAPPER("从本地.."));
-	openFromHistory->setIcon(QIcon(ICOPATH(local.svg)));
-	connect(openFromHistory, &QAction::triggered, this, &XA_UIModule_FILEMenu::on_clcOpenLocal);
-	openMenu->addAction(openFromHistory);
+	QAction* openFromLocal = new QAction(_STRING_WRAPPER("从本地.."));
+	openFromLocal->setIcon(QIcon(ICOPATH(local.svg)));
+	connect(openFromLocal, &QAction::triggered, this, &XA_UIModule_FILEMenu::on_clcOpenLocal);
+	openMenu->addAction(openFromLocal);
 	QAction* openFromClould = new QAction(_STRING_WRAPPER("从云端.."));
 	openFromClould->setIcon(QIcon(ICOPATH(cloud.svg)));
 	connect(openFromClould, &QAction::triggered, this, &XA_UIModule_FILEMenu::on_clcOpenCloud);
@@ -77,6 +77,10 @@ XA_UIModule_FILEMenu::XA_UIModule_FILEMenu(QString title, bool showIcon, const c
 	QAction* importAudioAct = new QAction(_STRING_WRAPPER("音频对象"));
 	connect(importAudioAct, &QAction::triggered, this, &XA_UIModule_FILEMenu::on_clcImportAudio);
 	importMenu->addAction(importAudioAct);
+	QAction* importFontAct = new QAction(_STRING_WRAPPER("字体对象"));
+	connect(importFontAct, &QAction::triggered, this, &XA_UIModule_FILEMenu::on_clcImportFont);
+	importMenu->addAction(importFontAct);
+
 	this->addMenu(importMenu);
 	
 
@@ -155,6 +159,11 @@ void XA_UIModule_FILEMenu::on_clcImportTexture()
 }
 
 void XA_UIModule_FILEMenu::on_clcImportAudio()
+{
+
+}
+
+void XA_UIModule_FILEMenu::on_clcImportFont()
 {
 
 }

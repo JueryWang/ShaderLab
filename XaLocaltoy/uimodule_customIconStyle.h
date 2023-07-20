@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CUSTOM_ICON_STYLE
+#define CUSTOM_ICON_STYLE
 #include <QProxyStyle>
 
 class CustomIconStyle : public QProxyStyle
@@ -14,3 +15,4 @@ public:
 		return QProxyStyle::pixelMetric(metric, option, widget);
 	}
 };
+#endif

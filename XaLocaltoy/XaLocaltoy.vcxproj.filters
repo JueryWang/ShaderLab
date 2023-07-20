@@ -43,6 +43,9 @@
     <ClCompile Include="UI\uimodule_aboutmenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UI\uimodule_lookmenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="XaLocaltoy.h">
@@ -79,6 +82,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utilitys\uitilityDfs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\uimodule_lookmenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
