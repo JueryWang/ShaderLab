@@ -14,7 +14,8 @@ OverallWindow::OverallWindow()
 	init();
 	_owlayout = new QVBoxLayout(this);
 	_menubar = new MenuLayertop();
-	_owlayout->setMenuBar(_menubar->GetMenus());
+	_owlayout->addWidget(_menubar);
+	_owlayout->setContentsMargins(0, 0, 0, 0);
 	this->setMinimumSize(300, 200);
 	this->setStyleSheet("background-color:rgba(23,29,37,200)");
 

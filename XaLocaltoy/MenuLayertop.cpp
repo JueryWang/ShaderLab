@@ -23,28 +23,19 @@ MenuLayertop::MenuLayertop(QMenuBar* parent /*= NULL*/)
 
 	about_menu->setObjectName("About&Update");
 	about_menu->setMinimumWidth(135);
-	about_menu->setProperty("class", "blackMenu");
-	about_menu->setWindowFlags(about_menu->windowFlags() | Qt::FramelessWindowHint);
-	about_menu->setAttribute(Qt::WA_TranslucentBackground);
-	
+	about_menu->setMinimumHeight(80);
 
 	file_menu->setObjectName("FILE");
 	file_menu->setMinimumWidth(135);
-	file_menu->setProperty("class", "blackMenu");
-	file_menu->setWindowFlags(file_menu->windowFlags() | Qt::FramelessWindowHint);
-	file_menu->setAttribute(Qt::WA_TranslucentBackground);
+	file_menu->setMinimumHeight(80);
 
 	look_menu->setObjectName("LOOK");
 	look_menu->setMinimumWidth(135);
-	look_menu->setProperty("class", "blackMenu");
-	look_menu->setWindowFlags(look_menu->windowFlags() | Qt::FramelessWindowHint);
-	look_menu->setAttribute(Qt::WA_TranslucentBackground);
+	look_menu->setMinimumHeight(80);
 
 	window_menu->setObjectName("WINDOW");
 	window_menu->setMinimumWidth(135);
-	window_menu->setProperty("class", "blackMenu");
-	window_menu->setWindowFlags(window_menu->windowFlags() | Qt::FramelessWindowHint);
-	window_menu->setAttribute(Qt::WA_TranslucentBackground);
+	window_menu->setMinimumHeight(80);
 
 	_topMenus->setFont(QFont("Microsoft YaHei", 10,QFont::Bold));
 	_topMenus->addMenu(about_menu);
@@ -56,6 +47,8 @@ MenuLayertop::MenuLayertop(QMenuBar* parent /*= NULL*/)
 
 	_layout->addWidget(_topMenus, 0, Qt::AlignLeft | Qt::AlignTop);
 	_layout->addWidget(profile_menu, 0, Qt::AlignTop | Qt::AlignRight);
+	_layout->setContentsMargins(0, 0, 0, 0);
+	this->setLayout(_layout);
 }
 
 MenuLayertop::~MenuLayertop()
