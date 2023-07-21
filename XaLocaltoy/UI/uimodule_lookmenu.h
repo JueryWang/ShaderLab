@@ -13,7 +13,7 @@ private:
 	void on_clcQueryFriend();
 	void on_clcNewFriend();
 	void on_clcQueryFriendReq();
-	void on_clcHistory();
+	void on_clcGetHistory();//triggered only once
 	void on_clcShowScrCap();
 	void on_clcShowNews();
 };

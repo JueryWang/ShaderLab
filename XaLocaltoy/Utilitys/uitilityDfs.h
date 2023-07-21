@@ -1,7 +1,7 @@
 #ifndef UTILITY_SUPPORT
 #define UTILITY_SUPPORT
 #include <QString>
-
+#include <QDebug>
 #ifdef  _WIN32
 #define _STRING_WRAPPER(str) QStringLiteral(str)
 

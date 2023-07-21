@@ -2,14 +2,18 @@
 #define  MENULAYERTOP_H
 
 #include <QMenuBar>
-#include <QList>
+#include <QHBoxLayout>
 
-class MenuLayertop : public QMenuBar
+class MenuLayertop : public QWidget
 {
 	Q_OBJECT
 public: 
 	MenuLayertop(QMenuBar* parent = NULL);
+	~MenuLayertop();
+	QMenuBar* GetMenus();
 private:
+	QMenuBar* _topMenus;
+	QHBoxLayout* _layout;
 };
 
 #endif
