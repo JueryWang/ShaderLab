@@ -5,10 +5,12 @@
 
 class XA_UIModule_LOOKMenu : public QMenu
 {
+	Q_OBJECT
 public:
 	XA_UIModule_LOOKMenu(QString title, bool showIcon = false, const char* iconpath = nullptr);
 	~XA_UIModule_LOOKMenu();
-private:
+
+private://no need to add slots flag because there are no args between click signal and click event
 	void on_clcRepo();
 	void on_clcQueryFriend();
 	void on_clcNewFriend();

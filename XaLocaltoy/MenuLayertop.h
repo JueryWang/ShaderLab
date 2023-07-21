@@ -10,7 +10,11 @@ class MenuLayertop : public QWidget
 public: 
 	MenuLayertop(QMenuBar* parent = NULL);
 	~MenuLayertop();
-	QMenuBar* GetMenus();
+
+private:
+	void on_clcClose();
+	void on_clcFullScreen();
+	void on_clcMinimize();
 private:
 	QMenuBar* _topMenus;
 	QHBoxLayout* _layout;

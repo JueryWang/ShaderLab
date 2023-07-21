@@ -66,6 +66,18 @@
     <QtMoc Include="UI\uimodule_customIconStyle.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="UI\uimodule_windowmenu.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="UI\uimodule_aboutmenu.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="UI\uimodule_filemenu.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="UI\uimodule_lookmenu.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="XaLocaltoy.ui">
@@ -78,22 +90,10 @@
     </QtRcc>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="UI\uimodule_filemenu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\uimodule_aboutmenu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="UI\ui_defaultDfs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utilitys\uitilityDfs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\uimodule_lookmenu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\uimodule_windowmenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UI\uimodule_profilemenu.h">

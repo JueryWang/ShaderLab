@@ -4,11 +4,12 @@
 
 class XA_UIModule_FILEMenu : public QMenu
 {
+	Q_OBJECT
 public:
 	XA_UIModule_FILEMenu(QString title, bool showIcon = false, const char* iconpath = nullptr);
 	~XA_UIModule_FILEMenu();
 
-private:
+private://no need to add slots flag because there are no args between click signal and click event
 	void on_clcNew();
 	void on_clcOpenLocal();
 	void on_clcOpenCloud();

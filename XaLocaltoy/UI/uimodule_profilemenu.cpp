@@ -10,6 +10,7 @@ XA_UIModule_ProfileMenu::XA_UIModule_ProfileMenu(QString title)
 	CustomIconStyle* style = new CustomIconStyle(18);
 
 	QMenu* profileMenu = new QMenu(_STRING_WRAPPER("个人"));
+	profileMenu->setMinimumWidth(135);
 	profileMenu->setStyle(style);
 	profileMenu->setProperty("class", "blackMenu");
 	QAction* myprofileAct = new QAction(_STRING_WRAPPER("个人资料"));
@@ -21,7 +22,7 @@ XA_UIModule_ProfileMenu::XA_UIModule_ProfileMenu(QString title)
 	connect(myDvcAct, &QAction::triggered, this, &XA_UIModule_ProfileMenu::on_clcProfile);
 	profileMenu->addAction(myDvcAct);
 	QAction* myShaderAct = new QAction(_STRING_WRAPPER("我的Shader"));
-	myDvcAct->setIcon(QIcon(ICOPATH(unrealengine.svg)));
+	myShaderAct->setIcon(QIcon(ICOPATH(unrealengine.svg)));
 	connect(myShaderAct, &QAction::triggered, this, &XA_UIModule_ProfileMenu::on_clcCheckShader);
 	profileMenu->addAction(myShaderAct);
 	QAction* switchAct = new QAction(_STRING_WRAPPER("更换账户"));
@@ -77,4 +78,3 @@ void XA_UIModule_ProfileMenu::on_clcExitLoggin()
 {
 
 }
-

@@ -1,4 +1,5 @@
 #include "OverallWindow.h"
+#include <windows.h>
 #include <QFile>
 #include <QScreen>
 #include <QGuiApplication>
@@ -16,14 +17,15 @@ OverallWindow::OverallWindow()
 	_menubar = new MenuLayertop();
 	_owlayout->addWidget(_menubar);
 	_owlayout->setContentsMargins(0, 0, 0, 0);
-	this->setMinimumSize(300, 200);
+	this->setMinimumSize(1000, 600);
+	this->resize(800, 600);
 	this->setStyleSheet("background-color:rgba(23,29,37,200)");
 
 	QRect monitorRct;
 	monitorRct = QGuiApplication::primaryScreen()->geometry();
 	monitor_resolution = QSize(monitorRct.width(), monitorRct.height());
 	this->setWindowIcon(QIcon("Resources/icon/ShaderLabIco.png"));
-	this->setWindowTitle("ShaderLab v1.0");
+	this->setWindowFlags(Qt::FramelessWindowHint);
 }
 
 OverallWindow::~OverallWindow()
@@ -37,6 +39,7 @@ const QSize OverallWindow::getMonitorsz() const
 
 void OverallWindow::init()
 {
+	SetConsoleOutputCP(CP_UTF8);
 	QString s = __FILE__;
 	QRegularExpression re;
 	re.setPattern("^(.*)\\\\");
