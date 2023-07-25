@@ -8,13 +8,14 @@ class MenuLayertop : public QWidget
 	friend class OverallWindow;
 	Q_OBJECT
 public: 
-	MenuLayertop(QMenuBar* parent = NULL);
+	MenuLayertop(QWidget* parent = NULL);
 	~MenuLayertop();
+
+public slots:
+	void on_Exit_Msg(int val);
 
 private:
 	void on_clcClose();
-	void on_clcFullScreen();
-	void on_clcMinimize();
 private:
 	QMenuBar* _topMenus;
 	QHBoxLayout* _layout;

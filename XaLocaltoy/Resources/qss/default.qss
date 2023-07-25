@@ -1,3 +1,12 @@
+QWidget.blackWidget
+{
+    border-width: 5px 5px 5px 5px;
+    border-style: solid;
+    border-color: rgb(99, 136, 148);
+    border-radius:6px;
+    background-color: rgba(24, 24, 24, 230);
+}
+
 QMenu.blackMenu {
     padding: 5px 0;
     border-radius: 5px;

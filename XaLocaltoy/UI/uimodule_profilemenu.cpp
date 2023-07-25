@@ -41,7 +41,7 @@ XA_UIModule_ProfileMenu::XA_UIModule_ProfileMenu(QString title)
                                   font-family:\"Arial Black\";\
                                   font-weight: normal;\
                                   color:rgba(120, 170, 218,0.85);\
-                                  border: 2px solid #b9b9b9;\
+                                  border: 2px solid #5D909F;\
                                   border-radius: 3px;\
                                   qproperty-icon: url(Resources/user/avatar/avatar.png) left no-repeat;\
                                   qproperty-iconSize: 26px 26px;\

@@ -1,14 +1,8 @@
-#ifndef XALOCALTOY
-#define XALOCALTOY
-
-#define DEBUG
+#ifndef XA_LOCALTOY
+#define XA_LOCALTOY
 
 #include <QObject>
 #include "OverallWindow.h"
-#ifdef DEBUG
-#include <QDebug>
-#endif // DEBUG
-
 
 class XaLocaltoy : public QObject
 {

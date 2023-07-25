@@ -1,8 +1,10 @@
 #include "OverallWindow.h"
+#include <QToolButton>
+#include <QDebug>
 #include <windows.h>
 #include <QFile>
 #include <QScreen>
-#include <QGuiApplication>
+#include <QDesktopWidget>
 #include <QApplication>
 #include <QRegularExpression>
 #include <iostream>
@@ -14,27 +16,62 @@ OverallWindow::OverallWindow()
 {
 	init();
 	_owlayout = new QVBoxLayout(this);
-	_menubar = new MenuLayertop();
+	_menubar = new MenuLayertop(this);
+	this->setMinimumSize(1000, 600);
+	this->resize(1000, 600);
+	this->setStyleSheet("background-color:rgba(23,29,37,200)");
+	_menubar->setParent(this);
 	_owlayout->addWidget(_menubar);
 	_owlayout->setContentsMargins(0, 0, 0, 0);
-	this->setMinimumSize(1000, 600);
-	this->resize(800, 600);
-	this->setStyleSheet("background-color:rgba(23,29,37,200)");
 
-	QRect monitorRct;
-	monitorRct = QGuiApplication::primaryScreen()->geometry();
+	QDesktopWidget desktop;
+	QRect monitorRct = QApplication::desktop()->availableGeometry();
 	monitor_resolution = QSize(monitorRct.width(), monitorRct.height());
+	anchorPos = QPoint((monitor_resolution.width()-normalSize.width())/2, (monitor_resolution.height() - normalSize.height())/2);
+
 	this->setWindowIcon(QIcon("Resources/icon/ShaderLabIco.png"));
 	this->setWindowFlags(Qt::FramelessWindowHint);
 }
 
 OverallWindow::~OverallWindow()
 {
+	delete _menubar;
+	delete _owlayout;
 }
 
 const QSize OverallWindow::getMonitorsz() const
 {
 	return this->monitor_resolution;
+}
+
+void OverallWindow::setFullScreen()
+{
+	this->resize(monitor_resolution);
+	this->move(0, 0);
+	QToolButton* tbn = _menubar->findChild<QToolButton*>("zoom Button");
+	disconnect(tbn, &QToolButton::clicked, this, &OverallWindow::setFullScreen);
+	tbn->setStyleSheet(".QToolButton{background-color:transparent;border:1px solid rgba(255,255,255,0);\
+							qproperty-icon: url(Resources/icon/zoomOut.svg);qproperty-iconSize: 20px 20px;}\
+				 .QToolButton:hover,pressed,selected{padding:0px 0px;background-color:rgba(61, 68, 80, 1.0)}");
+	connect(tbn, &QToolButton::clicked, this, &OverallWindow::rollbackNormal);
+}
+
+void OverallWindow::setMinimum()
+{
+	this->showMinimized();
+}
+
+
+void OverallWindow::rollbackNormal()
+{
+	this->resize(normalSize);
+	this->move(anchorPos);
+	QToolButton* tbn = _menubar->findChild<QToolButton*>("zoom Button");
+	disconnect(tbn, &QToolButton::clicked, this, &OverallWindow::rollbackNormal);
+	tbn->setStyleSheet(".QToolButton{background-color:transparent;border:1px solid rgba(255,255,255,0);\
+							qproperty-icon: url(Resources/icon/fullscreen.svg);qproperty-iconSize: 20px 20px;}\
+				 .QToolButton:hover,pressed,selected{padding:0px 0px;background-color:rgba(61, 68, 80, 1.0)}");
+	connect(tbn, &QToolButton::clicked, this, &OverallWindow::setFullScreen);
 }
 
 void OverallWindow::init()
@@ -55,4 +92,5 @@ void OverallWindow::init()
 		qApp->setStyleSheet(stylesheet);
 	}
 }
+
 

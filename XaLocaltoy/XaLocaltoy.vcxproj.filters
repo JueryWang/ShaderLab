@@ -52,6 +52,12 @@
     <ClCompile Include="UI\uimodule_windowmenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UI\uimodule_customMessage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\uimodule_MsgBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="XaLocaltoy.h">
@@ -78,6 +84,9 @@
     <QtMoc Include="UI\uimodule_lookmenu.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="UI\uimodule_MsgBox.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="XaLocaltoy.ui">
@@ -97,6 +106,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UI\uimodule_profilemenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\uimodule_customMessage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

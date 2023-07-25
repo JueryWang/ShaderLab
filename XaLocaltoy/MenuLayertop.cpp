@@ -1,15 +1,18 @@
 #include "MenuLayertop.h"
+#include "Utilitys/uitilityDfs.h"
 #include "UI/uimodule_aboutmenu.h"
 #include "UI/uimodule_filemenu.h"
 #include "UI/uimodule_lookmenu.h"
 #include "UI/uimodule_windowmenu.h"
 #include "UI/uimodule_profilemenu.h"
 #include "UI/uimodule_customIconStyle.h"
-#include "Utilitys/uitilityDfs.h"
+#include "UI/uimodule_MsgBox.h"
+#include "OverallWindow.h"
+#include <QCoreApplication>
 #include <QSizePolicy>
 #include <QToolButton>
 
-MenuLayertop::MenuLayertop(QMenuBar* parent /*= NULL*/)
+MenuLayertop::MenuLayertop(QWidget* parent /*= NULL*/)
 {
 	_topMenus = new QMenuBar(this);
 	_layout = new QHBoxLayout();
@@ -46,29 +49,31 @@ MenuLayertop::MenuLayertop(QMenuBar* parent /*= NULL*/)
 	_topMenus->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
 
-	QToolButton* closeBtn = new QToolButton();
+	QToolButton* closeBtn = new QToolButton(this);
 	closeBtn->setFixedSize(30, 30);
 	closeBtn->setStyleSheet(".QToolButton{background-color:transparent;border:1px solid rgba(255,255,255,0);\
 								qproperty-icon: url(Resources/icon/close.svg);qproperty-iconSize: 20px 20px;}\
 				 .QToolButton:hover,pressed,selected{padding:0px 0px;background-color:rgba(226, 46, 39, 1.0)}");
 	closeBtn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-	connect(closeBtn, &QToolButton::triggered, this, &MenuLayertop::on_clcClose);
+	connect(closeBtn, &QToolButton::clicked, this, &MenuLayertop::on_clcClose);
 	
-	QToolButton* fullBtn = new QToolButton();
+	OverallWindow* owWindow = (OverallWindow*)parent;
+	QToolButton* fullBtn = new QToolButton(this);
+	fullBtn->setObjectName("zoom Button");
 	fullBtn->setFixedSize(30, 30);
 	fullBtn->setStyleSheet(".QToolButton{background-color:transparent;border:1px solid rgba(255,255,255,0);\
 							qproperty-icon: url(Resources/icon/fullscreen.svg);qproperty-iconSize: 20px 20px;}\
-				 .QToolButton:hover,pressed,selected{padding:0px 0px;background-color:rgba(226, 46, 39, 1.0)}");
+				 .QToolButton:hover,pressed,selected{padding:0px 0px;background-color:rgba(61, 68, 80, 1.0)}");
 	fullBtn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-	connect(closeBtn, &QToolButton::triggered, this, &MenuLayertop::on_clcFullScreen);
+	connect(fullBtn, &QToolButton::clicked, owWindow, &OverallWindow::setFullScreen);
 
-	QToolButton* minimizeBtn = new QToolButton();
+	QToolButton* minimizeBtn = new QToolButton(this);
 	minimizeBtn->setFixedSize(30, 30);
 	minimizeBtn->setStyleSheet(".QToolButton{background-color:transparent;border:1px solid rgba(255,255,255,0);\
 							qproperty-icon: url(Resources/icon/minimize.svg);qproperty-iconSize: 20px 20px;}\
-				 .QToolButton:hover,pressed,selected{padding:0px 0px;background-color:rgba(226, 46, 39, 1.0)}");
+				 .QToolButton:hover,pressed,selected{padding:0px 0px;background-color:rgba(61, 68, 80, 1.0)}");
 	minimizeBtn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-	connect(minimizeBtn, &QToolButton::triggered, this, &MenuLayertop::on_clcMinimize);
+	connect(minimizeBtn, &QToolButton::clicked, owWindow, &OverallWindow::setMinimum);
 
 	_layout->addWidget(_topMenus, 0, Qt::AlignLeft | Qt::AlignTop);
 	_layout->addWidget(profile_menu, 1, Qt::AlignTop | Qt::AlignRight);
@@ -84,17 +89,32 @@ MenuLayertop::~MenuLayertop()
 	delete _topMenus;
 }
 
+void MenuLayertop::on_Exit_Msg(int val)
+{
+	switch (val)
+	{
+		case 0:
+			//do Save operation
+			QCoreApplication::exit();
+			break;
+		case 1:
+			QCoreApplication::exit();
+			break;
+		case 2:
+			break;
+	}
+}
+
 void MenuLayertop::on_clcClose()
 {
-
-}
-
-void MenuLayertop::on_clcFullScreen()
-{
-
-}
-
-void MenuLayertop::on_clcMinimize()
-{
-
+	OverallWindow* owWindow = (OverallWindow*)this->parent();
+	if((xa_context & RT_CONTEXT_STATUS::Archive_updated) == 1)
+	{
+		QCoreApplication::exit();
+	}
+	else
+	{
+		XA_UIModule_QUEST_BOX* instance = XA_UIModule_QUEST_BOX::question(this, "Save changes before closing?", "untitled.sdl",owWindow->size());
+		connect(instance, &XA_UIModule_QUEST_BOX::sendChoose, this, &MenuLayertop::on_Exit_Msg);
+	}
 }
