@@ -8,12 +8,15 @@
 #include "UI/uimodule_customIconStyle.h"
 #include "UI/uimodule_MsgBox.h"
 #include "OverallWindow.h"
-#include <QCoreApplication>
+#include <QMouseEvent>
 #include <QSizePolicy>
 #include <QToolButton>
+#include <QCoreApplication>
 
-MenuLayertop::MenuLayertop(QWidget* parent /*= NULL*/)
+MenuLayertop::MenuLayertop(OverallWindow* parent /*= NULL*/)
 {
+	this->setParent(parent);
+	_parentInst = parent;
 	_topMenus = new QMenuBar(this);
 	_layout = new QHBoxLayout();
 
@@ -82,11 +85,48 @@ MenuLayertop::MenuLayertop(QWidget* parent /*= NULL*/)
 	_layout->addWidget(closeBtn, 0, Qt::AlignTop | Qt::AlignRight);
 	_layout->setContentsMargins(6, 0, 0, 4);
 	this->setLayout(_layout);
+	this->installEventFilter(this);
 }
 
 MenuLayertop::~MenuLayertop()
 {
 	delete _topMenus;
+}
+
+bool MenuLayertop::eventFilter(QObject* obj, QEvent* event)
+{
+	switch (event->type())
+	{
+	case QEvent::MouseButtonPress:
+	{   auto e = static_cast<QMouseEvent*>(event);
+	if (e->button() == Qt::LeftButton)
+	{
+		_isDrag = true;
+		_offsetPoint = e->globalPos() - _parentInst->frameGeometry().topLeft();
+	}
+	event->accept();
+	return true;
+	}
+	case QEvent::MouseMove:
+	{
+		auto e = static_cast<QMouseEvent*>(event);
+		if (_isDrag)
+		{
+			_parentInst->move(e->globalPos() - _offsetPoint);
+		}
+		event->accept();
+		return true;
+	}
+	case QEvent::MouseButtonRelease:
+	{
+		auto e = static_cast<QMouseEvent*>(event);
+		if (e->button() == Qt::LeftButton)
+		{
+			_isDrag = false;
+		}
+		return true;
+	}
+	}
 }
 
 void MenuLayertop::on_Exit_Msg(int val)

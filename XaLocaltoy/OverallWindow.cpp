@@ -1,6 +1,5 @@
 #include "OverallWindow.h"
 #include <QToolButton>
-#include <QDebug>
 #include <windows.h>
 #include <QFile>
 #include <QScreen>
@@ -20,7 +19,6 @@ OverallWindow::OverallWindow()
 	this->setMinimumSize(1000, 600);
 	this->resize(1000, 600);
 	this->setStyleSheet("background-color:rgba(23,29,37,200)");
-	_menubar->setParent(this);
 	_owlayout->addWidget(_menubar);
 	_owlayout->setContentsMargins(0, 0, 0, 0);
 

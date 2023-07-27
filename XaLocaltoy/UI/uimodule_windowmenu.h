@@ -1,5 +1,5 @@
-#ifndef UI_MENU_WINDOW
-#define UI_MENU_WINDOW
+#ifndef UI_MENU_WINDOW_H
+#define UI_MENU_WINDOW_H
 
 #include <QMenu>
 

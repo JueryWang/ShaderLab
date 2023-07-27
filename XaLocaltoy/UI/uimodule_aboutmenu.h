@@ -1,5 +1,5 @@
-#ifndef UI_MENU_ABOUT
-#define UI_MENU_ABOUT
+#ifndef UI_MENU_ABOUT_H
+#define UI_MENU_ABOUT_H
 #include <QMenu>
 
 class XA_UIModule_AboutMenu : public QMenu

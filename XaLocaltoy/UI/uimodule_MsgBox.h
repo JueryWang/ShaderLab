@@ -1,5 +1,5 @@
-#ifndef UI_MSGBOX
-#define UI_MSGBOX
+#ifndef UI_MSGBOX_H
+#define UI_MSGBOX_H
 
 #include <QWidget>
 #include <QHBoxLayout>

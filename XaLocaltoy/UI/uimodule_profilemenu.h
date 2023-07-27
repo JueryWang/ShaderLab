@@ -1,5 +1,5 @@
-#ifndef UI_PROFILE_MENU
-#define UI_PROFILE_MENU
+#ifndef UI_PROFILE_MENU_H
+#define UI_PROFILE_MENU_H
 #include <QToolButton>
 
 class XA_UIModule_ProfileMenu : public QToolButton

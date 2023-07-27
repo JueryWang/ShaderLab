@@ -1,5 +1,5 @@
-#ifndef UI_MENU_LOOK
-#define UI_MENU_LOOK
+#ifndef UI_MENU_LOOK_H
+#define UI_MENU_LOOK_H
 
 #include <QMenu>
 

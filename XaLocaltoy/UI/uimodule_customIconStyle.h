@@ -1,5 +1,5 @@
-#ifndef  CUSTOM_ICON_STYLE
-#define CUSTOM_ICON_STYLE
+#ifndef CUSTOM_ICON_STYLE_H
+#define CUSTOM_ICON_STYLE_H
 #include <QProxyStyle>
 #include <QCommonStyle>
 

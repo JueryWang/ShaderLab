@@ -1,5 +1,5 @@
-#ifndef OVERALLWINDOW
-#define OVERALLWINDOW
+#ifndef OVERALLWINDOW_H
+#define OVERALLWINDOW_H
 
 #include "MenuLayertop.h"
 #include <QVBoxLayout>
