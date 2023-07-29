@@ -23,6 +23,9 @@ private:
 	XA_GLMODULE_RENDER* _glBackendRender;
 	QImage _picture;
 
+	static uchar* _glwgt_pctbuffing;
+	static int _glwgt_buffingsize;
+
 	int wgt_width;
 	int wgt_height;
 };

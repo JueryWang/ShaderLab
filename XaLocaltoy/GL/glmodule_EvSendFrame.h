@@ -7,6 +7,7 @@ class EvSendFrame : public QEvent
 {
 public: 
 	EvSendFrame(void* frameData,int size);
+	~EvSendFrame();
 	static Type eventType;
 
 public:

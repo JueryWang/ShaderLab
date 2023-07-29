@@ -52,7 +52,7 @@ bool XA_UIModule_GLWidget::eventFilter(QObject* obj, QEvent* event)
 	if (event->type() == EvSendFrame::eventType)
 	{
 		EvSendFrame* ev = (EvSendFrame*)event;
-		memcpy(_glwgt_pctbuffing,ev->_framedata, XA_UIModule_GLWidget::_glwgt_buffingsize);//copy to unique memory to avoid memory leak
+		memcpy(_glwgt_pctbuffing,ev->_framedata, XA_UIModule_GLWidget::_glwgt_buffingsize);//copy to unique 
 		_picture = QImage(_glwgt_pctbuffing, XA_GLMODULE_RENDER::SCR_WIDTH, XA_GLMODULE_RENDER::SCR_HEIGHT, QImage::Format_RGB888);
 		this->repaint();
 	}

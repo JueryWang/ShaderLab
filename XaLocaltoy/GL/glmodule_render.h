@@ -14,12 +14,17 @@ class XA_GLMODULE_RENDER : public QObject
 {
 	friend class XA_GLMODULE_BACKSTG;
 	Q_OBJECT
+
 public:
 	XA_GLMODULE_RENDER(const std::string& title,StorageType type = XA_GL_RGB,QWidget* reciver = nullptr);
 	~XA_GLMODULE_RENDER();
 	//void addShader(const char* vertexPath, const char* fragmentPath,const char* name);
 	static void setWindowSize(int SCR_WIDTH,int SCR_HEIGHT);
 	inline void flip(uint8_t** buf);
+	void pause();
+	void start();
+	void restart();
+
 private:
 	void renderQuad();
 

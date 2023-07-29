@@ -1,6 +1,7 @@
 #include "glmodule_render.h"
 #include "glmodule_EvSendFrame.h"
 #include <QApplication>
+#include <memory>
 #include <QDebug>
 using namespace std;
 
@@ -21,8 +22,19 @@ XA_GLMODULE_RENDER::XA_GLMODULE_RENDER(const std::string& title, StorageType typ
 		//Do some Log operation
 		return;
 	}
-	windowBufSize = SCR_WIDTH * SCR_HEIGHT * 3 * sizeof(uchar);
-	_windowbuf = malloc(windowBufSize);
+	switch (type)
+	{
+		case XA_GL_RGB:
+			windowBufSize = SCR_WIDTH * SCR_HEIGHT * 3 * sizeof(uchar);
+			_windowbuf = malloc(windowBufSize);
+			break;
+		case XA_GL_RGBA:
+			windowBufSize = SCR_WIDTH * SCR_HEIGHT * 3 * sizeof(uchar);
+			break;
+		default:
+			break;
+	}	
+
 
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -64,12 +76,27 @@ void XA_GLMODULE_RENDER::flip(uint8_t** buf)
 	}
 }
 
+void XA_GLMODULE_RENDER::pause()
+{
+
+}
+
+void XA_GLMODULE_RENDER::start()
+{
+
+}
+
+void XA_GLMODULE_RENDER::restart()
+{
+
+}
+
 void XA_GLMODULE_RENDER::contextDraw()
 {
 	static char windowTitle[32];
 	sprintf_s(windowTitle, _title.c_str(), NULL, NULL);
-	qDebug() << "SCR_WIDTH = " << SCR_WIDTH << ",SCR_HEIGHT = " << SCR_HEIGHT;
 	_window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, windowTitle, NULL, NULL);
+	qDebug() << SCR_WIDTH << "," << SCR_HEIGHT;
 	if (_window == NULL) {
 		//Do some Log Record
 		glfwTerminate();
@@ -87,7 +114,8 @@ void XA_GLMODULE_RENDER::contextDraw()
 	_shader->use();
 	glUniform2iv(glGetUniformLocation(_shader->ID, "iResolution"), 1, &resolution[0]);
 
-	while (!glfwWindowShouldClose(_window))
+	bool tmp;
+	while (tmp = !paused.load(memory_order_acquire))
 	{
 		auto time = static_cast<float>(glfwGetTime());
 		deltaTime = time - lastTime;
@@ -95,11 +123,21 @@ void XA_GLMODULE_RENDER::contextDraw()
 		glUniform1f(glGetUniformLocation(_shader->ID, "runtime_data.iTime"), time);
 		renderQuad();
 		
-		glReadPixels(0, 0, SCR_WIDTH, SCR_HEIGHT, GL_RGB, GL_UNSIGNED_BYTE, _windowbuf);
+		switch (_type)
+		{
+			case XA_GL_RGB:
+				glReadPixels(0, 0, SCR_WIDTH, SCR_HEIGHT, GL_RGB, GL_UNSIGNED_BYTE, _windowbuf);
+				break;
+			case XA_GL_RGBA:
+				glReadPixels(0, 0, SCR_WIDTH, SCR_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, _windowbuf);
+				break;
+			default:
+				break;
+		}
 		flip(&((uint8_t*)_windowbuf));
 
-		EvSendFrame* event = new EvSendFrame(_windowbuf, windowBufSize);
-		QApplication::postEvent(_reciver, event, Qt::HighEventPriority);
+		auto event = std::make_unique<EvSendFrame>(_windowbuf, windowBufSize);
+		QApplication::postEvent(_reciver, event.release(), Qt::HighEventPriority);
 
 		glfwSwapBuffers(_window);
 		glfwSwapInterval(1);
