@@ -127,6 +127,7 @@ bool MenuLayertop::eventFilter(QObject* obj, QEvent* event)
 		return true;
 	}
 	}
+	return QWidget::eventFilter(obj, event);
 }
 
 void MenuLayertop::on_Exit_Msg(int val)

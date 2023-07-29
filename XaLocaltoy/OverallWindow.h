@@ -2,6 +2,7 @@
 #define OVERALLWINDOW_H
 
 #include "MenuLayertop.h"
+#include "UI/uimodule_glWidget.h"
 #include <QVBoxLayout>
 
 class OverallWindow :public QWidget
@@ -18,6 +19,7 @@ public:
 private:
 	QVBoxLayout* _owlayout;
 	MenuLayertop* _menubar;
+	XA_UIModule_GLWidget* _glWindow;
 
 	QSize windowsz;
 	static QString qssPath;

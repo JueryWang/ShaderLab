@@ -58,9 +58,6 @@
     <ClCompile Include="GL\glmodule_backstatge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GL\glmodule_windbufManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GL\include\glad\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -68,6 +65,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GL\glad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GL\glmodule_EvSendFrame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\uimodule_glWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GL\glmodule_render.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -99,7 +105,10 @@
     <QtMoc Include="UI\uimodule_MsgBox.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="GL\glmodule_windbufManager.h">
+    <QtMoc Include="UI\uimodule_glWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="GL\glmodule_render.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -1006,6 +1015,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GL\include\stb_image_write.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GL\glmodule_EvSendFrame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

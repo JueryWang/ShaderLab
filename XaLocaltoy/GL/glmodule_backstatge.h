@@ -1,14 +1,12 @@
-#ifndef GL_MODULE_BACKSTG
-#define GL_MODULE_BACKSTG
+#ifndef GL_MODULE_BACKSTG_H
+#define GL_MODULE_BACKSTG_H
 
 #include "gl_defaultDfs.h"
-#include "glmodule_windbufManager.h"
 #include <queue>
 #include <QThread>
 
 class XA_GLMODULE_BACKSTG : public QThread
 {
-	typedef XA_GLMODULE_WINBUF GL_windowBuffer;
 public:
 	XA_GLMODULE_BACKSTG(QObject* parent);
 	~XA_GLMODULE_BACKSTG();

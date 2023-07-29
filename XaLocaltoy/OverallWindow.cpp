@@ -13,6 +13,7 @@ QString OverallWindow::iconPath;
 
 OverallWindow::OverallWindow() 
 {
+
 	init();
 	_owlayout = new QVBoxLayout(this);
 	_menubar = new MenuLayertop(this);
@@ -22,10 +23,19 @@ OverallWindow::OverallWindow()
 	_owlayout->addWidget(_menubar);
 	_owlayout->setContentsMargins(0, 0, 0, 0);
 
-	QDesktopWidget desktop;
-	QRect monitorRct = QApplication::desktop()->availableGeometry();
-	monitor_resolution = QSize(monitorRct.width(), monitorRct.height());
-	anchorPos = QPoint((monitor_resolution.width()-normalSize.width())/2, (monitor_resolution.height() - normalSize.height())/2);
+	QHBoxLayout* hlay = new QHBoxLayout();
+	QVBoxLayout* vlay1 = new QVBoxLayout();
+	QVBoxLayout* vlay2 = new QVBoxLayout();
+
+	_glWindow = new XA_UIModule_GLWidget("default GL Widget",
+		this->width()*GL_WIDGET_MAX_WIDTH_R, this->height()*GL_HEIGHT_MAX_HEIGHT_R);
+	//_glWindow->show();
+	vlay1->addWidget(_glWindow);
+	vlay2->addSpacing(this->height());
+	hlay->addSpacing(10);
+	hlay->addLayout(vlay1, 1);
+	hlay->addLayout(vlay2, 1);
+	_owlayout->addLayout(hlay);
 
 	this->setWindowIcon(QIcon("Resources/icon/ShaderLabIco.png"));
 	this->setWindowFlags(Qt::FramelessWindowHint);
@@ -74,7 +84,6 @@ void OverallWindow::rollbackNormal()
 
 void OverallWindow::init()
 {
-	SetConsoleOutputCP(CP_UTF8);
 	QString s = __FILE__;
 	QRegularExpression re;
 	re.setPattern("^(.*)\\\\");
@@ -89,6 +98,12 @@ void OverallWindow::init()
 		file.close();
 		qApp->setStyleSheet(stylesheet);
 	}
+	QDesktopWidget desktop;
+	QRect monitorRct = QApplication::desktop()->availableGeometry();
+	monitor_resolution = QSize(monitorRct.width(), monitorRct.height());
+	anchorPos = QPoint((monitor_resolution.width() - normalSize.width()) / 2, (monitor_resolution.height() - normalSize.height()) / 2);
+	XA_GLMODULE_RENDER::setWindowSize(monitor_resolution.width() * GL_WIDGET_MAX_WIDTH_R, 
+		monitor_resolution.height() * GL_HEIGHT_MAX_HEIGHT_R);
 }
 
 

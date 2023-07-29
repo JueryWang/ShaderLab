@@ -93,7 +93,8 @@
   <ItemGroup>
     <ClCompile Include="GL\glad.c" />
     <ClCompile Include="GL\glmodule_backstatge.cpp" />
-    <ClCompile Include="GL\glmodule_windbufManager.cpp" />
+    <ClCompile Include="GL\glmodule_EvSendFrame.cpp" />
+    <ClCompile Include="GL\glmodule_render.cpp" />
     <ClCompile Include="GL\include\glad\glad.c" />
     <ClCompile Include="GL\include\glm\detail\glm.cpp" />
     <ClCompile Include="main.cpp" />
@@ -101,6 +102,7 @@
     <ClCompile Include="OverallWindow.cpp" />
     <ClCompile Include="UI\uimodule_aboutmenu.cpp" />
     <ClCompile Include="UI\uimodule_filemenu.cpp" />
+    <ClCompile Include="UI\uimodule_glWidget.cpp" />
     <ClCompile Include="UI\uimodule_lookmenu.cpp" />
     <ClCompile Include="UI\uimodule_profilemenu.cpp" />
     <ClCompile Include="UI\uimodule_MsgBox.cpp" />
@@ -127,7 +129,8 @@
     <QtMoc Include="UI\uimodule_customIconStyle.h" />
     <QtMoc Include="UI\uimodule_filemenu.h" />
     <ClInclude Include="GL\glmodule_backstatge.h" />
-    <QtMoc Include="GL\glmodule_windbufManager.h" />
+    <QtMoc Include="GL\glmodule_render.h" />
+    <ClInclude Include="GL\glmodule_EvSendFrame.h" />
     <ClInclude Include="GL\gl_defaultDfs.h" />
     <ClInclude Include="GL\include\glad\glad.h" />
     <ClInclude Include="GL\include\GLFW\glfw3.h" />
@@ -427,6 +430,7 @@
     <QtMoc Include="UI\uimodule_MsgBox.h" />
     <ClInclude Include="UI\ui_defaultDfs.h" />
     <QtMoc Include="UI\uimodule_lookmenu.h" />
+    <QtMoc Include="UI\uimodule_glWidget.h" />
     <ClInclude Include="Utilitys\uitilityDfs.h" />
   </ItemGroup>
   <ItemGroup>
