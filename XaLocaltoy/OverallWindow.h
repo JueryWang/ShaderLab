@@ -25,7 +25,7 @@ private:
 	static QString qssPath;
 	static QString iconPath;
 	QSize monitor_resolution;
-	QSize normalSize = QSize(1000, 600);
+	QSize normalSize = QSize(1600, 900);
 	QPoint anchorPos;
 };
 

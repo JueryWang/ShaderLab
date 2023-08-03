@@ -76,6 +76,12 @@
     <ClCompile Include="GL\glmodule_render.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UI\uimodule_editorpage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\uimodule_codeEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="XaLocaltoy.h">
@@ -109,6 +115,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="GL\glmodule_render.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="UI\uimodule_codeEditor.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -1018,6 +1027,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GL\glmodule_EvSendFrame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\uimodule_editorpage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

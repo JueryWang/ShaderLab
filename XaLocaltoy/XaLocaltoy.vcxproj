@@ -68,12 +68,13 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <AdditionalIncludeDirectories>GL/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>qscintilla2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;assimp-vc142-mt.lib;freetype.lib;$(Qt_LIBS_);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;qscintilla2_qt5d.lib;assimp-vc142-mt.lib;freetype.lib;$(Qt_LIBS_);%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>bin</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -101,6 +102,8 @@
     <ClCompile Include="MenuLayertop.cpp" />
     <ClCompile Include="OverallWindow.cpp" />
     <ClCompile Include="UI\uimodule_aboutmenu.cpp" />
+    <ClCompile Include="UI\uimodule_codeEditor.cpp" />
+    <ClCompile Include="UI\uimodule_editorpage.cpp" />
     <ClCompile Include="UI\uimodule_filemenu.cpp" />
     <ClCompile Include="UI\uimodule_glWidget.cpp" />
     <ClCompile Include="UI\uimodule_lookmenu.cpp" />
@@ -425,6 +428,8 @@
     <ClInclude Include="GL\include\shader.h" />
     <ClInclude Include="GL\include\stb_image.h" />
     <ClInclude Include="GL\include\stb_image_write.h" />
+    <QtMoc Include="UI\uimodule_codeEditor.h" />
+    <ClInclude Include="UI\uimodule_editorpage.h" />
     <ClInclude Include="UI\uimodule_profilemenu.h" />
     <QtMoc Include="UI\uimodule_windowmenu.h" />
     <QtMoc Include="UI\uimodule_MsgBox.h" />

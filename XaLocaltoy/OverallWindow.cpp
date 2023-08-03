@@ -1,4 +1,5 @@
 #include "OverallWindow.h"
+#include "UI/uimodule_codeEditor.h"
 #include <QToolButton>
 #include <windows.h>
 #include <QFile>
@@ -17,8 +18,9 @@ OverallWindow::OverallWindow()
 	init();
 	_owlayout = new QVBoxLayout(this);
 	_menubar = new MenuLayertop(this);
-	this->setMinimumSize(1000, 600);
-	this->resize(1000, 600);
+	this->setMinimumSize(1600, 900);
+	this->resize(1600, 900);
+	this->move(anchorPos);
 	this->setStyleSheet("background-color:rgba(23,29,37,200)");
 	_owlayout->addWidget(_menubar);
 	_owlayout->setContentsMargins(0, 0, 0, 0);
@@ -29,12 +31,17 @@ OverallWindow::OverallWindow()
 
 	_glWindow = new XA_UIModule_GLWidget("default GL Widget",
 		this->width()*GL_WIDGET_MAX_WIDTH_R, this->height()*GL_HEIGHT_MAX_HEIGHT_R);
-	//_glWindow->show();
+	XA_UIMODULE_CodeEditor::setEditorSize(this->width() * (1. - GL_WIDGET_MAX_WIDTH_R), this->height()*GL_HEIGHT_MAX_HEIGHT_R);
+	XA_UIMODULE_CodeEditor* codeEditorInst = XA_UIMODULE_CodeEditor::getEditor();
+
 	vlay1->addWidget(_glWindow);
-	vlay2->addSpacing(this->height());
 	hlay->addSpacing(10);
+	vlay2->addSpacing(10);
+	vlay2->addWidget(codeEditorInst);
+	vlay2->addSpacing(this->height() * (1.0 - GL_HEIGHT_MAX_HEIGHT_R) - 30);
 	hlay->addLayout(vlay1, 1);
 	hlay->addLayout(vlay2, 1);
+	hlay->addSpacing(10);
 	_owlayout->addLayout(hlay);
 
 	this->setWindowIcon(QIcon("Resources/icon/ShaderLabIco.png"));

@@ -1,0 +1,29 @@
+{
+	"keywords-lang":"glsl",
+	"version":"v1.0",
+	"author":"Xavier",
+	"c-keyword":["false","true","break","if","else","while","for","#define","#ifdef","#ifndef","#else if","#else","#endif"],
+	
+	"data-type":["void","bool","int","float","bvec2","bvec3","bvec4","ivec2",
+	"ivec3","ivec4","mat2","mat2x2","mat3","mat3x3","mat4x4","mat2x3",
+	"mat2x4","mat3x2","mat3x4","mat4x2","mat4x3","sampler1D","sampler2D",
+	"sampler3D","samplerCube","sampler1DShadow","sampler2DShadow"],
+	
+	"glsl-buildin-vertex":["gl_Color","gl_SecondaryColor","gl_Normal","gl_Vertex","gl_MultiTexCoordn","gl_FogCoord","gl_FogCoord","gl_Position",
+	"gl_ClipVertex","gl_PointSize","gl_FrontColor","gl_BackColor",
+	"gl_FrontSecondaryColor","gl_BackSecondaryColor","gl_TexCoord","gl_FogFragCoord"],
+
+	"glsl-buildin-fragment":["gl_Color","gl_SecondaryColor","gl_TexCoord",
+	"gl_FogFragCoord","gl_FragCoord","gl_FontFacing","gl_PointCoord","gl_FragData","gl_FragColor","gl_FragDepth"
+	],
+
+	"glsl-modifier":["const","attribute","uniform","varying","centroid varying",
+	"layout","flat","invariant","in","out","inout"],
+
+	"api":["radians()","degrees","sin","cos","tan","asin","atan","pow","exp",
+	"log","exp2","log2","sqrt","inverseqrt","abs","sign","floor","ceil",
+	"fract","mod","min","max","clamp","mix","length","distance","dot","cross",
+	"normalize","faceforward","reflect","refract","lessThan","lessThanEqual",
+	"greaterThan","greaterThanEqual","equal","notEqual","any","all","not",
+	"texture2D","textureCube"]
+}
