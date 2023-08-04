@@ -31,6 +31,7 @@ OverallWindow::OverallWindow()
 
 	_glWindow = new XA_UIModule_GLWidget("default GL Widget",
 		this->width()*GL_WIDGET_MAX_WIDTH_R, this->height()*GL_HEIGHT_MAX_HEIGHT_R);
+	_glWindow->setMaximumHeight(_glWindow->height());
 	XA_UIMODULE_CodeEditor::setEditorSize(this->width() * (1. - GL_WIDGET_MAX_WIDTH_R), this->height()*GL_HEIGHT_MAX_HEIGHT_R);
 	XA_UIMODULE_CodeEditor* codeEditorInst = XA_UIMODULE_CodeEditor::getEditor();
 

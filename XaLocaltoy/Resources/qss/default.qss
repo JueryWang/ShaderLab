@@ -98,10 +98,20 @@ QTabBar::close-button{
 
 QSplitter{
     background-color: #282c34;
+    width: 3px;
 }
 
 QSplitter::handle{
     background-color: #2d2d2d;
+    width: 3px;
+}
+
+QListView{
+    background-color: #75A4CD;
+    border-radius:5px;
+    border:1px solid #D3D3D3;
+    padding:5px;
+    color:#1F282F;
 }
 
 QScrollBar:vertical
@@ -125,7 +135,7 @@ QScrollBar::handle:vertical:pressed{
 
 QScrollBar::sub-line:vertical{
     border: none;
-    background-color: none;
+    background-color: white;
     height: 15px;
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
@@ -135,10 +145,10 @@ QScrollBar::sub-line:vertical{
 
 QScrollBar::add-line:vertical{
     border: none;
-    background-color: none;
+    background-color: white;
     height: 15px;
-    border-top-left-radius: 7px;
-    border-top-right-radius: 7px;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
     subcontrol-position: bottom;
     subcontrol-origin: margin;
 }
@@ -168,7 +178,7 @@ QScrollBar::handle:horizontal:pressed{
 
 QScrollBar::sub-line:horizontal{
     border: none;
-    background-color: none;
+    background-color: white;
     height: 15px;
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
@@ -178,10 +188,10 @@ QScrollBar::sub-line:horizontal{
 
 QScrollBar::add-line:horizontal{
     border: none;
-    background-color: none;
+    background-color: white;
     height: 15px;
-    border-top-left-radius: 7px;
-    border-top-right-radius: 7px;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
     subcontrol-position: bottom;
     subcontrol-origin: margin;
 }
@@ -189,3 +199,4 @@ QScrollBar::add-line:horizontal{
 QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal{
     background:none;
 }
+

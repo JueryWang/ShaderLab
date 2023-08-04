@@ -19,6 +19,8 @@ public:
 protected:
 	void keyPressEvent(QKeyEvent* e) override;
 private:
+	void setCustomStyle();
+private:
 	static QsciLexerCPP* _cpplexer;
 	static QsciAPIs* _api;
 };
