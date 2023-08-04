@@ -4,7 +4,7 @@
 	"author":"Xavier",
 	"c-keyword":["false","true","break","if","else","while","for","#define","#ifdef","#ifndef","#else if","#else","#endif"],
 	
-	"data-type":["void","bool","int","float","bvec2","bvec3","bvec4","ivec2",
+	"data-type":["void","bool","int","float","bvec2","vec3","vec2","bvec3","bvec4","ivec2",
 	"ivec3","ivec4","mat2","mat2x2","mat3","mat3x3","mat4x4","mat2x3",
 	"mat2x4","mat3x2","mat3x4","mat4x2","mat4x3","sampler1D","sampler2D",
 	"sampler3D","samplerCube","sampler1DShadow","sampler2DShadow"],

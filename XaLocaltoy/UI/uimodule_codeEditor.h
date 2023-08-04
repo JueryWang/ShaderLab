@@ -2,7 +2,8 @@
 #define UI_CODE_EDITOR_H
 
 #include<QTabWidget>
-#include <memory>
+#include<QMap>
+#include<memory>
 
 class QFile;
 class QFont;
@@ -43,6 +44,7 @@ public:
 	std::unique_ptr<QFile> _current_file;
 
 	XA_UIMODULE_EditorPage* _current_page;
+	QMap<QsciScintilla*,QString> _page_cache;
 };
 
 

@@ -17,6 +17,8 @@ XA_UIMODULE_CodeEditor::XA_UIMODULE_CodeEditor()
 {
 
 	this->resize(editor_width, editor_height);
+	this->setAttribute(Qt::WA_TranslucentBackground);
+
 	int fontId = QFontDatabase::addApplicationFont(FONTPATH(Cascadia.ttf));
 	QStringList font_list = QFontDatabase::applicationFontFamilies(fontId);
 	registeredFonts["Cascadia"] = font_list[0];
@@ -42,7 +44,6 @@ XA_UIMODULE_CodeEditor::XA_UIMODULE_CodeEditor()
 	_editor_font->setPointSize(10);
 	this->setFont(*_editor_font);
 	connect(this, &QTabWidget::tabCloseRequested, this, &XA_UIMODULE_CodeEditor::on_closeTab);
-
 
 	this->set_new_tab(nullptr, true);
 }
@@ -98,6 +99,7 @@ void XA_UIMODULE_CodeEditor::set_new_tab(const QString& path, bool is_new_file /
 		{
 			this->setCurrentIndex(i);
 			this->_current_file = std::make_unique<QFile>(path);
+			_page_cache[(QsciScintilla*)this->currentWidget()] = path;
 			return;
 		}
 	}
@@ -128,6 +130,7 @@ QsciScintilla* XA_UIMODULE_CodeEditor::get_new_page()
 void XA_UIMODULE_CodeEditor::on_closeTab(int index)
 {
 	this->removeTab(index);
+	_page_cache.remove((QsciScintilla*)this->currentWidget());
 }
 
 void XA_UIMODULE_CodeEditor::on_show_hide_Tab()
@@ -180,6 +183,7 @@ void XA_UIMODULE_CodeEditor::on_saveas()
 	if (!file_path.length())
 		return;
 
+	_page_cache[editor] = file_path;
 	QFile* path = new QFile(file_path);
 	if (path->open(QIODevice::WriteOnly))
 	{

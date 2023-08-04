@@ -70,15 +70,17 @@ QMenuBar::item{
 }
 
 QTabWidget{
-    background-color: #282c34;
-    color:#d3d3d3;
+    background-color: transparent;
+    color:transparent;
 }
 
 QTabBar::tab{
-    background-color: rgb(36, 36,36);
+    background-color:transparent;
     color: #d3d3d3;
     min-width: 10ex;
-    min-height: 10ex;
+    min-height: 3ex;
+	border-top-left-radius: 5px;    /*设置tab的边框的圆角（左上圆角）*/
+	border-top-right-radius: 5px;    /*设置tab的边框的圆角（右上圆角）*/
     padding: 10px 20px;
     border-style: none;;
 }
@@ -107,7 +109,7 @@ QScrollBar:vertical
    border: none;
    width: 14px;
    margin: 15px 0 15px 0;
-   background-color: #2d2d2d;
+   background-color: wheat;
    border-radius: 0px;
 }
 
@@ -150,7 +152,7 @@ QScrollBar:horizontal
    border: none;
    width: 14px;
    margin: 15px 0 15px 0;
-   background-color: #2d2d2d;
+   background-color: wheat;
    border-radius: 0px;
 }
 

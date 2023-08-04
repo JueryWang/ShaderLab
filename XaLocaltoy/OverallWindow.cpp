@@ -4,9 +4,11 @@
 #include <windows.h>
 #include <QFile>
 #include <QScreen>
+#include <QSpacerItem>
 #include <QDesktopWidget>
 #include <QApplication>
 #include <QRegularExpression>
+#include <QSplitter>
 #include <iostream>
 
 QString OverallWindow::qssPath;
@@ -18,6 +20,8 @@ OverallWindow::OverallWindow()
 	init();
 	_owlayout = new QVBoxLayout(this);
 	_menubar = new MenuLayertop(this);
+	_menubar->setFixedHeight(35);
+	this->setContentsMargins(10, 0, 10, 0);
 	this->setMinimumSize(1600, 900);
 	this->resize(1600, 900);
 	this->move(anchorPos);
@@ -25,24 +29,34 @@ OverallWindow::OverallWindow()
 	_owlayout->addWidget(_menubar);
 	_owlayout->setContentsMargins(0, 0, 0, 0);
 
-	QHBoxLayout* hlay = new QHBoxLayout();
-	QVBoxLayout* vlay1 = new QVBoxLayout();
-	QVBoxLayout* vlay2 = new QVBoxLayout();
-
 	_glWindow = new XA_UIModule_GLWidget("default GL Widget",
 		this->width()*GL_WIDGET_MAX_WIDTH_R, this->height()*GL_HEIGHT_MAX_HEIGHT_R);
 	XA_UIMODULE_CodeEditor::setEditorSize(this->width() * (1. - GL_WIDGET_MAX_WIDTH_R), this->height()*GL_HEIGHT_MAX_HEIGHT_R);
 	XA_UIMODULE_CodeEditor* codeEditorInst = XA_UIMODULE_CodeEditor::getEditor();
 
-	vlay1->addWidget(_glWindow);
-	hlay->addSpacing(10);
-	vlay2->addSpacing(10);
-	vlay2->addWidget(codeEditorInst);
-	vlay2->addSpacing(this->height() * (1.0 - GL_HEIGHT_MAX_HEIGHT_R) - 30);
-	hlay->addLayout(vlay1, 1);
-	hlay->addLayout(vlay2, 1);
-	hlay->addSpacing(10);
-	_owlayout->addLayout(hlay);
+	QSplitter* splitter_v1 = new QSplitter();
+	splitter_v1->resize(_glWindow->width(), this->height());
+	splitter_v1->setAttribute(Qt::WA_TranslucentBackground, true);
+	splitter_v1->setOrientation(Qt::Vertical);
+	splitter_v1->addWidget(_glWindow);
+	splitter_v1->addWidget(new QWidget());
+	splitter_v1->setStretchFactor(0, GL_HEIGHT_MAX_HEIGHT_R*10);
+	splitter_v1->setStretchFactor(1, (1. - GL_HEIGHT_MAX_HEIGHT_R)*10);
+	QSplitter* splitter_v2 = new QSplitter();
+	splitter_v2->resize(codeEditorInst->width(), this->height());
+	splitter_v2->setAttribute(Qt::WA_TranslucentBackground, true);
+	splitter_v2->setOrientation(Qt::Vertical);
+	splitter_v2->addWidget(codeEditorInst);
+	splitter_v2->addWidget(new QWidget);
+	splitter_v2->setStretchFactor(0, GL_HEIGHT_MAX_HEIGHT_R * 10);
+	splitter_v2->setStretchFactor(1, (1. - GL_HEIGHT_MAX_HEIGHT_R) * 10);
+
+	QSplitter* splitter_h = new QSplitter();
+	splitter_h->setAttribute(Qt::WA_TranslucentBackground, true);
+	splitter_h->addWidget(splitter_v1);
+	splitter_h->addWidget(splitter_v2);
+	QWidget* spacing = new QWidget();
+	_owlayout->addWidget(splitter_h);
 
 	this->setWindowIcon(QIcon("Resources/icon/ShaderLabIco.png"));
 	this->setWindowFlags(Qt::FramelessWindowHint);
