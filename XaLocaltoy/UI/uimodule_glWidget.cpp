@@ -2,10 +2,12 @@
 #include "../glmodule_EvSendFrame.h"
 #include <QPainter>
 #include <QPainterPath>
+#include <QResizeEvent>
 #include <QDebug>
 
 uchar* XA_UIModule_GLWidget::_glwgt_pctbuffing;
 int XA_UIModule_GLWidget::_glwgt_buffingsize;
+bool first_resize = true;
 
 XA_UIModule_GLWidget::XA_UIModule_GLWidget(const char* title, int width, int height):wgt_width(width),wgt_height(height)
 {
@@ -57,6 +59,19 @@ bool XA_UIModule_GLWidget::eventFilter(QObject* obj, QEvent* event)
 		this->repaint();
 	}
 
+	if (event->type() == QEvent::Resize)
+	{
+		if (!first_resize)
+		{
+			QResizeEvent* ev = (QResizeEvent*)event;
+			XA_GLMODULE_RENDER::setWindowSize(ev->size().width(), ev->size().height());
+		}
+		else
+		{
+			first_resize = false;
+		}
+
+	}
 	return QWidget::eventFilter(obj, event);
 }
 

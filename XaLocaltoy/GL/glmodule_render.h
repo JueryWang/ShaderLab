@@ -41,6 +41,7 @@ public:
 	static int SCR_WIDTH;
 	static int SCR_HEIGHT;
 	static int resolution[2];
+	static std::atomic<bool> window_changed;
 private:
 	void* _windowbuf;
 	GLFWwindow* _window;

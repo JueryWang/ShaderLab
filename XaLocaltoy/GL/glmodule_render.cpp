@@ -8,6 +8,7 @@ using namespace std;
 int XA_GLMODULE_RENDER::SCR_WIDTH = 0;
 int XA_GLMODULE_RENDER::SCR_HEIGHT = 0;
 int XA_GLMODULE_RENDER::resolution[2];
+std::atomic<bool> XA_GLMODULE_RENDER::window_changed;
 
 float deltaTime = 0.0f;
 float lastTime = 0.0f;
@@ -61,6 +62,7 @@ void XA_GLMODULE_RENDER::setWindowSize(int SCR_WIDTH, int SCR_HEIGHT)
 	XA_GLMODULE_RENDER::SCR_HEIGHT = SCR_HEIGHT;
 	XA_GLMODULE_RENDER::resolution[0] = SCR_WIDTH;
 	XA_GLMODULE_RENDER::resolution[1] = SCR_HEIGHT;
+	window_changed.store(true);
 }
 
 void XA_GLMODULE_RENDER::flip(uint8_t** buf)
@@ -115,11 +117,19 @@ void XA_GLMODULE_RENDER::contextDraw()
 	glUniform2iv(glGetUniformLocation(_shader->ID, "iResolution"), 1, &resolution[0]);
 
 	bool tmp;
-	while (tmp = !paused.load(memory_order_acquire))
+	while (!paused.load(memory_order_acquire))
 	{
 		auto time = static_cast<float>(glfwGetTime());
 		deltaTime = time - lastTime;
 		lastTime = time;
+
+		if (window_changed.load(memory_order_acquire))
+		{
+			glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+			window_changed.store(false);
+		}
+
+
 		glUniform1f(glGetUniformLocation(_shader->ID, "runtime_data.iTime"), time);
 		renderQuad();
 		
