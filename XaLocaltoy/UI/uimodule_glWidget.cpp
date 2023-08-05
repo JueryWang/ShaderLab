@@ -55,7 +55,7 @@ bool XA_UIModule_GLWidget::eventFilter(QObject* obj, QEvent* event)
 	{
 		EvSendFrame* ev = (EvSendFrame*)event;
 		memcpy(_glwgt_pctbuffing,ev->_framedata, XA_UIModule_GLWidget::_glwgt_buffingsize);//copy to unique memory to avoid memory leak
-		_picture = QImage(_glwgt_pctbuffing, XA_GLMODULE_RENDER::SCR_WIDTH, XA_GLMODULE_RENDER::SCR_HEIGHT, QImage::Format_RGB888);
+		_picture = QImage(_glwgt_pctbuffing, _glBackendRender->getWidth(), _glBackendRender->getHeight(), QImage::Format_RGB888);
 		this->repaint();
 	}
 
@@ -65,6 +65,8 @@ bool XA_UIModule_GLWidget::eventFilter(QObject* obj, QEvent* event)
 		{
 			QResizeEvent* ev = (QResizeEvent*)event;
 			XA_GLMODULE_RENDER::setWindowSize(ev->size().width(), ev->size().height());
+			wgt_width = ev->size().width(); wgt_height = ev->size().height();
+			XA_UIModule_GLWidget::_glwgt_buffingsize = wgt_width * wgt_height * 3 * sizeof(uchar);
 		}
 		else
 		{

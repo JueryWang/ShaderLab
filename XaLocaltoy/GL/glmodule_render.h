@@ -20,13 +20,13 @@ public:
 	~XA_GLMODULE_RENDER();
 	//void addShader(const char* vertexPath, const char* fragmentPath,const char* name);
 	static void setWindowSize(int SCR_WIDTH,int SCR_HEIGHT);
-	inline void flip(uint8_t** buf);
+	inline void flip(uint8_t** buf,int context_width,int context_height);
 	void pause();
 	void start();
 	void restart();
 
 private:
-	void renderQuad();
+	void renderQuad(int context_width, int context_height);
 
 public slots:
 	void contextDraw();
@@ -38,8 +38,10 @@ public slots:
 	}
 	*/
 public:
-	static int SCR_WIDTH;
-	static int SCR_HEIGHT;
+	int getWidth() const;
+	int getHeight() const;
+	static std::atomic<int> SCR_WIDTH;
+	static std::atomic<int> SCR_HEIGHT;
 	static int resolution[2];
 	static std::atomic<bool> window_changed;
 private:
