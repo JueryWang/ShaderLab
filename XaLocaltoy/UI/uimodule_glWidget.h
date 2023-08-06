@@ -12,12 +12,13 @@ class XA_UIMODULE_GLWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	XA_UIMODULE_GLWidget(const char* title,int width,int height);
+	XA_UIMODULE_GLWidget(const std::string& title,int width,int height);
 	~XA_UIMODULE_GLWidget();
 	void setWindowInfoPanel(XA_UIMODULE_WindowInfo* inst);
 
 public slots:
-	void adjustGLSize();
+	void on_clickLockSize();
+	void on_clickResetSize();
 
 signals:
 	void beginGLDraw();
@@ -39,5 +40,7 @@ private:
 	int wgt_width;
 	int wgt_height;
 	QSize dragged_size;
+	QSize default_size;
+	std::string _title;
 };
 #endif // ifndef UI_GLWIDGET_H

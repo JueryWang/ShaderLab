@@ -11,19 +11,19 @@ uchar* XA_UIMODULE_GLWidget::_glwgt_pctbuffing;
 int XA_UIMODULE_GLWidget::_glwgt_buffingsize;
 bool first_resize = true;
 
-XA_UIMODULE_GLWidget::XA_UIMODULE_GLWidget(const char* title, int width, int height)
-	:wgt_width(width),wgt_height(height)
+XA_UIMODULE_GLWidget::XA_UIMODULE_GLWidget(const std::string& title, int width, int height)
+	:wgt_width(width),wgt_height(height),_title(title)
 {
 	this->resize(width, height);
-	
-	XA_UIMODULE_GLWidget::_glwgt_pctbuffing = (uchar*)malloc(XA_GLMODULE_RENDER::SCR_WIDTH * XA_GLMODULE_RENDER::SCR_HEIGHT * 3 * sizeof(uchar));
-	XA_UIMODULE_GLWidget::_glwgt_buffingsize = XA_GLMODULE_RENDER::SCR_WIDTH * XA_GLMODULE_RENDER::SCR_HEIGHT * 3 * sizeof(uchar);
+	default_size = QSize(width, height);
+
 
 	_glBackendRender = new XA_GLMODULE_RENDER(title,XA_GL_RGB,this);
+	XA_UIMODULE_GLWidget::_glwgt_pctbuffing = (uchar*)malloc(XA_GLMODULE_RENDER::SCR_WIDTH * XA_GLMODULE_RENDER::SCR_HEIGHT * 3 * sizeof(uchar));
+	XA_UIMODULE_GLWidget::_glwgt_buffingsize = XA_GLMODULE_RENDER::SCR_WIDTH * XA_GLMODULE_RENDER::SCR_HEIGHT * 3 * sizeof(uchar);
 	_renderThread = new QThread(this);
 	_glBackendRender->moveToThread(_renderThread);
 	//_glBackendRender->addShader("Shader/birthday_cake.vs", "Shader/birthday_cake.fs","birthdayCake");
-
 
 	connect(this, &XA_UIMODULE_GLWidget::beginGLDraw, _glBackendRender, &XA_GLMODULE_RENDER::contextDraw);
 
@@ -43,15 +43,30 @@ XA_UIMODULE_GLWidget::~XA_UIMODULE_GLWidget()
 void XA_UIMODULE_GLWidget::setWindowInfoPanel(XA_UIMODULE_WindowInfo* inst)
 {
 	this->_infoPanel = inst;
+	connect(_infoPanel->lockbtn, &QPushButton::clicked, this, &XA_UIMODULE_GLWidget::on_clickLockSize);
+	connect(_infoPanel->resetbtn, &QPushButton::clicked, this, &XA_UIMODULE_GLWidget::on_clickResetSize);
 }
 
-void XA_UIMODULE_GLWidget::adjustGLSize()
+void XA_UIMODULE_GLWidget::on_clickLockSize()
 {
+	disconnect(this, &XA_UIMODULE_GLWidget::beginGLDraw, _glBackendRender, &XA_GLMODULE_RENDER::contextDraw);
 	_renderThread->terminate();
 	_renderThread->quit();
-	_glBackendRender->reset(dragged_size);
+	//if (_glBackendRender != nullptr)
+	//{
+	//	delete _glBackendRender;
+	//	_glBackendRender = new XA_GLMODULE_RENDER(_title, XA_GL_RGB, this);
+	//	XA_GLMODULE_RENDER::reset(QSize(dragged_size));
+	//}
+	//connect(this, &XA_UIMODULE_GLWidget::beginGLDraw, _glBackendRender, &XA_GLMODULE_RENDER::contextDraw);
+
 	_renderThread->start();
-	emit beginGLDraw();
+	//emit beginGLDraw();
+}
+
+void XA_UIMODULE_GLWidget::on_clickResetSize()
+{
+
 }
 
 void XA_UIMODULE_GLWidget::paintEvent(QPaintEvent* event)
@@ -84,6 +99,8 @@ bool XA_UIMODULE_GLWidget::eventFilter(QObject* obj, QEvent* event)
 			dragged_size = ev->size();
 			if(_infoPanel != nullptr)
 				_infoPanel->updateInfo(dragged_size);
+			wgt_width = dragged_size.width();
+			wgt_height = dragged_size.height();
 		}
 		else
 		{

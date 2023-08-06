@@ -2,7 +2,6 @@
 #include "glmodule_EvSendFrame.h"
 #include <QApplication>
 #include <memory>
-#include <QDebug>
 using namespace std;
 
 std::atomic<int> XA_GLMODULE_RENDER::SCR_WIDTH = 0;
@@ -44,8 +43,7 @@ XA_GLMODULE_RENDER::XA_GLMODULE_RENDER(const std::string& title, StorageType typ
 
 XA_GLMODULE_RENDER::~XA_GLMODULE_RENDER()
 {
-	glfwTerminate();
-	delete _windowbuf;
+	delete _shader;
 }
 
 //void XA_GLMODULE_RENDER::addShader(const char* vertexPath, const char* fragmentPath, const char* name)
@@ -53,14 +51,6 @@ XA_GLMODULE_RENDER::~XA_GLMODULE_RENDER()
 //	Shader *render = new Shader(vertexPath,fragmentPath);
 //	_shaders.push_back(render);
 //}
-
-void XA_GLMODULE_RENDER::setWindowSize(int SCR_WIDTH, int SCR_HEIGHT)
-{
-	XA_GLMODULE_RENDER::SCR_WIDTH.store(SCR_WIDTH, memory_order_release);
-	XA_GLMODULE_RENDER::SCR_HEIGHT.store(SCR_HEIGHT, memory_order_release);
-	XA_GLMODULE_RENDER::resolution[0] = SCR_WIDTH;
-	XA_GLMODULE_RENDER::resolution[1] = SCR_HEIGHT;
-}
 
 int XA_GLMODULE_RENDER::getWidth() const
 {
@@ -88,7 +78,7 @@ void XA_GLMODULE_RENDER::flip(uint8_t** buf, int context_width, int context_heig
 
 void XA_GLMODULE_RENDER::pause()
 {
-
+	paused.store(true, memory_order_release);
 }
 
 void XA_GLMODULE_RENDER::start()
@@ -103,29 +93,27 @@ void XA_GLMODULE_RENDER::restart()
 
 void XA_GLMODULE_RENDER::reset(const QSize& newSize)
 {
-	XA_GLMODULE_RENDER::SCR_WIDTH = newSize.width();
-	XA_GLMODULE_RENDER::SCR_HEIGHT = newSize.height();
-	if (_window != nullptr)
-	{
-		glfwDestroyWindow(_window);
-	}
-	if (_shader != nullptr)
-		delete _shader;
+	XA_GLMODULE_RENDER::SCR_WIDTH.store(newSize.width(),memory_order_release);
+	XA_GLMODULE_RENDER::SCR_HEIGHT.store(newSize.height(), memory_order_release);
+	XA_GLMODULE_RENDER::resolution[0] = newSize.width();
+	XA_GLMODULE_RENDER::resolution[1] = newSize.height();
 }
 
 void XA_GLMODULE_RENDER::contextDraw()
 {
 	static char windowTitle[32];
+	static int windowCount = 0;
 	sprintf_s(windowTitle, _title.c_str(), NULL, NULL);
-	_window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, windowTitle, NULL, NULL);
-	if (_window == NULL) {
+
+	GLFWwindow *window_inst = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, windowTitle, NULL, NULL);
+	_window.reset(window_inst);
+	if (window_inst == NULL) {
 		//Do some Log Record
 		glfwTerminate();
 		return;
 	}
 
-	glfwMakeContextCurrent(_window);
-
+	glfwMakeContextCurrent(_window.release());
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		//Do some Log Record
@@ -166,7 +154,7 @@ void XA_GLMODULE_RENDER::contextDraw()
 		auto event = std::make_unique<EvSendFrame>(_windowbuf, windowBufSize);
 		QApplication::postEvent(_reciver, event.release(), Qt::HighEventPriority);
 
-		glfwSwapBuffers(_window);
+		glfwSwapBuffers(window_inst);
 		glfwSwapInterval(1);
 		glfwPollEvents();
 	}

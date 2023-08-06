@@ -68,13 +68,3 @@ void XA_UIMODULE_WindowInfo::updateInfo(const QSize& newsize)
 	crtSize_info->setText(crtsize_info);
 }
 
-void XA_UIMODULE_WindowInfo::on_lockWindowSize()
-{
-
-}
-
-void XA_UIMODULE_WindowInfo::on_resetWindowSize()
-{
-
-}
-

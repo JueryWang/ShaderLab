@@ -139,8 +139,8 @@ void OverallWindow::init()
 	QRect monitorRct = QApplication::desktop()->availableGeometry();
 	monitor_resolution = QSize(monitorRct.width(), monitorRct.height());
 	anchorPos = QPoint((monitor_resolution.width() - normalSize.width()) / 2, (monitor_resolution.height() - normalSize.height()) / 2);
-	XA_GLMODULE_RENDER::setWindowSize(monitor_resolution.width() * GL_WIDGET_MAX_WIDTH_R, 
-		monitor_resolution.height() * GL_HEIGHT_MAX_HEIGHT_R);
+	XA_GLMODULE_RENDER::reset(QSize(monitor_resolution.width() * GL_WIDGET_MAX_WIDTH_R, 
+		monitor_resolution.height() * GL_HEIGHT_MAX_HEIGHT_R));
 }
 
 

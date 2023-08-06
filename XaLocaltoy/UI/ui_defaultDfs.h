@@ -6,6 +6,8 @@
 #define AVTRPATH(x) "Resources/user/avatar/"#x
 #define FONTPATH(x) "Resources/font/"#x
 #define EDITOR_LANG_CONFIG_PATH(x) "Resources/editor/intellisense/"#x
+#define MAX_GLWIDGET_SIZE_WIDTH 1200
+#define MAX_GLWIDGET_SIZE_HEIGHT 800
 
 enum MsgBoxIcon {
 	NoIcon = 0,

@@ -9,6 +9,7 @@
 #include <atomic>
 #include <shader.h>
 #include "gl_defaultDfs.h"
+#include <QDebug>
 
 class XA_GLMODULE_RENDER : public QObject
 {
@@ -19,15 +20,25 @@ public:
 	XA_GLMODULE_RENDER(const std::string& title,StorageType type = XA_GL_RGB,QWidget* reciver = nullptr);
 	~XA_GLMODULE_RENDER();
 	//void addShader(const char* vertexPath, const char* fragmentPath,const char* name);
-	static void setWindowSize(int SCR_WIDTH,int SCR_HEIGHT);
 	inline void flip(uint8_t** buf,int context_width,int context_height);
 	void pause();
 	void start();
 	void restart();
-	void reset(const QSize& newSize);
+	static void reset(const QSize& newSize);
 
 private:
 	void renderQuad(int context_width, int context_height);
+	struct Deleter {
+		void operator()(GLFWwindow* w)
+		{
+			if (w != nullptr)
+			{
+				qDebug() << "window instance deleted~";
+				glfwTerminate();
+				glfwDestroyWindow(w);
+			}
+		}
+	};
 
 public slots:
 	void contextDraw();
@@ -46,7 +57,7 @@ public:
 	static int resolution[2];
 private:
 	void* _windowbuf;
-	GLFWwindow* _window;
+	std::unique_ptr <GLFWwindow,Deleter> _window;
 	QObject* _reciver;
 	StorageType _type;
 	Shader* _shader;
