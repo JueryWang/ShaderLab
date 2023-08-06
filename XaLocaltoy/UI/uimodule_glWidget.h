@@ -6,12 +6,12 @@
 #include <QImage>
 #include "../GL/glmodule_render.h"
 
-class XA_UIModule_GLWidget : public QWidget
+class XA_UIMODULE_GLWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	XA_UIModule_GLWidget(const char* title,int width,int height);
-	~XA_UIModule_GLWidget();
+	XA_UIMODULE_GLWidget(const char* title,int width,int height);
+	~XA_UIMODULE_GLWidget();
 signals:
 	void beginGLDraw();
 protected:

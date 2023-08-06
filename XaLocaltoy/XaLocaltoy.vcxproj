@@ -110,6 +110,7 @@
     <ClCompile Include="UI\uimodule_profilemenu.cpp" />
     <ClCompile Include="UI\uimodule_MsgBox.cpp" />
     <ClCompile Include="UI\uimodule_windowmenu.cpp" />
+    <ClCompile Include="UI\uimodule_windowInfo.cpp" />
     <ClCompile Include="XaLocaltoy.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -433,6 +434,7 @@
     <ClInclude Include="UI\uimodule_profilemenu.h" />
     <QtMoc Include="UI\uimodule_windowmenu.h" />
     <QtMoc Include="UI\uimodule_MsgBox.h" />
+    <QtMoc Include="UI\uimodule_windowInfo.h" />
     <ClInclude Include="UI\ui_defaultDfs.h" />
     <QtMoc Include="UI\uimodule_lookmenu.h" />
     <QtMoc Include="UI\uimodule_glWidget.h" />

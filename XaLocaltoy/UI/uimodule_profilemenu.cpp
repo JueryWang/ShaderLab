@@ -22,7 +22,7 @@ XA_UIModule_ProfileMenu::XA_UIModule_ProfileMenu(QString title)
 	connect(myDvcAct, &QAction::triggered, this, &XA_UIModule_ProfileMenu::on_clcProfile);
 	profileMenu->addAction(myDvcAct);
 	QAction* myShaderAct = new QAction(_STRING_WRAPPER("我的Shader"));
-	myShaderAct->setIcon(QIcon(ICOPATH(unrealengine.svg)));
+	myShaderAct->setIcon(QIcon(ICOPATH(torus.svg)));
 	connect(myShaderAct, &QAction::triggered, this, &XA_UIModule_ProfileMenu::on_clcCheckShader);
 	profileMenu->addAction(myShaderAct);
 	QAction* switchAct = new QAction(_STRING_WRAPPER("更换账户"));

@@ -82,6 +82,9 @@
     <ClCompile Include="UI\uimodule_codeEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UI\uimodule_windowInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="XaLocaltoy.h">
@@ -118,6 +121,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="UI\uimodule_codeEditor.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="UI\uimodule_windowInfo.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

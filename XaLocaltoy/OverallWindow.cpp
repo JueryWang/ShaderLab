@@ -1,5 +1,5 @@
 #include "OverallWindow.h"
-#include "UI/uimodule_codeEditor.h"
+#include "Utilitys/uitilityDfs.h"
 #include <QToolButton>
 #include <windows.h>
 #include <QFile>
@@ -29,18 +29,27 @@ OverallWindow::OverallWindow()
 	_owlayout->addWidget(_menubar);
 	_owlayout->setContentsMargins(0, 0, 0, 0);
 
-	_glWindow = new XA_UIModule_GLWidget("default GL Widget",
+	_glWindow = new XA_UIMODULE_GLWidget("default GL Widget",
 		this->width()*GL_WIDGET_MAX_WIDTH_R, this->height()*GL_HEIGHT_MAX_HEIGHT_R);
 	_glWindow->setMaximumHeight(_glWindow->height());
 	XA_UIMODULE_CodeEditor::setEditorSize(this->width() * (1. - GL_WIDGET_MAX_WIDTH_R), this->height()*GL_HEIGHT_MAX_HEIGHT_R);
 	XA_UIMODULE_CodeEditor* codeEditorInst = XA_UIMODULE_CodeEditor::getEditor();
+	_windowInfo = new XA_UIMODULE_WindowInfo(this, QSize(_glWindow->width(), _glWindow->width()),_STRING_WRAPPER("Ä¬ÈÏÔ´"));
+	_windowInfo->setFixedHeight(30);
 
+	QWidget* video_controlpanel_wrapper = new QWidget(this);
+	QVBoxLayout* video_controlpanel_layout = new QVBoxLayout();
 	QSplitter* splitter_v1 = new QSplitter();
 	splitter_v1->resize(_glWindow->width(), this->height());
 	splitter_v1->setAttribute(Qt::WA_TranslucentBackground, true);
 	splitter_v1->setOrientation(Qt::Vertical);
 	splitter_v1->addWidget(_glWindow);
-	splitter_v1->addWidget(new QWidget());
+	video_controlpanel_layout->addWidget(_windowInfo, Qt::AlignLeft | Qt::AlignTop);
+	QWidget* placeholder = new QWidget();
+	video_controlpanel_layout->addWidget(placeholder);
+	video_controlpanel_wrapper->setLayout(video_controlpanel_layout);
+	splitter_v1->addWidget(video_controlpanel_wrapper);
+
 	splitter_v1->setStretchFactor(0, GL_HEIGHT_MAX_HEIGHT_R*10);
 	splitter_v1->setStretchFactor(1, (1. - GL_HEIGHT_MAX_HEIGHT_R)*10);
 	QSplitter* splitter_v2 = new QSplitter();

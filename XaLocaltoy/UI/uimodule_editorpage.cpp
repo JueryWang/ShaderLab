@@ -138,57 +138,5 @@ QStringList getIntellisense(const QString& intelliSenseFile)
 
 void XA_UIMODULE_EditorPage::setCustomStyle()
 {
-	this->setStyleSheet(R"(QListView{
-			background-color: #75A4CD;
-			border-radius:5px;
-			border:1px solid #D3D3D3;
-			padding:5px;
-			color:#1F282F;
-		}
-
-		QScrollBar:vertical
-		{
-		   border: none;
-		   width: 14px;
-		   margin: 0px 0 0px 0;
-		   background-color: wheat;
-		   border-radius: 0px;
-		}
-
-		QScrollBar::handle:vertical{
-			background-color: rgba(49,95,120,100);
-			margin: 0 0px 0 0px;
-			border-radius: 6px;
-		}
-
-		QScrollBar::handle:vertical:pressed{
-			background-color:rgba(110,148,189,100);
-		}
-
-		QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical{
-			background:none;
-		}
-
-		QScrollBar:horizontal
-		{
-		   border: none;
-		   width: 14px;
-		   margin: 0px 0 0px 0;
-		   background-color: wheat;
-		   border-radius: 0px;
-		}
-
-		QScrollBar::handle:horizontal{
-			background-color: rgba(49,95,120,100);
-			margin: 0 0px 0 0px;
-			border-radius: 6px;
-		}
-
-		QScrollBar::handle:horizontal:pressed{
-			background-color: #5c5b5b;
-		}
-
-		QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal{
-			background:none;
-		})");
+	this->setStyleSheet(EDITOR_PAGE_STYLE);
 }
