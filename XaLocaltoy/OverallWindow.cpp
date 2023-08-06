@@ -1,5 +1,7 @@
 #include "OverallWindow.h"
 #include "Utilitys/uitilityDfs.h"
+#include "GL/gl_defaultDfs.h"
+#include "GL/glmodule_render.h"
 #include <QToolButton>
 #include <windows.h>
 #include <QFile>
@@ -10,6 +12,7 @@
 #include <QRegularExpression>
 #include <QSplitter>
 #include <iostream>
+#include <QDebug>
 
 QString OverallWindow::qssPath;
 QString OverallWindow::iconPath;
@@ -29,13 +32,16 @@ OverallWindow::OverallWindow()
 	_owlayout->addWidget(_menubar);
 	_owlayout->setContentsMargins(0, 0, 0, 0);
 
+
 	_glWindow = new XA_UIMODULE_GLWidget("default GL Widget",
 		this->width()*GL_WIDGET_MAX_WIDTH_R, this->height()*GL_HEIGHT_MAX_HEIGHT_R);
+
 	_glWindow->setMaximumHeight(_glWindow->height());
 	XA_UIMODULE_CodeEditor::setEditorSize(this->width() * (1. - GL_WIDGET_MAX_WIDTH_R), this->height()*GL_HEIGHT_MAX_HEIGHT_R);
 	XA_UIMODULE_CodeEditor* codeEditorInst = XA_UIMODULE_CodeEditor::getEditor();
-	_windowInfo = new XA_UIMODULE_WindowInfo(this, QSize(_glWindow->width(), _glWindow->width()),_STRING_WRAPPER("默认源"));
+	_windowInfo = new XA_UIMODULE_WindowInfo(this, QSize(_glWindow->width(), _glWindow->height()),_STRING_WRAPPER("默认源"));
 	_windowInfo->setFixedHeight(30);
+	_glWindow->setWindowInfoPanel(_windowInfo);
 
 	QWidget* video_controlpanel_wrapper = new QWidget(this);
 	QVBoxLayout* video_controlpanel_layout = new QVBoxLayout();

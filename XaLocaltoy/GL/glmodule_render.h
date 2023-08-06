@@ -24,6 +24,7 @@ public:
 	void pause();
 	void start();
 	void restart();
+	void reset(const QSize& newSize);
 
 private:
 	void renderQuad(int context_width, int context_height);
@@ -43,7 +44,6 @@ public:
 	static std::atomic<int> SCR_WIDTH;
 	static std::atomic<int> SCR_HEIGHT;
 	static int resolution[2];
-	static std::atomic<bool> window_changed;
 private:
 	void* _windowbuf;
 	GLFWwindow* _window;

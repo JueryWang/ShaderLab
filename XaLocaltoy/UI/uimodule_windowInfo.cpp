@@ -10,17 +10,17 @@
 XA_UIMODULE_WindowInfo::XA_UIMODULE_WindowInfo(QWidget* parent, const QSize& initsize, const QString& source)
 	:_crtSoucesize(initsize),_crtWindowsize(initsize),_source(source)
 {
-	this->setParent(parent);
+	//this->setParent(parent);
 	this->setStyleSheet("QLabel{background:transparent;color:#eeeed4;}");
 
 	QHBoxLayout *hlay = new QHBoxLayout(this);
-	QLabel *crtSource_show = new QLabel(this);
-	QLabel *crtSource_info = new QLabel(this);
-	QLabel *crtSize_show = new QLabel(this);
-	QLabel *crtSize_info = new QLabel(this);
+	crtSource_show = new QLabel(this);
+	crtSource_info = new QLabel(this);
+	crtSize_show = new QLabel(this);
+	crtSize_info = new QLabel(this);
+	lockbtn = new QPushButton(this);
+	resetbtn = new QPushButton(this);
 	QLabel *leftLine = new QLabel(this);
-	QPushButton *lockbtn = new QPushButton(this);
-	QPushButton *resetbtn = new QPushButton(this);
 	QLabel *rightLine = new QLabel(this);
 
 	QString source_show = QString("%1 %2x%3").arg(_source).arg(_crtSoucesize.width()).arg(_crtSoucesize.height());
@@ -59,5 +59,22 @@ XA_UIMODULE_WindowInfo::XA_UIMODULE_WindowInfo(QWidget* parent, const QSize& ini
 	hlay->addWidget(rightLine);
 	hlay->setContentsMargins(20, 0, 20, 0);
 	this->setLayout(hlay);
+}
+
+void XA_UIMODULE_WindowInfo::updateInfo(const QSize& newsize)
+{
+	_crtWindowsize = newsize;
+	QString crtsize_info = _STRING_WRAPPER("当前大小: %1x%2").arg(_crtWindowsize.width()).arg(_crtWindowsize.height());
+	crtSize_info->setText(crtsize_info);
+}
+
+void XA_UIMODULE_WindowInfo::on_lockWindowSize()
+{
+
+}
+
+void XA_UIMODULE_WindowInfo::on_resetWindowSize()
+{
+
 }
 

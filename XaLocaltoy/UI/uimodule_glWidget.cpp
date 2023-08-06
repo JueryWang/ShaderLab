@@ -1,5 +1,7 @@
 #include "uimodule_glWidget.h"
+#include "uimodule_windowInfo.h"
 #include "../glmodule_EvSendFrame.h"
+#include "../GL/glmodule_render.h"
 #include <QPainter>
 #include <QPainterPath>
 #include <QResizeEvent>
@@ -9,7 +11,8 @@ uchar* XA_UIMODULE_GLWidget::_glwgt_pctbuffing;
 int XA_UIMODULE_GLWidget::_glwgt_buffingsize;
 bool first_resize = true;
 
-XA_UIMODULE_GLWidget::XA_UIMODULE_GLWidget(const char* title, int width, int height):wgt_width(width),wgt_height(height)
+XA_UIMODULE_GLWidget::XA_UIMODULE_GLWidget(const char* title, int width, int height)
+	:wgt_width(width),wgt_height(height)
 {
 	this->resize(width, height);
 	
@@ -37,6 +40,20 @@ XA_UIMODULE_GLWidget::~XA_UIMODULE_GLWidget()
 	delete _glBackendRender;
 }
 
+void XA_UIMODULE_GLWidget::setWindowInfoPanel(XA_UIMODULE_WindowInfo* inst)
+{
+	this->_infoPanel = inst;
+}
+
+void XA_UIMODULE_GLWidget::adjustGLSize()
+{
+	_renderThread->terminate();
+	_renderThread->quit();
+	_glBackendRender->reset(dragged_size);
+	_renderThread->start();
+	emit beginGLDraw();
+}
+
 void XA_UIMODULE_GLWidget::paintEvent(QPaintEvent* event)
 {
 	QPainterPath clipPath;
@@ -59,21 +76,21 @@ bool XA_UIMODULE_GLWidget::eventFilter(QObject* obj, QEvent* event)
 		this->repaint();
 	}
 
-	//if (event->type() == QEvent::Resize)
-	//{
-	//	if (!first_resize)
-	//	{
-	//		QResizeEvent* ev = (QResizeEvent*)event;
-	//		XA_GLMODULE_RENDER::setWindowSize(ev->size().width(), ev->size().height());
-	//		wgt_width = ev->size().width(); wgt_height = ev->size().height();
-	//		XA_UIModule_GLWidget::_glwgt_buffingsize = wgt_width * wgt_height * 3 * sizeof(uchar);
-	//	}
-	//	else
-	//	{
-	//		first_resize = false;
-	//	}
+	if (event->type() == QEvent::Resize)
+	{
+		if (!first_resize)
+		{
+			QResizeEvent* ev = (QResizeEvent*)event;
+			dragged_size = ev->size();
+			if(_infoPanel != nullptr)
+				_infoPanel->updateInfo(dragged_size);
+		}
+		else
+		{
+			first_resize = false;
+		}
 
-	//}
+	}
 	return QWidget::eventFilter(obj, event);
 }
 

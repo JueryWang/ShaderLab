@@ -8,7 +8,6 @@ using namespace std;
 std::atomic<int> XA_GLMODULE_RENDER::SCR_WIDTH = 0;
 std::atomic<int> XA_GLMODULE_RENDER::SCR_HEIGHT = 0;
 int XA_GLMODULE_RENDER::resolution[2];
-std::atomic<bool> XA_GLMODULE_RENDER::window_changed;
 
 float deltaTime = 0.0f;
 float lastTime = 0.0f;
@@ -36,7 +35,6 @@ XA_GLMODULE_RENDER::XA_GLMODULE_RENDER(const std::string& title, StorageType typ
 			break;
 	}	
 
-
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -62,7 +60,6 @@ void XA_GLMODULE_RENDER::setWindowSize(int SCR_WIDTH, int SCR_HEIGHT)
 	XA_GLMODULE_RENDER::SCR_HEIGHT.store(SCR_HEIGHT, memory_order_release);
 	XA_GLMODULE_RENDER::resolution[0] = SCR_WIDTH;
 	XA_GLMODULE_RENDER::resolution[1] = SCR_HEIGHT;
-	window_changed.store(true);
 }
 
 int XA_GLMODULE_RENDER::getWidth() const
@@ -104,6 +101,18 @@ void XA_GLMODULE_RENDER::restart()
 
 }
 
+void XA_GLMODULE_RENDER::reset(const QSize& newSize)
+{
+	XA_GLMODULE_RENDER::SCR_WIDTH = newSize.width();
+	XA_GLMODULE_RENDER::SCR_HEIGHT = newSize.height();
+	if (_window != nullptr)
+	{
+		glfwDestroyWindow(_window);
+	}
+	if (_shader != nullptr)
+		delete _shader;
+}
+
 void XA_GLMODULE_RENDER::contextDraw()
 {
 	static char windowTitle[32];
@@ -124,6 +133,7 @@ void XA_GLMODULE_RENDER::contextDraw()
 	}
 	_shader = new Shader("Shader/birthday_cake.vert", "Shader/birthday_cake.frag");
 	_shader->use();
+	glUniform2iv(glGetUniformLocation(_shader->ID, "iResolution"), 1, &resolution[0]);
 
 	bool tmp;
 	while (!paused.load(memory_order_acquire))
@@ -132,12 +142,6 @@ void XA_GLMODULE_RENDER::contextDraw()
 		deltaTime = time - lastTime;
 		lastTime = time;
 
-		if (window_changed.load(memory_order_acquire))
-		{
-			glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
-			glUniform2iv(glGetUniformLocation(_shader->ID, "iResolution"), 1, &resolution[0]);
-			window_changed.store(false);
-		}
 		int context_width = SCR_WIDTH.load(memory_order_consume);
 		int context_height = SCR_HEIGHT.load(memory_order_consume);
 
