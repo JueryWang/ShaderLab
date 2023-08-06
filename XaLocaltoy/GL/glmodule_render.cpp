@@ -7,6 +7,7 @@ using namespace std;
 std::atomic<int> XA_GLMODULE_RENDER::SCR_WIDTH = 0;
 std::atomic<int> XA_GLMODULE_RENDER::SCR_HEIGHT = 0;
 int XA_GLMODULE_RENDER::resolution[2];
+static bool first_resize = true;
 
 float deltaTime = 0.0f;
 float lastTime = 0.0f;
@@ -44,6 +45,7 @@ XA_GLMODULE_RENDER::XA_GLMODULE_RENDER(const std::string& title, StorageType typ
 XA_GLMODULE_RENDER::~XA_GLMODULE_RENDER()
 {
 	delete _shader;
+	delete _windowbuf;
 }
 
 //void XA_GLMODULE_RENDER::addShader(const char* vertexPath, const char* fragmentPath, const char* name)
@@ -119,7 +121,7 @@ void XA_GLMODULE_RENDER::contextDraw()
 		//Do some Log Record
 		return;
 	}
-	_shader = new Shader("Shader/birthday_cake.vert", "Shader/birthday_cake.frag");
+	_shader = new Shader("Shader/birthday_font.vert", "Shader/birthday_font.frag");
 	_shader->use();
 	glUniform2iv(glGetUniformLocation(_shader->ID, "iResolution"), 1, &resolution[0]);
 
@@ -132,7 +134,6 @@ void XA_GLMODULE_RENDER::contextDraw()
 
 		int context_width = SCR_WIDTH.load(memory_order_consume);
 		int context_height = SCR_HEIGHT.load(memory_order_consume);
-
 
 		glUniform1f(glGetUniformLocation(_shader->ID, "runtime_data.iTime"), time);
 		renderQuad(context_width,context_height);

@@ -15,9 +15,12 @@ public:
 	XA_UIMODULE_GLWidget(const std::string& title,int width,int height);
 	~XA_UIMODULE_GLWidget();
 	void setWindowInfoPanel(XA_UIMODULE_WindowInfo* inst);
+	void __setMinimumSize(const QSize& size);
+	void __setMaximumSize(const QSize& size);
 
 public slots:
 	void on_clickLockSize();
+	void on_clickUnlockSize();
 	void on_clickResetSize();
 
 signals:
@@ -41,6 +44,9 @@ private:
 	int wgt_height;
 	QSize dragged_size;
 	QSize default_size;
+	QSize minimum_size;
+	QSize maximum_size;
 	std::string _title;
+	bool size_locked = false;
 };
 #endif // ifndef UI_GLWIDGET_H

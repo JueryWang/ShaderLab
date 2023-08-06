@@ -34,10 +34,11 @@ OverallWindow::OverallWindow()
 
 
 	_glWindow = new XA_UIMODULE_GLWidget("default GL Widget",
-		this->width()*GL_WIDGET_MAX_WIDTH_R, this->height()*GL_HEIGHT_MAX_HEIGHT_R);
+		this->width()* GL_WIDGET_DEFAULT_WIDTH_R, this->height()* GL_WIDGET_DEFAULT_HEIGHT_R);
+	_glWindow->__setMinimumSize(QSize(this->width() * GL_WIDGET_MIN_WIDTH_R, this->width() * GL_WIDGET_MIN_HEIGHT_R));
+	_glWindow->__setMaximumSize(QSize(this->width() * GL_WIDGET_MAX_WIDTH_R, this->width() * GL_WIDGET_MAX_HEIGHT_R));
 
-	_glWindow->setMaximumHeight(_glWindow->height());
-	XA_UIMODULE_CodeEditor::setEditorSize(this->width() * (1. - GL_WIDGET_MAX_WIDTH_R), this->height()*GL_HEIGHT_MAX_HEIGHT_R);
+	XA_UIMODULE_CodeEditor::setEditorSize(this->width() * (1. - GL_WIDGET_DEFAULT_WIDTH_R), this->height()* GL_WIDGET_DEFAULT_HEIGHT_R);
 	XA_UIMODULE_CodeEditor* codeEditorInst = XA_UIMODULE_CodeEditor::getEditor();
 	_windowInfo = new XA_UIMODULE_WindowInfo(this, QSize(_glWindow->width(), _glWindow->height()),_STRING_WRAPPER("Ä¬ÈÏÔ´"));
 	_windowInfo->setFixedHeight(30);
@@ -56,16 +57,16 @@ OverallWindow::OverallWindow()
 	video_controlpanel_wrapper->setLayout(video_controlpanel_layout);
 	splitter_v1->addWidget(video_controlpanel_wrapper);
 
-	splitter_v1->setStretchFactor(0, GL_HEIGHT_MAX_HEIGHT_R*10);
-	splitter_v1->setStretchFactor(1, (1. - GL_HEIGHT_MAX_HEIGHT_R)*10);
+	splitter_v1->setStretchFactor(0, 0);
+	splitter_v1->setStretchFactor(1, 1);
 	QSplitter* splitter_v2 = new QSplitter();
 	splitter_v2->resize(codeEditorInst->width(), this->height());
 	splitter_v2->setAttribute(Qt::WA_TranslucentBackground, true);
 	splitter_v2->setOrientation(Qt::Vertical);
 	splitter_v2->addWidget(codeEditorInst);
 	splitter_v2->addWidget(new QWidget);
-	splitter_v2->setStretchFactor(0, GL_HEIGHT_MAX_HEIGHT_R * 10);
-	splitter_v2->setStretchFactor(1, (1. - GL_HEIGHT_MAX_HEIGHT_R) * 10);
+	splitter_v2->setStretchFactor(0, GL_WIDGET_DEFAULT_HEIGHT_R * 10);
+	splitter_v2->setStretchFactor(1, (1. - GL_WIDGET_DEFAULT_HEIGHT_R) * 10);
 
 	QSplitter* splitter_h = new QSplitter();
 	splitter_h->setAttribute(Qt::WA_TranslucentBackground, true);
@@ -139,8 +140,8 @@ void OverallWindow::init()
 	QRect monitorRct = QApplication::desktop()->availableGeometry();
 	monitor_resolution = QSize(monitorRct.width(), monitorRct.height());
 	anchorPos = QPoint((monitor_resolution.width() - normalSize.width()) / 2, (monitor_resolution.height() - normalSize.height()) / 2);
-	XA_GLMODULE_RENDER::reset(QSize(monitor_resolution.width() * GL_WIDGET_MAX_WIDTH_R, 
-		monitor_resolution.height() * GL_HEIGHT_MAX_HEIGHT_R));
+	XA_GLMODULE_RENDER::reset(QSize(monitor_resolution.width() * GL_WIDGET_MAX_WIDTH_R,
+		monitor_resolution.height() * GL_WIDGET_MAX_HEIGHT_R));
 }
 
 

@@ -5,8 +5,14 @@
 #include <GLFW/glfw3.h>
 
 //set ratio to fit high dpi screen
-#define GL_WIDGET_MAX_WIDTH_R 0.5
-#define GL_HEIGHT_MAX_HEIGHT_R 0.8
+#define GL_WIDGET_DEFAULT_WIDTH_R 0.5
+#define GL_WIDGET_DEFAULT_HEIGHT_R 0.8
+
+#define GL_WIDGET_MIN_WIDTH_R 0.2
+#define GL_WIDGET_MIN_HEIGHT_R 0.2
+
+#define GL_WIDGET_MAX_WIDTH_R 0.8
+#define GL_WIDGET_MAX_HEIGHT_R 0.8
 
 enum StorageType {
 	XA_GL_RGB = GL_RGB,
