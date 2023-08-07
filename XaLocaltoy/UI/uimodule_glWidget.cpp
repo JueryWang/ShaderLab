@@ -3,6 +3,7 @@
 #include "../glmodule_EvSendFrame.h"
 #include "../GL/glmodule_render.h"
 #include "../Utilitys/uitilityDfs.h"
+#include "../OverallWindow.h"
 #include <QPainter>
 #include <QPainterPath>
 #include <QResizeEvent>
@@ -12,10 +13,11 @@ uchar* XA_UIMODULE_GLWidget::_glwgt_pctbuffing;
 int XA_UIMODULE_GLWidget::_glwgt_buffingsize;
 bool first_resize = true;
 
-XA_UIMODULE_GLWidget::XA_UIMODULE_GLWidget(const std::string& title, int width, int height)
+XA_UIMODULE_GLWidget::XA_UIMODULE_GLWidget(QWidget* parent, const std::string& title, int width, int height)
 	:wgt_width(width),wgt_height(height),_title(title)
 {
 	this->resize(width, height);
+	this->setParent(parent);
 	default_size = QSize(width, height);
 
 	_glBackendRender = new XA_GLMODULE_RENDER(title,XA_GL_RGB,this);
@@ -81,7 +83,16 @@ void XA_UIMODULE_GLWidget::on_clickUnlockSize()
 
 void XA_UIMODULE_GLWidget::on_clickResetSize()
 {
-	
+	size_locked = false;
+	this->resize(default_size);
+	wgt_width = default_size.width(); wgt_height = default_size.height();
+	emit resetGLWidget(default_size);
+
+	_infoPanel->lockbtn->setText(_STRING_WRAPPER("锁定当前宽高"));
+	disconnect(_infoPanel->lockbtn, &QPushButton::clicked, this, &XA_UIMODULE_GLWidget::on_clickUnlockSize);
+	connect(_infoPanel->lockbtn, &QPushButton::clicked, this, &XA_UIMODULE_GLWidget::on_clickLockSize);
+	this->setMaximumSize(maximum_size);
+	this->setMinimumSize(minimum_size);
 }
 
 void XA_UIMODULE_GLWidget::paintEvent(QPaintEvent* event)

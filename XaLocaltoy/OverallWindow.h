@@ -7,6 +7,8 @@
 #include "UI/uimodule_windowInfo.h"
 #include <QVBoxLayout>
 
+class QSplitter;
+
 class OverallWindow :public QWidget
 {
 	Q_OBJECT
@@ -18,11 +20,19 @@ public:
 	void rollbackNormal();
 	void setFullScreen();
 	void setMinimum();
+
+public slots:
+	void on_restGLWidget(const QSize& size);
+
 private:
 	QVBoxLayout* _owlayout;
 	MenuLayertop* _menubar;
 	XA_UIMODULE_GLWidget* _glWindow;
 	XA_UIMODULE_WindowInfo* _windowInfo;
+
+	QSplitter* splitter_v1;
+	QSplitter* splitter_v2;
+	QSplitter* splitter_h;
 
 	QSize windowsz;
 	static QString qssPath;

@@ -12,7 +12,7 @@ class XA_UIMODULE_GLWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	XA_UIMODULE_GLWidget(const std::string& title,int width,int height);
+	XA_UIMODULE_GLWidget(QWidget* parent,const std::string& title,int width,int height);
 	~XA_UIMODULE_GLWidget();
 	void setWindowInfoPanel(XA_UIMODULE_WindowInfo* inst);
 	void __setMinimumSize(const QSize& size);
@@ -25,6 +25,7 @@ public slots:
 
 signals:
 	void beginGLDraw();
+	void resetGLWidget(const QSize &size);
 
 protected:
 	void paintEvent(QPaintEvent* event) override;

@@ -10,8 +10,8 @@
 #include <QDesktopWidget>
 #include <QApplication>
 #include <QRegularExpression>
+#include <QSizePolicy>
 #include <QSplitter>
-#include <iostream>
 #include <QDebug>
 
 QString OverallWindow::qssPath;
@@ -33,10 +33,11 @@ OverallWindow::OverallWindow()
 	_owlayout->setContentsMargins(0, 0, 0, 0);
 
 
-	_glWindow = new XA_UIMODULE_GLWidget("default GL Widget",
+	_glWindow = new XA_UIMODULE_GLWidget(this,"default GL Widget",
 		this->width()* GL_WIDGET_DEFAULT_WIDTH_R, this->height()* GL_WIDGET_DEFAULT_HEIGHT_R);
 	_glWindow->__setMinimumSize(QSize(this->width() * GL_WIDGET_MIN_WIDTH_R, this->width() * GL_WIDGET_MIN_HEIGHT_R));
 	_glWindow->__setMaximumSize(QSize(this->width() * GL_WIDGET_MAX_WIDTH_R, this->width() * GL_WIDGET_MAX_HEIGHT_R));
+	connect(_glWindow, &XA_UIMODULE_GLWidget::resetGLWidget, this, &OverallWindow::on_restGLWidget);
 
 	XA_UIMODULE_CodeEditor::setEditorSize(this->width() * (1. - GL_WIDGET_DEFAULT_WIDTH_R), this->height()* GL_WIDGET_DEFAULT_HEIGHT_R);
 	XA_UIMODULE_CodeEditor* codeEditorInst = XA_UIMODULE_CodeEditor::getEditor();
@@ -46,7 +47,7 @@ OverallWindow::OverallWindow()
 
 	QWidget* video_controlpanel_wrapper = new QWidget(this);
 	QVBoxLayout* video_controlpanel_layout = new QVBoxLayout();
-	QSplitter* splitter_v1 = new QSplitter();
+	splitter_v1 = new QSplitter();
 	splitter_v1->resize(_glWindow->width(), this->height());
 	splitter_v1->setAttribute(Qt::WA_TranslucentBackground, true);
 	splitter_v1->setOrientation(Qt::Vertical);
@@ -56,22 +57,25 @@ OverallWindow::OverallWindow()
 	video_controlpanel_layout->addWidget(placeholder);
 	video_controlpanel_wrapper->setLayout(video_controlpanel_layout);
 	splitter_v1->addWidget(video_controlpanel_wrapper);
-
 	splitter_v1->setStretchFactor(0, 0);
 	splitter_v1->setStretchFactor(1, 1);
-	QSplitter* splitter_v2 = new QSplitter();
+
+	splitter_v2 = new QSplitter();
 	splitter_v2->resize(codeEditorInst->width(), this->height());
 	splitter_v2->setAttribute(Qt::WA_TranslucentBackground, true);
 	splitter_v2->setOrientation(Qt::Vertical);
 	splitter_v2->addWidget(codeEditorInst);
 	splitter_v2->addWidget(new QWidget);
-	splitter_v2->setStretchFactor(0, GL_WIDGET_DEFAULT_HEIGHT_R * 10);
-	splitter_v2->setStretchFactor(1, (1. - GL_WIDGET_DEFAULT_HEIGHT_R) * 10);
+	splitter_v2->setSizes({ int(1.2*codeEditorInst->height()),this->height() - codeEditorInst->height() });
+	splitter_v2->setStretchFactor(0, 1);
+	splitter_v2->setStretchFactor(1, 1);
 
-	QSplitter* splitter_h = new QSplitter();
+	splitter_h = new QSplitter(this);
+	splitter_h->resize(this->size());
 	splitter_h->setAttribute(Qt::WA_TranslucentBackground, true);
 	splitter_h->addWidget(splitter_v1);
 	splitter_h->addWidget(splitter_v2);
+	splitter_h->setStretchFactor(1, 1);
 	QWidget* spacing = new QWidget();
 	_owlayout->addWidget(splitter_h);
 
@@ -107,6 +111,11 @@ void OverallWindow::setMinimum()
 	this->showMinimized();
 }
 
+void OverallWindow::on_restGLWidget(const QSize& size)
+{
+	splitter_h->setSizes({ size.width(),this->normalSize.width() - size.width() });
+	splitter_v1->setSizes({ size.height(),this->normalSize.height() - size.height() });
+}
 
 void OverallWindow::rollbackNormal()
 {
