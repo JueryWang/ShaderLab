@@ -121,7 +121,7 @@ void XA_GLMODULE_RENDER::contextDraw()
 		//Do some Log Record
 		return;
 	}
-	_shader = new Shader("Shader/birthday_cake.vert", "Shader/birthday_cake.frag");
+	_shader = new Shader("Shader/birthday_font.vert", "Shader/birthday_font.frag");
 	_shader->use();
 	glUniform2iv(glGetUniformLocation(_shader->ID, "iResolution"), 1, &resolution[0]);
 

@@ -66,6 +66,7 @@ void XA_UIMODULE_GLWidget::on_clickLockSize()
 	size_locked = true;
 	this->setFixedSize(wgt_width, wgt_height);
 	_infoPanel->lockbtn->setText(_STRING_WRAPPER("解锁当前宽高"));
+	_infoPanel->lockbtn->setIcon(QIcon(ICOPATH(unlock.svg)));
 	disconnect(_infoPanel->lockbtn, &QPushButton::clicked, this, &XA_UIMODULE_GLWidget::on_clickLockSize);
 	connect(_infoPanel->lockbtn, &QPushButton::clicked, this, &XA_UIMODULE_GLWidget::on_clickUnlockSize);
 }
@@ -75,6 +76,7 @@ void XA_UIMODULE_GLWidget::on_clickUnlockSize()
 	size_locked = false;
 	this->resize(wgt_width, wgt_height);
 	_infoPanel->lockbtn->setText(_STRING_WRAPPER("锁定当前宽高"));
+	_infoPanel->lockbtn->setIcon(QIcon(ICOPATH(locksize.svg)));
 	disconnect(_infoPanel->lockbtn, &QPushButton::clicked, this, &XA_UIMODULE_GLWidget::on_clickUnlockSize);
 	connect(_infoPanel->lockbtn, &QPushButton::clicked, this, &XA_UIMODULE_GLWidget::on_clickLockSize);
 	this->setMaximumSize(maximum_size);
@@ -86,9 +88,9 @@ void XA_UIMODULE_GLWidget::on_clickResetSize()
 	size_locked = false;
 	this->resize(default_size);
 	wgt_width = default_size.width(); wgt_height = default_size.height();
-	emit resetGLWidget(default_size);
 
 	_infoPanel->lockbtn->setText(_STRING_WRAPPER("锁定当前宽高"));
+	_infoPanel->lockbtn->setIcon(QIcon(ICOPATH(locksize.svg)));
 	disconnect(_infoPanel->lockbtn, &QPushButton::clicked, this, &XA_UIMODULE_GLWidget::on_clickUnlockSize);
 	connect(_infoPanel->lockbtn, &QPushButton::clicked, this, &XA_UIMODULE_GLWidget::on_clickLockSize);
 	this->setMaximumSize(maximum_size);

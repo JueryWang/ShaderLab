@@ -1,9 +1,8 @@
 #ifndef UTILITY_SUPPORT
 #define UTILITY_SUPPORT
 
-
 #include <QString>
-#ifdef  _WIN32
+#ifdef  Q_OS_WIN
 #define _STRING_WRAPPER(str) QStringLiteral(str)
 #endif
 
@@ -19,7 +18,4 @@ static enum RT_CONTEXT_STATUS
 } xa_context_flag;
 
 static unsigned int xa_context = 0x00000000U;
-#ifdef DEBUG
-#include <QDebug>
-#endif
 #endif

@@ -15,7 +15,7 @@ enum MsgBoxIcon {
 	Question = 4
 };
 
-const QString EDITOR_PAGE_STYLE = R"(QListView{
+const static QString EDITOR_PAGE_STYLE = R"(QListView{
 	background-color: #75A4CD;
 	border-radius:5px;
 	border:1px solid #D3D3D3;
@@ -69,7 +69,7 @@ QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal{
 	background:none;
 })";
 
-const QString WINDOWINFO_BTN_STYLE = R"(.QPushButton{
+const static QString WINDOWINFO_BTN_STYLE = R"(.QPushButton{
 		border-style:none;
 		border:1px solid #2A2C32;
 		color:#FFFFFE;
@@ -82,6 +82,5 @@ const QString WINDOWINFO_BTN_STYLE = R"(.QPushButton{
 		.QPushButton:hover{
 		background:#9698a1;
 })";
-
 
 #endif // UI_DEFAULT_DFS\

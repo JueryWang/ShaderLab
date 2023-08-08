@@ -85,6 +85,12 @@
     <ClCompile Include="UI\uimodule_windowInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Utilitys\Parser\utils_shaderParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilitys\Parser\utils_ParserError.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="XaLocaltoy.h">
@@ -1036,6 +1042,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UI\uimodule_editorpage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilitys\Parser\utils_shaderParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilitys\Parser\utils_ParserError.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
