@@ -5,7 +5,6 @@
 #include <QFile>
 #include <QPair>
 #include <QMap>
-#include "utils_parserError.h"
 
 namespace parser
 {

@@ -3,7 +3,10 @@
 #include "uimodule_editorpage.h"
 #include <QFontDatabase>
 #include <QFileDialog>
+#include <QMimeData>
 #include <QMimeDatabase>
+#include <QDragEnterEvent>
+#include <QDropEvent>
 #include <QMap>
 #include <QFont>
 #include <QDir>
@@ -18,6 +21,7 @@ XA_UIMODULE_CodeEditor::XA_UIMODULE_CodeEditor()
 
 	this->resize(editor_width, editor_height);
 	this->setAttribute(Qt::WA_TranslucentBackground);
+	this->setAcceptDrops(true);
 
 	int fontId = QFontDatabase::addApplicationFont(FONTPATH(Cascadia.ttf));
 	QStringList font_list = QFontDatabase::applicationFontFamilies(fontId);
@@ -76,7 +80,7 @@ void XA_UIMODULE_CodeEditor::set_new_tab(const QString& path, bool is_new_file /
 	{
 		this->addTab(editor, "untitled");
 		this->setCurrentIndex(this->count() - 1);
-		_current_file = nullptr;
+		_current_file = std::make_unique<QFile>("untitled");
 		return;
 	}
 
@@ -88,9 +92,6 @@ void XA_UIMODULE_CodeEditor::set_new_tab(const QString& path, bool is_new_file /
 	QString file_name = path.right(path.length() - DirSeprator - 1);
 	QMimeDatabase db;
 	QMimeType mime = db.mimeTypeForFile(file_name);
-	
-	if (!is_new_file && mime.name().startsWith("application/"))
-		return;
 
 	int tab_count = this->count();
 	for (int i = 0; i < tab_count; i++)
@@ -99,7 +100,6 @@ void XA_UIMODULE_CodeEditor::set_new_tab(const QString& path, bool is_new_file /
 		{
 			this->setCurrentIndex(i);
 			this->_current_file = std::make_unique<QFile>(path);
-			_page_cache[(QsciScintilla*)this->currentWidget()] = path;
 			return;
 		}
 	}
@@ -127,10 +127,61 @@ QsciScintilla* XA_UIMODULE_CodeEditor::get_new_page()
 	return _current_page;
 }
 
+void XA_UIMODULE_CodeEditor::dragEnterEvent(QDragEnterEvent* event)
+{
+	static QStringList acceptedFileTypes = {"vert","tesc","tese","geom","frag","comp","mesh","task"};
+	if (event->mimeData()->hasUrls() && event->mimeData()->urls().count() == 1)
+	{
+		QFileInfo file(event->mimeData()->urls().at(0).toLocalFile());
+		if (acceptedFileTypes.contains(file.suffix().toLower()))
+		{
+			event->acceptProposedAction();
+		}
+	}
+}
+
+void XA_UIMODULE_CodeEditor::dropEvent(QDropEvent* event)
+{
+	QFileInfo droped_file(event->mimeData()->urls().at(0).toLocalFile());
+	QString pre_file = _current_file->fileName();
+	QString new_file = droped_file.absoluteFilePath();
+	qDebug() << new_file;
+
+	bool is_existed = false;
+	
+	int tab_count = this->count();
+	for (int i = 0; i < tab_count; i++)
+	{
+		if (this->tabText(i) == new_file)
+		{
+			this->setCurrentIndex(i);
+			is_existed = true;
+			break;
+		}
+	}
+
+	_current_file->setFileName(new_file);
+	if (_current_file->open(QIODevice::ReadOnly))
+	{
+		if (is_existed)
+		{
+			QsciScintilla* editor = (QsciScintilla*)this->currentWidget();
+			editor->setText(_current_file->readAll());
+		}
+		else
+		{
+			this->set_new_tab(new_file, false);
+		}
+	}
+	else
+	{
+		_current_file->setFileName(pre_file);
+	}
+}
+
 void XA_UIMODULE_CodeEditor::on_closeTab(int index)
 {
 	this->removeTab(index);
-	_page_cache.remove((QsciScintilla*)this->currentWidget());
 }
 
 void XA_UIMODULE_CodeEditor::on_show_hide_Tab()
@@ -149,11 +200,6 @@ void XA_UIMODULE_CodeEditor::on_copy()
 void XA_UIMODULE_CodeEditor::on_newfile()
 {
 	set_new_tab(nullptr, true);
-}
-
-void XA_UIMODULE_CodeEditor::on_openfile()
-{
-
 }
 
 void XA_UIMODULE_CodeEditor::on_savefile()
@@ -183,7 +229,6 @@ void XA_UIMODULE_CodeEditor::on_saveas()
 	if (!file_path.length())
 		return;
 
-	_page_cache[editor] = file_path;
 	QFile* path = new QFile(file_path);
 	if (path->open(QIODevice::WriteOnly))
 	{

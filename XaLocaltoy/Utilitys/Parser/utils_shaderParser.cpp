@@ -108,6 +108,11 @@ const QString XA_UTILS_ShaderParser::parse(const QString& source, parser::Shader
 
 void XA_UTILS_ShaderParser::setCachePath(const QString& path)
 {
+	QDir dir_helper;
+	if (!dir_helper.exists(path))
+	{
+		dir_helper.mkdir(path);
+	}
 	XA_UTILS_ShaderParser::cache_path = path;
 }
 

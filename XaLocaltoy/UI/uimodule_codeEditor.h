@@ -1,9 +1,9 @@
 #ifndef UI_CODE_EDITOR_H
 #define UI_CODE_EDITOR_H
 
-#include<QTabWidget>
-#include<QMap>
-#include<memory>
+#include <memory>
+#include <QMap>
+#include <QTabWidget>
 
 class QFile;
 class QFont;
@@ -21,12 +21,15 @@ private:
 	void set_new_tab(const QString& path, bool is_new_file = false);
 	QsciScintilla* get_new_page();
 
+protected:
+	virtual void dragEnterEvent(QDragEnterEvent* event);
+	virtual void dropEvent(QDropEvent* event);
+
 public slots:
 	void on_closeTab(int index);
 	void on_show_hide_Tab();
 	void on_copy();
 	void on_newfile();
-	void on_openfile();
 	void on_savefile();
 	void on_saveas();
 
@@ -44,7 +47,6 @@ public:
 	std::unique_ptr<QFile> _current_file;
 
 	XA_UIMODULE_EditorPage* _current_page;
-	QMap<QsciScintilla*,QString> _page_cache;
 };
 
 
