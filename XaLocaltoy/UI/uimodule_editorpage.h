@@ -17,7 +17,10 @@ public:
 	static void initFont(const QString& font_name, int size);
 	static void initIntellisense();
 protected:
-	void keyPressEvent(QKeyEvent* e) override;
+	virtual void keyPressEvent(QKeyEvent* e);
+	virtual void dragEnterEvent(QDragEnterEvent* event);
+	virtual void dropEvent(QDropEvent* event);
+
 private:
 	void setCustomStyle();
 private:

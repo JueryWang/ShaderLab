@@ -13,6 +13,7 @@ class XA_UIMODULE_EditorPage;
 
 class XA_UIMODULE_CodeEditor : public QTabWidget
 {
+	friend class XA_UIMODULE_EditorPage;
 	Q_OBJECT
 public:
 	static void setEditorSize(int width, int height);

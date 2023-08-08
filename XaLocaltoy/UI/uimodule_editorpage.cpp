@@ -2,14 +2,17 @@
 #include "ui_defaultDfs.h"
 #include <Qsci/qscilexercpp.h>
 #include <Qsci/qsciapis.h>
-
+#include <QApplication>
 //For json parse
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonValue>
 #include <QJsonParseError>
+#include <QDragEnterEvent>
+#include <QDropEvent>
 #include <QFile>
+#include "uimodule_codeEditor.h"
 
 QStringList getIntellisense(const QString& intelliSenseFile);
 
@@ -59,7 +62,7 @@ XA_UIMODULE_EditorPage::XA_UIMODULE_EditorPage()
 
 XA_UIMODULE_EditorPage::~XA_UIMODULE_EditorPage()
 {
-
+	
 }
 
 void XA_UIMODULE_EditorPage::initFont(const QString& font_name,int size)
@@ -87,6 +90,16 @@ void XA_UIMODULE_EditorPage::initIntellisense()
 void XA_UIMODULE_EditorPage::keyPressEvent(QKeyEvent* e)
 {
 	return QsciScintilla::keyPressEvent(e);
+}
+
+void XA_UIMODULE_EditorPage::dragEnterEvent(QDragEnterEvent* event)
+{
+	return XA_UIMODULE_CodeEditor::getEditor()->dragEnterEvent(event);
+}
+
+void XA_UIMODULE_EditorPage::dropEvent(QDropEvent* event)
+{
+	return XA_UIMODULE_CodeEditor::getEditor()->dropEvent(event);
 }
 
 QStringList getIntellisense(const QString& intelliSenseFile)

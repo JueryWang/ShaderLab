@@ -145,8 +145,6 @@ void XA_UIMODULE_CodeEditor::dropEvent(QDropEvent* event)
 	QFileInfo droped_file(event->mimeData()->urls().at(0).toLocalFile());
 	QString pre_file = _current_file->fileName();
 	QString new_file = droped_file.absoluteFilePath();
-	qDebug() << new_file;
-
 	bool is_existed = false;
 	
 	int tab_count = this->count();
