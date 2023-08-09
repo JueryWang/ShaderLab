@@ -1,7 +1,7 @@
 #include "uimodule_MsgBox.h"
+#include "ui_defaultDfs.h"
 #include <QMouseEvent>
 #include <QPushButton>
-#include <QLabel>
 #include <QIcon>
 
 XA_UIModule_QUEST_BOX::XA_UIModule_QUEST_BOX(QWidget* parent, const QString& mainMsg, const QString& attachedMsg)
@@ -20,13 +20,10 @@ XA_UIModule_QUEST_BOX::XA_UIModule_QUEST_BOX(QWidget* parent, const QString& mai
 	_vlay = new QVBoxLayout();
 	_hlay = new QHBoxLayout();
 	_btnsLay = new QHBoxLayout();
-	QLabel* signLabel = new QLabel();
-	signLabel->setFixedSize(64, 64);
-	QPixmap* picture = new QPixmap();
-	picture->load("icons/quest.svg");
-	signLabel->setPixmap(*picture);
+	_icon = new QLabel();
+	_icon->setFixedSize(64, 64);
 
-	_hlay->addWidget(signLabel);
+	_hlay->addWidget(_icon);
 	_hlay->addSpacing(20);
 	QFont textFont("Microsoft YaHei", 10);
 	QVBoxLayout* discripLayout = new QVBoxLayout();
@@ -90,6 +87,8 @@ XA_UIModule_QUEST_BOX::~XA_UIModule_QUEST_BOX()
 XA_UIModule_QUEST_BOX* XA_UIModule_QUEST_BOX::question(QWidget* parent, const QString& title, const QString& text, const QSize& windowSz)
 {
 	static XA_UIModule_QUEST_BOX* questMsg = new XA_UIModule_QUEST_BOX(parent, title, text);
+	QPixmap pix(ICOPATH(quest.svg));
+	questMsg->_icon->setPixmap(pix);
 	questMsg->move(parent->mapToGlobal(QPoint(windowSz.width() / 2, windowSz.height() / 2)));
 	questMsg->show();
 	questMsg->_wgt->activateWindow();

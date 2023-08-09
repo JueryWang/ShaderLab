@@ -88,6 +88,9 @@
     <ClCompile Include="Utilitys\Parser\utils_shaderParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UI\uimodule_varShowboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="XaLocaltoy.h">
@@ -130,6 +133,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="Utilitys\Parser\utils_shaderParser.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="UI\uimodule_varShowboard.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

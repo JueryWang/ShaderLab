@@ -128,7 +128,7 @@ QStringList getIntellisense(const QString& intelliSenseFile)
 	QJsonObject rootObj = doc.object();
 	QStringList kwords;
 
-	static QStringList type_to_parse = { "c-keyword","data-type","glsl-buildin-vertex",
+	static QStringList type_to_parse = { "c-keyword","data-type","qualifier","glsl-buildin-vertex",
 						   "glsl-buildin-vertex","glsl-buildin-fragment",
 						   "glsl-modifier","api" };
 	for (int i = 0; i < type_to_parse.size(); i++)

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QHBoxLayout>
+#include <QLabel>
 
 class XA_UIModule_QUEST_BOX : public QWidget
 {
@@ -23,6 +24,7 @@ private:
 
 private:
 	QWidget* _wgt;
+	QLabel* _icon;
 	QVBoxLayout* _vlay;
 	QHBoxLayout* _hlay;
 	QHBoxLayout* _btnsLay;
