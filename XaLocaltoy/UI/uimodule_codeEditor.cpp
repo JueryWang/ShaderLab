@@ -10,7 +10,6 @@
 #include <QMap>
 #include <QFont>
 #include <QDir>
-#include <QDebug>
 XA_UIMODULE_CodeEditor* XA_UIMODULE_CodeEditor::_codeEditor;
 static QMap<QString, QString> registeredFonts;
 int XA_UIMODULE_CodeEditor::editor_width = 0;

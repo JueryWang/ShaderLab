@@ -23,6 +23,7 @@ public:
 
 public slots:
 	void on_restGLWidget(const QSize& size);
+	void on_compileCode();
 
 private:
 	QVBoxLayout* _owlayout;

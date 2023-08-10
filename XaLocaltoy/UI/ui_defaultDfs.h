@@ -68,8 +68,9 @@ QScrollBar::handle:horizontal:pressed{
 QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal{
 	background:none;
 })";
+const static QString WINDOW_FONT_COLOR_STYLE = "QLabel{background:transparent;color:#eeeed4;}";
 
-const static QString WINDOWINFO_BTN_STYLE = R"(.QPushButton{
+const static QString WINDOWINFO_BTN_STYLE_1 = R"(.QPushButton{
 		border-style:none;
 		border:1px solid #2A2C32;
 		color:#FFFFFE;
@@ -81,6 +82,20 @@ const static QString WINDOWINFO_BTN_STYLE = R"(.QPushButton{
 
 		.QPushButton:hover{
 		background:#9698a1;
+})";
+
+const static QString WINDOWINFO_BTN_STYLE_2 = R"(.QPushButton{
+		border-style:none;
+		color:#FFFFFE;
+		padding:5px;
+		min-height:15px;
+		background:transparent;
+		}
+
+		.QPushButton:hover{
+		border:2px solid #9C9EA3;
+		background:transparent;
+		border-radius:5px;
 })";
 
 #endif // UI_DEFAULT_DFS\

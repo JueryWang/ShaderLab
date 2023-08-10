@@ -69,7 +69,17 @@ OverallWindow::OverallWindow()
 	splitter_v2->setAttribute(Qt::WA_TranslucentBackground, true);
 	splitter_v2->setOrientation(Qt::Vertical);
 	splitter_v2->addWidget(var_board);
-	splitter_v2->addWidget(codeEditorInst);
+	QWidget* editor_compilebar_wrapper = new QWidget(this);
+	editor_compilebar_wrapper->resize(codeEditorInst->width(), codeEditorInst->height() + 16);
+	QVBoxLayout* editor_compilebar_layout = new QVBoxLayout();
+	editor_compilebar_layout->setContentsMargins(0, 0, 0, 0);
+	ClickableLabel* compilebar = new ClickableLabel(ICOPATH(compilebar.svg),16);
+	compilebar->setFixedHeight(20);
+	connect(compilebar, &ClickableLabel::clicked, this, &OverallWindow::on_compileCode);
+	editor_compilebar_layout->addWidget(codeEditorInst);
+	editor_compilebar_layout->addWidget(compilebar, Qt::AlignLeft);
+	editor_compilebar_wrapper->setLayout(editor_compilebar_layout);
+	splitter_v2->addWidget(editor_compilebar_wrapper);
 	splitter_v2->addWidget(new QWidget);
 	splitter_v2->setSizes({ int(1.2*codeEditorInst->height()),this->height() - codeEditorInst->height() });
 	splitter_v2->handle(0)->setDisabled(true);
@@ -122,6 +132,11 @@ void OverallWindow::on_restGLWidget(const QSize& size)
 {
 	splitter_h->setSizes({ size.width(),this->normalSize.width() - size.width() });
 	splitter_v1->setSizes({ size.height(),this->normalSize.height() - size.height() });
+}
+
+void OverallWindow::on_compileCode()
+{
+	
 }
 
 void OverallWindow::rollbackNormal()
