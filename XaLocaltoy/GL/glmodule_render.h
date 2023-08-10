@@ -1,6 +1,7 @@
 #ifndef GL_MODULE_RENDER_H
 #define GL_MODULE_RENDER_H
 
+#include "gl_defaultDfs.h"
 #include <QObject>
 #include <QWidget>
 #include <vector>
@@ -8,7 +9,7 @@
 #include <string>
 #include <atomic>
 #include <shader.h>
-#include "gl_defaultDfs.h"
+#include <map>
 #include <QDebug>
 
 class XA_GLMODULE_RENDER : public QObject
@@ -17,8 +18,9 @@ class XA_GLMODULE_RENDER : public QObject
 	Q_OBJECT
 
 public:
-	XA_GLMODULE_RENDER(const std::string& title,StorageType type = XA_GL_RGB,QWidget* reciver = nullptr);
+	XA_GLMODULE_RENDER(const std::string& title,StorageType type = XA_GL_RGB,QObject* reciver = nullptr);
 	~XA_GLMODULE_RENDER();
+	void setReciver(QObject* reciver);
 	//void addShader(const char* vertexPath, const char* fragmentPath,const char* name);
 	inline void flip(uint8_t** buf,int context_width,int context_height);
 	void pause();
@@ -55,6 +57,8 @@ public:
 	static std::atomic<int> SCR_WIDTH;
 	static std::atomic<int> SCR_HEIGHT;
 	static int resolution[2];
+	XA_RENDERER_STATE rd_state = INACTIVE;
+
 private:
 	void* _windowbuf;
 	std::unique_ptr <GLFWwindow,Deleter> _window;
@@ -69,10 +73,7 @@ private:
 	int windowBufSize;
 	int activeShader = 0;
 
-
-	std::map<std::string, unsigned int> vao_mp;
-	std::map<std::string, unsigned int> vbo_mp;
-	
+	std::map<std::string, GLuint> _textures;
 	std::atomic<bool> paused = false;
 };
 

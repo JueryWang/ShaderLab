@@ -91,6 +91,9 @@
     <ClCompile Include="UI\uimodule_varShowboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GL\glmodule_EvRecompile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="XaLocaltoy.h">
@@ -138,6 +141,9 @@
     <QtMoc Include="UI\uimodule_varShowboard.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="GL\glmodule_backstatge.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="XaLocaltoy.ui">
@@ -157,9 +163,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UI\uimodule_profilemenu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GL\glmodule_backstatge.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GL\gl_defaultDfs.h">
@@ -1051,6 +1054,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utilitys\Parser\parser_defaultDfs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GL\glmodule_EvRecompile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -14,9 +14,9 @@ float lastTime = 0.0f;
 unsigned int quadVAO = 0;
 unsigned int quadVBO;
 
-XA_GLMODULE_RENDER::XA_GLMODULE_RENDER(const std::string& title, StorageType type,QWidget* reciver) :_title(title),_type(type)
+XA_GLMODULE_RENDER::XA_GLMODULE_RENDER(const std::string& title, StorageType type, QObject* reciver) :_title(title),_type(type)
 {
-	this->_reciver = (QObject*)reciver;
+	this->_reciver = reciver;
 	if (XA_GLMODULE_RENDER::SCR_WIDTH == 0 || XA_GLMODULE_RENDER::SCR_HEIGHT == 0)
 	{
 		//Do some Log operation
@@ -46,6 +46,11 @@ XA_GLMODULE_RENDER::~XA_GLMODULE_RENDER()
 {
 	delete _shader;
 	delete _windowbuf;
+}
+
+void XA_GLMODULE_RENDER::setReciver(QObject* reciver)
+{
+	this->_reciver = reciver;
 }
 
 //void XA_GLMODULE_RENDER::addShader(const char* vertexPath, const char* fragmentPath, const char* name)
@@ -103,6 +108,7 @@ void XA_GLMODULE_RENDER::reset(const QSize& newSize)
 
 void XA_GLMODULE_RENDER::contextDraw()
 {
+	rd_state = ACTIVE_DRAW_FRONT;
 	static char windowTitle[32];
 	static int windowCount = 0;
 	sprintf_s(windowTitle, _title.c_str(), NULL, NULL);
