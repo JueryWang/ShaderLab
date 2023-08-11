@@ -23,10 +23,11 @@ public:
 	void setReciver(QObject* reciver);
 	//void addShader(const char* vertexPath, const char* fragmentPath,const char* name);
 	inline void flip(uint8_t** buf,int context_width,int context_height);
-	void pause();
-	void start();
-	void restart();
-	static void reset(const QSize& newSize);
+	void __exit();
+	void __start();
+	void __pause();
+	void __restart();
+	static void __reset(const QSize& newSize);
 
 private:
 	void renderQuad(int context_width, int context_height);
@@ -66,6 +67,8 @@ private:
 	StorageType _type;
 	Shader* _shader;
 	std::string _title;
+	std::string _vs_source;
+	std::string _fs_source;
 	/*
 	* multi Window Instance need to be reconstructed by vulkan
 		int _layer;//
@@ -75,6 +78,7 @@ private:
 
 	std::map<std::string, GLuint> _textures;
 	std::atomic<bool> paused = false;
+	std::atomic<bool> exit = false;
 };
 
 #endif

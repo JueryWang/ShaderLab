@@ -1,6 +1,7 @@
 #include "glmodule_render.h"
 #include "glmodule_EvSendFrame.h"
 #include <QApplication>
+#include <QThread>
 #include <memory>
 using namespace std;
 
@@ -40,6 +41,7 @@ XA_GLMODULE_RENDER::XA_GLMODULE_RENDER(const std::string& title, StorageType typ
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+
 }
 
 XA_GLMODULE_RENDER::~XA_GLMODULE_RENDER()
@@ -83,22 +85,29 @@ void XA_GLMODULE_RENDER::flip(uint8_t** buf, int context_width, int context_heig
 	}
 }
 
-void XA_GLMODULE_RENDER::pause()
+void XA_GLMODULE_RENDER::__pause()
 {
 	paused.store(true, memory_order_release);
 }
 
-void XA_GLMODULE_RENDER::start()
+void XA_GLMODULE_RENDER::__start()
+{
+	paused.store(false, memory_order_release);
+	exit.store(false, memory_order_release);
+	this->contextDraw();
+}
+
+void XA_GLMODULE_RENDER::__restart()
+{
+
+}
+void XA_GLMODULE_RENDER::__exit()
 {
 
 }
 
-void XA_GLMODULE_RENDER::restart()
-{
 
-}
-
-void XA_GLMODULE_RENDER::reset(const QSize& newSize)
+void XA_GLMODULE_RENDER::__reset(const QSize& newSize)
 {
 	XA_GLMODULE_RENDER::SCR_WIDTH.store(newSize.width(),memory_order_release);
 	XA_GLMODULE_RENDER::SCR_HEIGHT.store(newSize.height(), memory_order_release);
@@ -127,13 +136,18 @@ void XA_GLMODULE_RENDER::contextDraw()
 		//Do some Log Record
 		return;
 	}
-	_shader = new Shader("Shader/birthday_font.vert", "Shader/birthday_font.frag");
+
+	_shader = new Shader(_vs_source.c_str(),_fs_source.c_str());
 	_shader->use();
 	glUniform2iv(glGetUniformLocation(_shader->ID, "iResolution"), 1, &resolution[0]);
 
-	bool tmp;
-	while (!paused.load(memory_order_acquire))
+	while (!exit.load(memory_order_acquire))
 	{
+		if (paused.load(memory_order_acquire))
+		{
+			QThread::msleep(10);
+			continue;
+		}
 		auto time = static_cast<float>(glfwGetTime());
 		deltaTime = time - lastTime;
 		lastTime = time;

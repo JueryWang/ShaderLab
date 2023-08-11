@@ -38,7 +38,6 @@ XA_UIMODULE_EditorPage::XA_UIMODULE_EditorPage()
 	this->setAutoCompletionCaseSensitivity(false);
 	this->setAutoCompletionUseSingle(QsciScintilla::AcusNever);
 
-
 	//caret settings
 	this->setCaretForegroundColor(QColor("#dcdcdc"));
 	this->setCaretLineVisible(true);

@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <shader.h>
 #include <QObject>
+#include <QMutex>
 
 #define MAX_GL_RENDERER 3
 //set ratio to fit high dpi screen
@@ -43,16 +44,17 @@ struct DrawFrontTask_param
 
 struct LoadTextureTask_param
 {
-	const char texture_path[64];
+	char texture_name[64];
+	char texture_path[64];
 };
 
 struct CompileTask_param
 {
-	const char vs_path[64];
-	const char fs_path[64];
+	char vs_path[64];
+	char fs_path[64];
 };
 
-union Task_parm
+union Task_param
 {
 	DrawFrontTask_param drawFront_param;
 	LoadTextureTask_param loadTexture_param;
@@ -62,7 +64,8 @@ union Task_parm
 struct XA_GL_TASK
 {
 	XA_GL_TASK_TYPE type;
-	Task_parm parm;
+	Task_param param;
 };
 
+static QMutex taskLocker;
 #endif

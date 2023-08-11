@@ -3,6 +3,7 @@
 #include "GL/gl_defaultDfs.h"
 #include "GL/glmodule_render.h"
 #include "UI/uimodule_varShowboard.h"
+#include "Utilitys/Parser/utils_shaderParser.h"
 #include <QToolButton>
 #include <windows.h>
 #include <QFile>
@@ -171,8 +172,9 @@ void OverallWindow::init()
 	QRect monitorRct = QApplication::desktop()->availableGeometry();
 	monitor_resolution = QSize(monitorRct.width(), monitorRct.height());
 	anchorPos = QPoint((monitor_resolution.width() - normalSize.width()) / 2, (monitor_resolution.height() - normalSize.height()) / 2);
-	XA_GLMODULE_RENDER::reset(QSize(monitor_resolution.width() * GL_WIDGET_MAX_WIDTH_R,
+	XA_GLMODULE_RENDER::__reset(QSize(monitor_resolution.width() * GL_WIDGET_MAX_WIDTH_R,
 		monitor_resolution.height() * GL_WIDGET_MAX_HEIGHT_R));
+	XA_UTILS_ShaderParser::setCachePath("");
 }
 
 

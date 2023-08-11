@@ -18,4 +18,7 @@ static enum RT_CONTEXT_STATUS
 } xa_context_flag;
 
 static unsigned int xa_context = 0x00000000U;
+
+#define USER_TEMPORARY_SHADER_PATH "Resource/user/temporary"
+
 #endif

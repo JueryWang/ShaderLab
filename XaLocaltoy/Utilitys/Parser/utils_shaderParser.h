@@ -50,7 +50,7 @@ public:
 	static void setCachePath(const QString &path);
 	void setContextParserRule(parser::ParserRule rule);
 	void setCurrentFileName(const QString& name, parser::ShaderType type);
-	const QString parse(const QString& source, parser::ShaderType type, bool custom_var = false, const QMap<QString, QVariant>& custom_var_mp = QMap<QString, QVariant>());
+	bool parse(const QString& source, parser::ShaderType type, bool custom_var = false, const QMap<QString, QVariant>& custom_var_mp = QMap<QString, QVariant>());
 	const QString getDebugInfo() const;
 	QMap<QString, QVariant> getParsedVar() const;
 

@@ -23,7 +23,7 @@ XA_UTILS_ShaderParser::~XA_UTILS_ShaderParser()
 	_UTILS_CLEAN_CACHE(cache_path.toLatin1().data());
 }
 
-const QString XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type, bool custom_var /*= false*/, const QMap<QString, QVariant>& custom_var_mp /*= QMap<QString, QVariant>()*/)
+bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type, bool custom_var /*= false*/, const QMap<QString, QVariant>& custom_var_mp /*= QMap<QString, QVariant>()*/)
 {
 	QString parse_res;
 	switch (type)
@@ -59,7 +59,7 @@ const QString XA_UTILS_ShaderParser::parse(const QString& source, parser::Shader
 		if (parsedVariant.size() == 0)
 		{
 			parser::ErrorCode::NO_DETECTED_VARS;
-			return "";
+			return false;
 		}
 		//TODO:Add custom_var_mp to parse_res
 	}
@@ -101,9 +101,9 @@ const QString XA_UTILS_ShaderParser::parse(const QString& source, parser::Shader
 	else
 	{
 		err_code = parser::ErrorCode::NO_FILE_SET;
-		return "";
+		return false;
 	}
-	return parse_res;
+	return true;
 }
 
 void XA_UTILS_ShaderParser::setCachePath(const QString& path)
