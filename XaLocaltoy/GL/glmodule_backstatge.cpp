@@ -21,7 +21,8 @@ XA_GLMODULE_BACKSTG::~XA_GLMODULE_BACKSTG()
 {
 	for (int i = 0; i < MAX_GL_RENDERER; i++)
 	{
-		delete _renders[i];
+		if(_renders[i]!=nullptr)
+			delete _renders[i];
 	}
 }
 

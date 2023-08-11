@@ -2,10 +2,12 @@
 #include "Utilitys/uitilityDfs.h"
 #include "GL/gl_defaultDfs.h"
 #include "GL/glmodule_render.h"
-#include "UI/uimodule_varShowboard.h"
 #include "Utilitys/Parser/utils_shaderParser.h"
+#include "UI/uimodule_editorpage.h"
+#include <QtConcurrent/QtConcurrent>
 #include <QToolButton>
 #include <windows.h>
+#include <QFileInfo>
 #include <QFile>
 #include <QScreen>
 #include <QSpacerItem>
@@ -46,9 +48,9 @@ OverallWindow::OverallWindow()
 	_windowInfo = new XA_UIMODULE_WindowInfo(this, QSize(_glWindow->width(), _glWindow->height()),_STRING_WRAPPER("Ä¬ÈÏÔ´"));
 	_windowInfo->setFixedHeight(30);
 	_glWindow->setWindowInfoPanel(_windowInfo);
-	XA_UIMODULE_ShowBoard* var_board = new XA_UIMODULE_ShowBoard(codeEditorInst->width(), QMap<QString, QVariant>());
-	var_board->setFixedHeight(20);
-	var_board->setAttribute(Qt::WA_TranslucentBackground, true);
+	_varboard = new XA_UIMODULE_ShowBoard(codeEditorInst->width());
+	_varboard->setFixedHeight(20);
+	_varboard->setAttribute(Qt::WA_TranslucentBackground, true);
 
 	QWidget* video_controlpanel_wrapper = new QWidget(this);
 	QVBoxLayout* video_controlpanel_layout = new QVBoxLayout();
@@ -69,7 +71,7 @@ OverallWindow::OverallWindow()
 	splitter_v2->resize(codeEditorInst->width(), this->height());
 	splitter_v2->setAttribute(Qt::WA_TranslucentBackground, true);
 	splitter_v2->setOrientation(Qt::Vertical);
-	splitter_v2->addWidget(var_board);
+	splitter_v2->addWidget(_varboard);
 	QWidget* editor_compilebar_wrapper = new QWidget(this);
 	editor_compilebar_wrapper->resize(codeEditorInst->width(), codeEditorInst->height() + 16);
 	QVBoxLayout* editor_compilebar_layout = new QVBoxLayout();
@@ -105,6 +107,9 @@ OverallWindow::~OverallWindow()
 {
 	delete _menubar;
 	delete _owlayout;
+	delete _glWindow;
+	delete _windowInfo;
+	delete _varboard;
 }
 
 const QSize OverallWindow::getMonitorsz() const
@@ -137,7 +142,30 @@ void OverallWindow::on_restGLWidget(const QSize& size)
 
 void OverallWindow::on_compileCode()
 {
+	XA_UTILS_ShaderParser* parser = XA_UTILS_ShaderParser::getParser();
 	
+	auto parseCode = [&](XA_UTILS_ShaderParser* parser)
+	{
+		QFileInfo fileInfo(XA_UIMODULE_CodeEditor::getEditor()->_current_file->fileName());
+		QString file_name = fileInfo.baseName();
+		QsciScintilla* page = (QsciScintilla*)XA_UIMODULE_CodeEditor::getEditor()->currentWidget();
+		parser->setContextParserRule(parser::ShaderToy);
+		
+		parser->setCurrentFileName(file_name + ".vert", parser::VERTEX);
+		parser->parse("", parser::VERTEX);
+
+		parser->setCurrentFileName(file_name + ".frag", parser::FRAGMENT);
+		parser->parse(page->text(), parser::FRAGMENT);
+
+		return parser->getParsedVar();
+	};
+	QEventLoop loop;
+	QFutureWatcher<QMap<QString, QVariant>> watcher;
+	connect(&watcher, &QFutureWatcher<void>::finished, &loop, &QEventLoop::quit);
+	watcher.setFuture(QtConcurrent::run(parseCode,parser));
+	loop.exec();
+
+	_varboard->setVariantMap(watcher.future());
 }
 
 void OverallWindow::rollbackNormal()
@@ -174,7 +202,7 @@ void OverallWindow::init()
 	anchorPos = QPoint((monitor_resolution.width() - normalSize.width()) / 2, (monitor_resolution.height() - normalSize.height()) / 2);
 	XA_GLMODULE_RENDER::__reset(QSize(monitor_resolution.width() * GL_WIDGET_MAX_WIDTH_R,
 		monitor_resolution.height() * GL_WIDGET_MAX_HEIGHT_R));
-	XA_UTILS_ShaderParser::setCachePath("");
+	XA_UTILS_ShaderParser::setCachePath(USER_TEMPORARY_SHADER_PATH);
 }
 
 

@@ -7,6 +7,7 @@
 #include "UI/uimodule_profilemenu.h"
 #include "UI/uimodule_customIconStyle.h"
 #include "UI/uimodule_MsgBox.h"
+#include "Utilitys/Parser/utils_shaderParser.h"
 #include "OverallWindow.h"
 #include <QMouseEvent>
 #include <QSizePolicy>
@@ -136,9 +137,11 @@ void MenuLayertop::on_Exit_Msg(int val)
 	{
 		case 0:
 			//do Save operation
+			XA_UTILS_ShaderParser::cleanCache();
 			QCoreApplication::exit();
 			break;
 		case 1:
+			XA_UTILS_ShaderParser::cleanCache();
 			QCoreApplication::exit();
 			break;
 		case 2:

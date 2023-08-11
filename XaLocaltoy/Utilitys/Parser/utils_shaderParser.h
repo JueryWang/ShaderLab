@@ -48,6 +48,7 @@ class XA_UTILS_ShaderParser : public QObject
 public:
 	static XA_UTILS_ShaderParser* getParser();
 	static void setCachePath(const QString &path);
+	static void cleanCache();
 	void setContextParserRule(parser::ParserRule rule);
 	void setCurrentFileName(const QString& name, parser::ShaderType type);
 	bool parse(const QString& source, parser::ShaderType type, bool custom_var = false, const QMap<QString, QVariant>& custom_var_mp = QMap<QString, QVariant>());
@@ -55,8 +56,8 @@ public:
 	QMap<QString, QVariant> getParsedVar() const;
 
 private:
-	XA_UTILS_ShaderParser();
 	~XA_UTILS_ShaderParser();
+	XA_UTILS_ShaderParser();
 
 	parser::ParserRule crt_rule = parser::ShaderToy;
 	parser::ErrorCode err_code = parser::ErrorCode::NO_ERROR;

@@ -5,6 +5,7 @@
 #include "UI/uimodule_glWidget.h"
 #include "UI/uimodule_codeEditor.h"
 #include "UI/uimodule_windowInfo.h"
+#include "UI/uimodule_varShowboard.h"
 #include <QVBoxLayout>
 
 class QSplitter;
@@ -30,6 +31,7 @@ private:
 	MenuLayertop* _menubar;
 	XA_UIMODULE_GLWidget* _glWindow;
 	XA_UIMODULE_WindowInfo* _windowInfo;
+	XA_UIMODULE_ShowBoard* _varboard;
 
 	QSplitter* splitter_v1;
 	QSplitter* splitter_v2;

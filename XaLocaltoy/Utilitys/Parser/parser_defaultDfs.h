@@ -36,12 +36,6 @@ namespace parser
 		"#define iTime runtime_data.iTime        \n";
 
 #ifdef Q_OS_WIN
-	void _UTILS_CLEAN_CACHE(const char* path)
-	{
-		char cmd[32];
-		sprintf(cmd, "rmdir /s/q %s", path);
-		system(cmd);
-	}
 
 	static QString _UTIL_GET_VALADITOR_RES(const char* cmd)
 	{

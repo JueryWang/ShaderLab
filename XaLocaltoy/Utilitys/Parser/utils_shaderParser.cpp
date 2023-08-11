@@ -20,7 +20,6 @@ XA_UTILS_ShaderParser::~XA_UTILS_ShaderParser()
 {
 	if (_file_handler)
 		delete _file_handler;
-	_UTILS_CLEAN_CACHE(cache_path.toLatin1().data());
 }
 
 bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type, bool custom_var /*= false*/, const QMap<QString, QVariant>& custom_var_mp /*= QMap<QString, QVariant>()*/)
@@ -39,13 +38,16 @@ bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type
 	}
 
 	parsedVariant.clear();
-	QRegExp re("#define\\s+?(.*)?\\s+(.*)?\\s");
+	QRegExp re("#define\\s+(.*)?\\s+(.*)?\\\r\\\n");//windows
 	re.setMinimal(true);
 	int pos = 0;
 	while ((pos = re.indexIn(source, pos)) != -1)
 	{
 		pos += re.matchedLength();
-		parsedVariant.insert(re.cap(1), QVariant(re.cap(2)));
+		if (QVariant(re.cap(2)).toFloat() && QVariant(re.cap(2)).toBool())
+		{
+			parsedVariant.insert(re.cap(1), QVariant(re.cap(2)));
+		}
 	}
 
 	if (custom_var)
@@ -85,13 +87,17 @@ bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type
 
 	if (crt_file.size())
 	{
-		_file_handler->setFileName(cache_path+"/"+crt_file);
+		_file_handler->setFileName(QDir::currentPath()+"/"+cache_path+"/"+crt_file);
 		if (_file_handler->open(QIODevice::WriteOnly))
 		{
 			_file_handler->write(parse_res.toUtf8(), parse_res.length());
 		}
+		else
+		{
+			qDebug() << _file_handler->fileName()<<"::write Error";
+		}
 		_file_handler->close();
-		QString cmd = QString("bin/glslangValidator %1").arg(_file_handler->fileName());
+		QString cmd = QString("cd bin && glslangValidator %1").arg(_file_handler->fileName());
 		validator_output = _UTIL_GET_VALADITOR_RES(cmd.toLatin1().data());
 		if (validator_output.size())
 		{
@@ -106,6 +112,15 @@ bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type
 	return true;
 }
 
+XA_UTILS_ShaderParser* XA_UTILS_ShaderParser::getParser()
+{
+	if (_instance == nullptr)
+	{
+		_instance = new XA_UTILS_ShaderParser();
+	}
+	return _instance;
+}
+
 void XA_UTILS_ShaderParser::setCachePath(const QString& path)
 {
 	QDir dir_helper;
@@ -114,6 +129,12 @@ void XA_UTILS_ShaderParser::setCachePath(const QString& path)
 		dir_helper.mkdir(path);
 	}
 	XA_UTILS_ShaderParser::cache_path = path;
+}
+
+void XA_UTILS_ShaderParser::cleanCache()
+{
+	QDir dir(QDir::currentPath() + "/" + cache_path);
+	dir.removeRecursively();
 }
 
 void XA_UTILS_ShaderParser::setContextParserRule(parser::ParserRule rule)
