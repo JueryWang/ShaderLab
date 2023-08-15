@@ -17,7 +17,6 @@
 #include <QRegularExpression>
 #include <QSizePolicy>
 #include <QSplitter>
-#include <QDebug>
 
 QString OverallWindow::qssPath;
 QString OverallWindow::iconPath;

@@ -67,7 +67,7 @@ bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type
 	}
 
 	pos = 0;
-	re.setPattern("main(.*)?\\\n");
+	re.setPattern("main(.*)?(?:\\{)");
 	re.setMinimal(true);
 	QString replaced;
 	if ((pos = re.indexIn(source, pos)) != -1)
@@ -82,7 +82,7 @@ bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type
 	else
 	{
 		parse_res += source;
-		parse_res.replace(replaced, "main()");
+		parse_res.replace(replaced, "main(){");
 	}
 
 	if (crt_file.size())
@@ -90,7 +90,7 @@ bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type
 		_file_handler->setFileName(QDir::currentPath()+"/"+cache_path+"/"+crt_file);
 		if (_file_handler->open(QIODevice::WriteOnly))
 		{
-			_file_handler->write(parse_res.toUtf8(), parse_res.length());
+			_file_handler->write(parse_res.toUtf8(), parse_res.toUtf8().size());
 		}
 		else
 		{

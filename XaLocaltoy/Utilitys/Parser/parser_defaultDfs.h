@@ -29,11 +29,13 @@ namespace parser
 		"struct runtime_param                   \n"
 		"{                                      \n"
 		"   float iTime;                        \n"
+		"	ivec4 iMouse;						\n"
 		"};                                     \n"
 		"uniform runtime_param runtime_data;    \n"
 		"uniform ivec2 iResolution;             \n"
 		"                                       \n"
-		"#define iTime runtime_data.iTime        \n";
+		"#define iTime runtime_data.iTime       \n"
+		"#define iMouse runtime_data.iMouse		\n";
 
 #ifdef Q_OS_WIN
 
