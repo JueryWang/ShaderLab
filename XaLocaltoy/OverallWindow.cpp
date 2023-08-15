@@ -1,9 +1,10 @@
 #include "OverallWindow.h"
 #include "Utilitys/uitilityDfs.h"
+#include "UI/uimodule_editorpage.h"
 #include "GL/gl_defaultDfs.h"
 #include "GL/glmodule_render.h"
+#include "GL/glmodule_backstatge.h"
 #include "Utilitys/Parser/utils_shaderParser.h"
-#include "UI/uimodule_editorpage.h"
 #include <QtConcurrent/QtConcurrent>
 #include <QToolButton>
 #include <windows.h>
@@ -143,14 +144,27 @@ void OverallWindow::on_restGLWidget(const QSize& size)
 void OverallWindow::on_compileCode()
 {
 	XA_UTILS_ShaderParser* parser = XA_UTILS_ShaderParser::getParser();
-	
-	auto parseCode = [&](XA_UTILS_ShaderParser* parser)
+	CompileTask_param* task_param = new CompileTask_param;
+
+	auto parseCode = [&](XA_UTILS_ShaderParser* parser, CompileTask_param* param)
 	{
 		QFileInfo fileInfo(XA_UIMODULE_CodeEditor::getEditor()->_current_file->fileName());
 		QString file_name = fileInfo.baseName();
 		QsciScintilla* page = (QsciScintilla*)XA_UIMODULE_CodeEditor::getEditor()->currentWidget();
 		parser->setContextParserRule(parser::ShaderToy);
-		
+
+		QByteArray s = file_name.toLatin1();//for correctly convert from QString to c_str
+
+		strcpy(task_param->vs_path, USER_TEMPORARY_SHADER_PATH);
+		strcat(task_param->vs_path, "/");
+		strcat(task_param->vs_path, s.data());
+		strcat(task_param->vs_path, ".vert");
+
+		strcpy(task_param->fs_path, USER_TEMPORARY_SHADER_PATH);
+		strcat(task_param->fs_path, "/");
+		strcat(task_param->fs_path, s.data());
+		strcat(task_param->fs_path, ".frag");
+
 		parser->setCurrentFileName(file_name + ".vert", parser::VERTEX);
 		parser->parse("", parser::VERTEX);
 
@@ -162,10 +176,17 @@ void OverallWindow::on_compileCode()
 	QEventLoop loop;
 	QFutureWatcher<QMap<QString, QVariant>> watcher;
 	connect(&watcher, &QFutureWatcher<void>::finished, &loop, &QEventLoop::quit);
-	watcher.setFuture(QtConcurrent::run(parseCode,parser));
+	watcher.setFuture(QtConcurrent::run(parseCode,parser,task_param));
 	loop.exec();
-
+	watcher.waitForFinished();
 	_varboard->setVariantMap(watcher.future());
+
+	std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK> new_task;
+	new_task.first = this->_glWindow->_glBackendRender;
+	new_task.second.type = XA_GL_COMPILE_SHADER;
+	new_task.second.param.compileTask_parm = *task_param;
+	XA_GLMODULE_BACKSTG::getBackStage()->addTask(new_task);
+	delete task_param;
 }
 
 void OverallWindow::rollbackNormal()
@@ -203,6 +224,8 @@ void OverallWindow::init()
 	XA_GLMODULE_RENDER::__reset(QSize(monitor_resolution.width() * GL_WIDGET_MAX_WIDTH_R,
 		monitor_resolution.height() * GL_WIDGET_MAX_HEIGHT_R));
 	XA_UTILS_ShaderParser::setCachePath(USER_TEMPORARY_SHADER_PATH);
+	XA_GLMODULE_BACKSTG* gl_backstgThread = XA_GLMODULE_BACKSTG::getBackStage();
+	gl_backstgThread->start(QThread::NormalPriority);
 }
 
 

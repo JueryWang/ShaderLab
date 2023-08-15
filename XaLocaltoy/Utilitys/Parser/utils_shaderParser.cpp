@@ -94,7 +94,7 @@ bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type
 		}
 		else
 		{
-			qDebug() << _file_handler->fileName()<<"::write Error";
+			//Do some log here
 		}
 		_file_handler->close();
 		QString cmd = QString("cd bin && glslangValidator %1").arg(_file_handler->fileName());
@@ -157,5 +157,10 @@ const QString XA_UTILS_ShaderParser::getDebugInfo() const
 QMap<QString, QVariant> XA_UTILS_ShaderParser::getParsedVar() const
 {
 	return this->parsedVariant;
+}
+
+QString XA_UTILS_ShaderParser::getCurrentFilePath()
+{
+	return _file_handler->fileName();
 }
 

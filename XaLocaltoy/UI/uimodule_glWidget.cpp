@@ -61,6 +61,11 @@ void XA_UIMODULE_GLWidget::__setMaximumSize(const QSize& size)
 	this->setMaximumSize(size);
 }
 
+void XA_UIMODULE_GLWidget::__reshow()
+{
+	emit beginGLDraw();
+}
+
 void XA_UIMODULE_GLWidget::on_clickLockSize()
 {
 	size_locked = true;

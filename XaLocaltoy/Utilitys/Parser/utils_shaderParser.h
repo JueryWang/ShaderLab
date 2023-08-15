@@ -54,6 +54,7 @@ public:
 	bool parse(const QString& source, parser::ShaderType type, bool custom_var = false, const QMap<QString, QVariant>& custom_var_mp = QMap<QString, QVariant>());
 	const QString getDebugInfo() const;
 	QMap<QString, QVariant> getParsedVar() const;
+	QString getCurrentFilePath();
 
 private:
 	~XA_UTILS_ShaderParser();

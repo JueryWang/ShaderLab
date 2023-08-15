@@ -10,6 +10,7 @@ class XA_UIMODULE_WindowInfo;
 
 class XA_UIMODULE_GLWidget : public QWidget
 {
+	friend class OverallWindow;
 	Q_OBJECT
 public:
 	XA_UIMODULE_GLWidget(QWidget* parent,const std::string& title,int width,int height);
@@ -17,6 +18,7 @@ public:
 	void setWindowInfoPanel(XA_UIMODULE_WindowInfo* inst);
 	void __setMinimumSize(const QSize& size);
 	void __setMaximumSize(const QSize& size);
+	void __reshow();
 
 public slots:
 	void on_clickLockSize();

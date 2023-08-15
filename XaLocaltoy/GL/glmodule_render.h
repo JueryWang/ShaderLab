@@ -65,7 +65,7 @@ private:
 	std::unique_ptr <GLFWwindow,Deleter> _window;
 	QObject* _reciver;
 	StorageType _type;
-	Shader* _shader;
+	Shader* _shader = nullptr;
 	std::string _title;
 	std::string _vs_source;
 	std::string _fs_source;

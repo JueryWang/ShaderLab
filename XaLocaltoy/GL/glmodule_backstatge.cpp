@@ -1,5 +1,7 @@
 #include  "glmodule_backstatge.h"
 #include "glmodule_render.h"
+#include "../UI/uimodule_glWidget.h"
+#include <QDebug>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -44,6 +46,13 @@ XA_GLMODULE_RENDER* XA_GLMODULE_BACKSTG::requestRenderer()
 			return _renders[i];
 	}
 	return nullptr;
+}
+
+void XA_GLMODULE_BACKSTG::addTask(std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK> newTask)
+{
+	taskLocker.lock();
+	_task_queue.push(newTask);
+	taskLocker.unlock();
 }
 
 void XA_GLMODULE_BACKSTG::run()
@@ -95,14 +104,13 @@ void XA_GLMODULE_BACKSTG::run()
 					}
 					case XA_GL_COMPILE_SHADER:
 					{
-						if (crt_task.first->_shader != nullptr)
-						{
-							glDeleteProgram(crt_task.first->_shader->ID);
-						}
-						crt_task.first->rd_state = INACTIVE;
 						crt_task.first->__exit();
+						crt_task.first->rd_state = INACTIVE;
 						crt_task.first->_vs_source = crt_task.second.param.compileTask_parm.vs_path;
 						crt_task.first->_fs_source = crt_task.second.param.compileTask_parm.fs_path;
+						XA_UIMODULE_GLWidget* glwgt = (XA_UIMODULE_GLWidget*)crt_task.first->_reciver;
+						glwgt->__reshow();
+						crt_task.first->__start();
 						break;
 					}
 					default:
@@ -112,6 +120,6 @@ void XA_GLMODULE_BACKSTG::run()
 			}
 			taskLocker.unlock();
 		}
-		QThread::msleep(10);
+		QThread::msleep(100);
 	}
 }

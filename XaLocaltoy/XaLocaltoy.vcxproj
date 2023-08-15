@@ -94,7 +94,6 @@
   <ItemGroup>
     <ClCompile Include="GL\glad.c" />
     <ClCompile Include="GL\glmodule_backstatge.cpp" />
-    <ClCompile Include="GL\glmodule_EvRecompile.cpp" />
     <ClCompile Include="GL\glmodule_EvSendFrame.cpp" />
     <ClCompile Include="GL\glmodule_render.cpp" />
     <ClCompile Include="GL\include\glad\glad.c" />
@@ -137,7 +136,6 @@
     <QtMoc Include="UI\uimodule_filemenu.h" />
     <QtMoc Include="GL\glmodule_backstatge.h" />
     <QtMoc Include="GL\glmodule_render.h" />
-    <ClInclude Include="GL\glmodule_EvRecompile.h" />
     <ClInclude Include="GL\glmodule_EvSendFrame.h" />
     <ClInclude Include="GL\gl_defaultDfs.h" />
     <ClInclude Include="GL\include\glad\glad.h" />

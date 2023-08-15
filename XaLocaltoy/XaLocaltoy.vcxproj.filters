@@ -91,9 +91,6 @@
     <ClCompile Include="UI\uimodule_varShowboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GL\glmodule_EvRecompile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="XaLocaltoy.h">
@@ -1054,9 +1051,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utilitys\Parser\parser_defaultDfs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GL\glmodule_EvRecompile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

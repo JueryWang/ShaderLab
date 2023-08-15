@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QThread>
 #include <memory>
+#include <QDebug>
 using namespace std;
 
 std::atomic<int> XA_GLMODULE_RENDER::SCR_WIDTH = 0;
@@ -55,12 +56,6 @@ void XA_GLMODULE_RENDER::setReciver(QObject* reciver)
 	this->_reciver = reciver;
 }
 
-//void XA_GLMODULE_RENDER::addShader(const char* vertexPath, const char* fragmentPath, const char* name)
-//{
-//	Shader *render = new Shader(vertexPath,fragmentPath);
-//	_shaders.push_back(render);
-//}
-
 int XA_GLMODULE_RENDER::getWidth() const
 {
 	return SCR_WIDTH.load(memory_order_consume);
@@ -94,7 +89,6 @@ void XA_GLMODULE_RENDER::__start()
 {
 	paused.store(false, memory_order_release);
 	exit.store(false, memory_order_release);
-	this->contextDraw();
 }
 
 void XA_GLMODULE_RENDER::__restart()
@@ -103,7 +97,7 @@ void XA_GLMODULE_RENDER::__restart()
 }
 void XA_GLMODULE_RENDER::__exit()
 {
-
+	exit.store(true, memory_order_release);
 }
 
 
@@ -122,7 +116,7 @@ void XA_GLMODULE_RENDER::contextDraw()
 	static int windowCount = 0;
 	sprintf_s(windowTitle, _title.c_str(), NULL, NULL);
 
-	GLFWwindow *window_inst = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, windowTitle, NULL, NULL);
+	static GLFWwindow *window_inst = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, windowTitle, NULL, NULL);
 	_window.reset(window_inst);
 	if (window_inst == NULL) {
 		//Do some Log Record
@@ -137,7 +131,11 @@ void XA_GLMODULE_RENDER::contextDraw()
 		return;
 	}
 
-	_shader = new Shader(_vs_source.c_str(),_fs_source.c_str());
+	if (_shader != nullptr)
+	{
+		delete _shader;
+	}
+	_shader = new Shader(this->_vs_source.c_str(),this->_fs_source.c_str());
 	_shader->use();
 	glUniform2iv(glGetUniformLocation(_shader->ID, "iResolution"), 1, &resolution[0]);
 

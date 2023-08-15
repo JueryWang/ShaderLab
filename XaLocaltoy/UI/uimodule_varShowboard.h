@@ -22,6 +22,7 @@ protected:
 
 class XA_UIMODULE_ShowBoard : public QWidget
 {
+	friend class OverallWindow;
 	Q_OBJECT
 public:
 	XA_UIMODULE_ShowBoard(int width);

@@ -13,11 +13,9 @@ class XA_GLMODULE_BACKSTG : public QThread
 {
 	Q_OBJECT
 public:
-	XA_GLMODULE_BACKSTG* getBackStage();
+	static XA_GLMODULE_BACKSTG* getBackStage();
 	XA_GLMODULE_RENDER* requestRenderer();
-
-signals:
-	void beginGLDraw();
+	void addTask(std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK> newTask);
 
 protected:
 	void run() override;
