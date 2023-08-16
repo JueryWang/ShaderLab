@@ -102,6 +102,7 @@
     <ClCompile Include="MenuLayertop.cpp" />
     <ClCompile Include="OverallWindow.cpp" />
     <ClCompile Include="UI\uimodule_aboutmenu.cpp" />
+    <ClCompile Include="UI\uimodule_AssetsWindow.cpp" />
     <ClCompile Include="UI\uimodule_codeEditor.cpp" />
     <ClCompile Include="UI\uimodule_editorpage.cpp" />
     <ClCompile Include="UI\uimodule_filemenu.cpp" />
@@ -432,6 +433,7 @@
     <ClInclude Include="GL\include\stb_image.h" />
     <ClInclude Include="GL\include\stb_image_write.h" />
     <QtMoc Include="UI\uimodule_codeEditor.h" />
+    <ClInclude Include="UI\uimodule_AssetsWindow.h" />
     <ClInclude Include="UI\uimodule_editorpage.h" />
     <ClInclude Include="UI\uimodule_profilemenu.h" />
     <QtMoc Include="UI\uimodule_windowmenu.h" />

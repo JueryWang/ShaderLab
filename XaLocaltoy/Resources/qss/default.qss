@@ -160,40 +160,59 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical{
 QScrollBar:horizontal
 {
    border: none;
-   width: 14px;
-   margin: 15px 0 15px 0;
+   height: 14px;
+   height: 14px;
+   margin: 0px 15px 0px 15px;
    background-color: wheat;
    border-radius: 0px;
 }
 
 QScrollBar::handle:horizontal{
     background-color: rgba(49,95,120,100);
-    margin: 0 0px 0 0px;
-    border-radius: 6px;
+    border-radius:7px;
+    height:14px;
 }
 
 QScrollBar::handle:horizontal:pressed{
-    background-color: #5c5b5b;
+    background-color:rgba(110,148,189,100);
 }
 
 QScrollBar::sub-line:horizontal{
     border: none;
-    background-color: white;
-    height: 15px;
-    border-top-left-radius: 7px;
-    border-top-right-radius: 7px;
-    subcontrol-position: top;
+    background-color: transparent;
+    /* height: 15px; */
+    width: 15px;
+    subcontrol-position: left;
     subcontrol-origin: margin;
 }
 
 QScrollBar::add-line:horizontal{
     border: none;
-    background-color: white;
-    height: 15px;
-    border-bottom-left-radius: 7px;
-    border-bottom-right-radius: 7px;
-    subcontrol-position: bottom;
+    background-color: transparent;
+    /* height: 15px; */
+    width: 15px;
+    subcontrol-position: right;
     subcontrol-origin: margin;
+}
+
+QScrollBar::left-arrow:horizontal{
+
+image: url("Resources/icon/scroll_left.svg");
+
+width:12px;
+
+height:12px;
+
+}
+
+QScrollBar::right-arrow:horizontal{
+
+image: url("Resources/icon/scroll_right.svg");
+
+width:12px;
+
+height:12px;
+
 }
 
 QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal{

@@ -32,6 +32,7 @@ XA_UIMODULE_ShowBoard::XA_UIMODULE_ShowBoard(int width)
 
 	int fontId = QFontDatabase::addApplicationFont(FONTPATH(Roboto-BoldItalic.ttf));
 	QStringList font_list = QFontDatabase::applicationFontFamilies(fontId);
+	global_font_mp["Roboto-BoldItalic"] = font_list[0];
 	var_font.setPointSize(10);
 	var_font.setFamily(font_list[0]);
 

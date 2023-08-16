@@ -11,7 +11,6 @@
 #include <QFont>
 #include <QDir>
 XA_UIMODULE_CodeEditor* XA_UIMODULE_CodeEditor::_codeEditor;
-static QMap<QString, QString> registeredFonts;
 int XA_UIMODULE_CodeEditor::editor_width = 0;
 int XA_UIMODULE_CodeEditor::editor_height = 0;
 
@@ -24,26 +23,26 @@ XA_UIMODULE_CodeEditor::XA_UIMODULE_CodeEditor()
 
 	int fontId = QFontDatabase::addApplicationFont(FONTPATH(Cascadia.ttf));
 	QStringList font_list = QFontDatabase::applicationFontFamilies(fontId);
-	registeredFonts["Cascadia"] = font_list[0];
+	global_font_mp["Cascadia"] = font_list[0];
 	
 	_editor_font = new QFont();
 	_editor_font->setPointSize(10);
 	//this->setFont(*_editor_font);
-	_editor_font->setFamily(registeredFonts["Cascadia"]);
+	_editor_font->setFamily(global_font_mp["Cascadia"]);
 
 
 	fontId = QFontDatabase::addApplicationFont(FONTPATH(Caviar_Dreams_Bold.ttf));
 	font_list = QFontDatabase::applicationFontFamilies(fontId);
-	registeredFonts["Caviar_Dreams_Bold"] = font_list[0];
+	global_font_mp["Caviar_Dreams_Bold"] = font_list[0];
 	
-	XA_UIMODULE_EditorPage::initFont(registeredFonts["Cascadia"], 10);
+	XA_UIMODULE_EditorPage::initFont(global_font_mp["Cascadia"], 10);
 	XA_UIMODULE_EditorPage::initIntellisense();
 
 	this->setContentsMargins(0, 0, 0, 0);
 	this->setTabsClosable(true);
 	this->setMovable(true);
 	this->setDocumentMode(true);
-	_editor_font->setFamily(registeredFonts["Caviar_Dreams_Bold"]);
+	_editor_font->setFamily(global_font_mp["Caviar_Dreams_Bold"]);
 	_editor_font->setPointSize(10);
 	this->setFont(*_editor_font);
 	connect(this, &QTabWidget::tabCloseRequested, this, &XA_UIMODULE_CodeEditor::on_closeTab);

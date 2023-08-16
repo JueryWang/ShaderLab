@@ -91,6 +91,9 @@
     <ClCompile Include="UI\uimodule_varShowboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UI\uimodule_AssetsWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="XaLocaltoy.h">
@@ -1051,6 +1054,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utilitys\Parser\parser_defaultDfs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\uimodule_AssetsWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

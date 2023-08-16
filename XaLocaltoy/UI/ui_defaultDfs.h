@@ -2,6 +2,7 @@
 #define UI_DEFAULT_DFS
 
 #include <QString>
+#include <QMap>
 #define ICOPATH(x) "Resources/icon/"#x
 #define AVTRPATH(x) "Resources/user/avatar/"#x
 #define FONTPATH(x) "Resources/font/"#x
@@ -98,4 +99,5 @@ const static QString WINDOWINFO_BTN_STYLE_2 = R"(.QPushButton{
 		border-radius:5px;
 })";
 
+static QMap<QString, QString> global_font_mp;
 #endif // UI_DEFAULT_DFS\

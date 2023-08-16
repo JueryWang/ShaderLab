@@ -5,6 +5,7 @@
 #include "GL/glmodule_render.h"
 #include "GL/glmodule_backstatge.h"
 #include "Utilitys/Parser/utils_shaderParser.h"
+#include "UI/uimodule_AssetsWindow.h"
 #include <QtConcurrent/QtConcurrent>
 #include <QToolButton>
 #include <windows.h>
@@ -77,18 +78,23 @@ OverallWindow::OverallWindow()
 	QVBoxLayout* editor_compilebar_layout = new QVBoxLayout();
 	editor_compilebar_layout->setContentsMargins(0, 0, 0, 0);
 	ClickableLabel* compilebar = new ClickableLabel(ICOPATH(compilebar.svg),16);
+
 	compilebar->setFixedHeight(20);
 	connect(compilebar, &ClickableLabel::clicked, this, &OverallWindow::on_compileCode);
 	editor_compilebar_layout->addWidget(codeEditorInst);
 	editor_compilebar_layout->addWidget(compilebar, Qt::AlignLeft);
 	editor_compilebar_wrapper->setLayout(editor_compilebar_layout);
+	XA_UIMODULE_ASSET_BAR* assets_bar = new XA_UIMODULE_ASSET_BAR(codeEditorInst->width());
+
 	splitter_v2->addWidget(editor_compilebar_wrapper);
-	splitter_v2->addWidget(new QWidget);
+	splitter_v2->addWidget(assets_bar);
 	splitter_v2->setSizes({ int(1.2*codeEditorInst->height()),this->height() - codeEditorInst->height() });
 	splitter_v2->handle(0)->setDisabled(true);
+	//splitter_v2->handle(2)->setDisabled(true);
 	splitter_v2->setStretchFactor(0, 1);
 	splitter_v2->setStretchFactor(1, 1);
 	splitter_v2->setStretchFactor(2, 1);
+	splitter_v2->setStretchFactor(3, 0);
 
 	splitter_h = new QSplitter(this);
 	splitter_h->resize(this->size());
@@ -208,9 +214,9 @@ void OverallWindow::init()
 	QRegularExpressionMatch match = re.match(s);
 	if (match.hasMatch())
 	{
-		qssPath = re.match(s).captured(0)+"Resources\\qss\\";
+		qssPath = re.match(s).captured(0) + "Resources\\qss\\";
 		iconPath = re.match(s).captured(0) + "Resources\\icon\\";
-		QFile file(qssPath+"default.qss");
+		QFile file(qssPath + "default.qss");
 		file.open(QIODevice::ReadOnly);
 		QString stylesheet = QLatin1String(file.readAll());
 		file.close();
