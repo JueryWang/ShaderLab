@@ -1,10 +1,18 @@
+#include "../Utilitys/uitilityDfs.h"
 #include "uimodule_AssetsWindow.h"
 #include "ui_defaultDfs.h"
 #include <QFont>
+#include <QFileDialog>
+#include <QMouseEvent>
 #include <QFontDatabase>
+#include <QGraphicsDropShadowEffect>
+#include <QDebug>
 
 XA_UIMODULE_ASSET_WINDOW::XA_UIMODULE_ASSET_WINDOW(int index)
 {
+	this->setAttribute(Qt::WA_Hover);
+	this->installEventFilter(this);
+
 	int fontId = QFontDatabase::addApplicationFont(FONTPATH(OpenSans-Regular.ttf));
 	QStringList font_list = QFontDatabase::applicationFontFamilies(fontId);
 
@@ -40,6 +48,39 @@ XA_UIMODULE_ASSET_WINDOW::XA_UIMODULE_ASSET_WINDOW(int index)
 	this->setLayout(_vlay);
 }
 
+
+
+bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
+{
+	if (event->type() == QEvent::HoverEnter) 
+	{
+		QGraphicsDropShadowEffect* effect = new QGraphicsDropShadowEffect();
+		effect->setOffset(0, 0);
+		effect->setColor("#D4D4D4");
+		effect->setBlurRadius(15);
+		this->setGraphicsEffect(effect);
+		return true;
+	}
+
+	if (event->type() == QEvent::HoverLeave)
+	{
+		delete this->graphicsEffect();
+		return true;
+	}
+
+
+	if (obj == this->_window && event->type() == QEvent::MouseButtonPress)
+	{
+		QMouseEvent* mouseEvent = (QMouseEvent*)event;
+		if (mouseEvent->buttons() & Qt::LeftButton)
+		{
+			QString fileName = QFileDialog::getOpenFileName(this, _STRING_WRAPPER("打开文件"), "Resources",
+				"Picuture (*.jpg *.png);; Audio (*.mp3 *.wav *.ogg)");
+			return true;
+		}
+	}
+	return QWidget::eventFilter(obj, event);
+}
 
 XA_UIMODULE_ASSET_BAR::XA_UIMODULE_ASSET_BAR(int width)
 {

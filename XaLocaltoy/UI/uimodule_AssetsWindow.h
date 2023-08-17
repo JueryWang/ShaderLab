@@ -7,10 +7,13 @@
 #include <QLabel>
 #include <QList>
 
+
 class XA_UIMODULE_ASSET_WINDOW : public QWidget
 {
 public:
 	XA_UIMODULE_ASSET_WINDOW(int index);
+protected:
+	virtual bool eventFilter(QObject* obj, QEvent* event);
 
 private:
 	QVBoxLayout* _vlay;
