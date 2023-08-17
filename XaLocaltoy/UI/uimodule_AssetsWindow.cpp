@@ -6,6 +6,8 @@
 #include <QMouseEvent>
 #include <QFontDatabase>
 #include <QGraphicsDropShadowEffect>
+#include <QFileInfo>
+#include <QPainter>
 #include <QDebug>
 
 XA_UIMODULE_ASSET_WINDOW::XA_UIMODULE_ASSET_WINDOW(int index)
@@ -20,14 +22,7 @@ XA_UIMODULE_ASSET_WINDOW::XA_UIMODULE_ASSET_WINDOW(int index)
 	_vlay = new QVBoxLayout();
 	_vlay->setContentsMargins(0, 0, 0, 0);
 
-	_window = new QWidget();
-	_window->setStyleSheet(R"(.QWidget{
-                        background-color:black;
-                        border:none;
-                        border-top-left-radius:5px;
-                        border-top-right-radius:5px;
-                        })");
-	_window->setFixedSize(200, 100);
+	_window = new ASSET_WINDOW(QSize(200, 100));
 	
 	_label = new QLabel();
 	_label->setAlignment(Qt::AlignLeft);
@@ -68,14 +63,33 @@ bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 		return true;
 	}
 
-
-	if (obj == this->_window && event->type() == QEvent::MouseButtonPress)
+	if (event->type() == QEvent::MouseButtonPress)
 	{
 		QMouseEvent* mouseEvent = (QMouseEvent*)event;
 		if (mouseEvent->buttons() & Qt::LeftButton)
 		{
+			static QStringList pictureSuffixValidator = { "jpg","png" };
+			static QStringList audioSuffixValidator = {"mp3","wav","ogg"};
 			QString fileName = QFileDialog::getOpenFileName(this, _STRING_WRAPPER("打开文件"), "Resources",
 				"Picuture (*.jpg *.png);; Audio (*.mp3 *.wav *.ogg)");
+			if (fileName.size())
+			{
+				QFileInfo fileInfo(fileName);
+				if (pictureSuffixValidator.contains(fileInfo.suffix()))
+				{
+					_window->asset_path = fileName;
+					_window->show_type = ASSET_WINDOW::IMAGE;
+					_window->show_img = QImage(fileName).scaled(_window->width(),_window->height(),Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+					_window->update();
+				}
+				if (audioSuffixValidator.contains(fileInfo.suffix()))
+				{
+					_window->asset_path = fileName;
+					_window->show_type = ASSET_WINDOW::AUDIO;
+					audio_file = fileName;
+					img_file = "";
+				}
+			}
 			return true;
 		}
 	}
@@ -100,4 +114,33 @@ XA_UIMODULE_ASSET_BAR::XA_UIMODULE_ASSET_BAR(int width)
 	}
 	wrapper->setLayout(hlay);
 	this->setWidget(wrapper);
+}
+
+ASSET_WINDOW::ASSET_WINDOW(const QSize& size)
+{
+	this->setStyleSheet(R"(.QWidget{
+                        background-color:black;
+                        border:none;
+                        border-top-left-radius:5px;
+                        border-top-right-radius:5px;
+                        })");
+	this->setFixedSize(size);
+	this->show_type = NONE;
+}
+
+void ASSET_WINDOW::paintEvent(QPaintEvent* event)
+{
+	static QRect rect = QRect(0, 0, this->width(), this->height());
+	QPainter painter(this);
+	switch (show_type)
+	{
+	case ASSET_WINDOW::IMAGE:
+		painter.drawImage(rect, show_img);
+		painter.end();
+		break;
+	case ASSET_WINDOW::AUDIO:
+		break;
+	default:
+		break;
+	}
 }
