@@ -76,7 +76,6 @@ private:
 	int windowBufSize;
 	int activeShader = 0;
 
-	std::map<std::string, GLuint> _textures;
 	std::atomic<bool> paused = false;
 	std::atomic<bool> exit = false;
 };

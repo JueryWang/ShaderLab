@@ -16,6 +16,7 @@ public:
 	static XA_GLMODULE_BACKSTG* getBackStage();
 	XA_GLMODULE_RENDER* requestRenderer();
 	void addTask(std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK> newTask);
+	void deleteTexture(int idx);
 
 protected:
 	void run() override;
@@ -32,6 +33,8 @@ private:
 
 	std::vector<XA_GLMODULE_RENDER*> _renders;
 	std::queue<std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK>> _task_queue; 
+
+	QList<XA_GL_TEXTURE_INFO> _textures;
 
 };
 #endif

@@ -9,6 +9,7 @@ using namespace std;
 std::atomic<int> XA_GLMODULE_RENDER::SCR_WIDTH = 0;
 std::atomic<int> XA_GLMODULE_RENDER::SCR_HEIGHT = 0;
 int XA_GLMODULE_RENDER::resolution[2];
+std::timed_mutex glLocker;
 
 float deltaTime = 0.0f;
 float lastTime = 0.0f;
@@ -137,9 +138,10 @@ void XA_GLMODULE_RENDER::contextDraw()
 	}
 	_shader = new Shader(this->_vs_source.c_str(),this->_fs_source.c_str());
 	_shader->use();
+
 	glUniform2iv(glGetUniformLocation(_shader->ID, "iResolution"), 1, &resolution[0]);
 	glEnable(GL_SAMPLE_SHADING);
-	glMinSampleShading(0.5f);
+	glMinSampleShading(0.7f);
 
 	while (!exit.load(memory_order_acquire))
 	{

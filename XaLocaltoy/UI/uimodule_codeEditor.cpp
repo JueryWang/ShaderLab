@@ -14,6 +14,7 @@ XA_UIMODULE_CodeEditor* XA_UIMODULE_CodeEditor::_codeEditor;
 int XA_UIMODULE_CodeEditor::editor_width = 0;
 int XA_UIMODULE_CodeEditor::editor_height = 0;
 
+
 XA_UIMODULE_CodeEditor::XA_UIMODULE_CodeEditor()
 {
 

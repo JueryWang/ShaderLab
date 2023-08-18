@@ -100,5 +100,5 @@ const static QString WINDOWINFO_BTN_STYLE_2 = R"(.QPushButton{
 		border-radius:5px;
 })";
 
-static QMap<QString, QString> global_font_mp;
+extern QMap<QString, QString> global_font_mp;
 #endif // UI_DEFAULT_DFS\

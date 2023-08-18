@@ -7,6 +7,8 @@
 #include <QLabel>
 #include <QList>
 
+class XA_GLMODULE_RENDER;
+
 class ASSET_WINDOW : public QWidget
 {
 public:
@@ -14,12 +16,12 @@ public:
 protected:
 	virtual void paintEvent(QPaintEvent* event);
 public:
-	enum ShowType
+	enum AssetType
 	{
 		NONE = 0,
 		IMAGE,
 		AUDIO
-	}show_type;
+	}asset_type;
 
 	QLabel cross;
 	QString asset_path;
@@ -34,22 +36,28 @@ public:
 protected:
 	virtual bool eventFilter(QObject* obj, QEvent* event);
 private:
+	void sendAssets(ASSET_WINDOW::AssetType type);
+
+private:
 	QVBoxLayout* _vlay;
 	ASSET_WINDOW* _window;
 	QLabel* _label;
+
+	int _index;
 	bool opened_asset = false;
 
 	QImage show_img;
-	QString img_file;
-	QString audio_file;
 };
 
 class XA_UIMODULE_ASSET_BAR : public QScrollArea
 {
+	friend class XA_UIMODULE_ASSET_WINDOW;
 public:
 	XA_UIMODULE_ASSET_BAR(int width);
+	static void setAssetsReciver(XA_GLMODULE_RENDER* reciver);
 
 private:
 	QList<XA_UIMODULE_ASSET_WINDOW*> asset_win_list;
+	static XA_GLMODULE_RENDER* _reciver;
 };
 #endif

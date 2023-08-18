@@ -1,6 +1,9 @@
-#include "../Utilitys/uitilityDfs.h"
 #include "uimodule_AssetsWindow.h"
 #include "ui_defaultDfs.h"
+#include "../Utilitys/uitilityDfs.h"
+#include "../GL/gl_defaultDfs.h"
+#include "../GL/glmodule_backstatge.h"
+#include "../GL/glmodule_render.h"
 #include <QFont>
 #include <QFileDialog>
 #include <QMouseEvent>
@@ -10,13 +13,16 @@
 #include <QPainter>
 #include <QDebug>
 
-XA_UIMODULE_ASSET_WINDOW::XA_UIMODULE_ASSET_WINDOW(int index)
+XA_GLMODULE_RENDER* XA_UIMODULE_ASSET_BAR::_reciver;
+
+XA_UIMODULE_ASSET_WINDOW::XA_UIMODULE_ASSET_WINDOW(int index):_index(index)
 {
 	this->setAttribute(Qt::WA_Hover);
 	this->installEventFilter(this);
 
 	int fontId = QFontDatabase::addApplicationFont(FONTPATH(OpenSans-Regular.ttf));
 	QStringList font_list = QFontDatabase::applicationFontFamilies(fontId);
+	global_font_mp["OpenSans-Regular"] = font_list[0];
 
 
 	_vlay = new QVBoxLayout();
@@ -28,7 +34,7 @@ XA_UIMODULE_ASSET_WINDOW::XA_UIMODULE_ASSET_WINDOW(int index)
 	_label->setAlignment(Qt::AlignLeft);
 	_label->setText(QString(" iChannel%1").arg(index));
 	QFont label_font;
-	label_font.setFamily(font_list[0]);
+	label_font.setFamily(global_font_mp["OpenSans-Regular"]);
 	label_font.setPointSize(10);
 	_label->setFont(label_font);
 	_label->setFixedHeight(25);
@@ -63,7 +69,6 @@ bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 		return true;
 	}
 
-
 	if (event->type() == QEvent::MouseButtonPress)
 	{
 		QMouseEvent* mouseEvent = (QMouseEvent*)event;
@@ -71,8 +76,12 @@ bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 		{
 			if (opened_asset && _window->cross_rect.contains(_window->mapFromGlobal(QCursor().pos())))
 			{
+				if (_window->asset_type == ASSET_WINDOW::IMAGE)
+				{
+					XA_GLMODULE_BACKSTG::getBackStage()->deleteTexture(_index);
+				}
 				opened_asset = false;
-				_window->show_type = ASSET_WINDOW::NONE;
+				_window->asset_type = ASSET_WINDOW::NONE;
 				_window->repaint();
 			}
 			else
@@ -87,16 +96,15 @@ bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 					if (pictureSuffixValidator.contains(fileInfo.suffix()))
 					{
 						_window->asset_path = fileName;
-						_window->show_type = ASSET_WINDOW::IMAGE;
+						_window->asset_type = ASSET_WINDOW::IMAGE;
 						_window->show_img = QImage(fileName).scaled(_window->width(),_window->height(),Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 						_window->update();
+						sendAssets(ASSET_WINDOW::IMAGE);
 					}
 					if (audioSuffixValidator.contains(fileInfo.suffix()))
 					{
 						_window->asset_path = fileName;
-						_window->show_type = ASSET_WINDOW::AUDIO;
-						audio_file = fileName;
-						img_file = "";
+						_window->asset_type = ASSET_WINDOW::AUDIO;
 					}
 					opened_asset = true;
 			}
@@ -105,6 +113,31 @@ bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 		}
 	}
 	return QWidget::eventFilter(obj, event);
+}
+
+void XA_UIMODULE_ASSET_WINDOW::sendAssets(ASSET_WINDOW::AssetType type)
+{
+	std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK> new_task;
+
+	switch (type)
+	{
+	case ASSET_WINDOW::IMAGE:
+	{	
+		new_task.first = XA_UIMODULE_ASSET_BAR::_reciver;
+		new_task.second.type = XA_GL_LOADTEXTURE;
+		
+		QByteArray s = _label->text().toLatin1();
+		new_task.second.param.loadTexture_param.index = _index;
+		s = _window->asset_path.toLatin1();
+		strcpy(new_task.second.param.loadTexture_param.texture_path, s.data());
+		XA_GLMODULE_BACKSTG::getBackStage()->addTask(new_task);
+		break;
+	}
+	case ASSET_WINDOW::AUDIO:
+		break;
+	default:
+		break;
+	}
 }
 
 XA_UIMODULE_ASSET_BAR::XA_UIMODULE_ASSET_BAR(int width)
@@ -127,6 +160,11 @@ XA_UIMODULE_ASSET_BAR::XA_UIMODULE_ASSET_BAR(int width)
 	this->setWidget(wrapper);
 }
 
+void XA_UIMODULE_ASSET_BAR::setAssetsReciver(XA_GLMODULE_RENDER* reciver)
+{
+	XA_UIMODULE_ASSET_BAR::_reciver = reciver;
+}
+
 ASSET_WINDOW::ASSET_WINDOW(const QSize& size)
 {
 	this->setStyleSheet(R"(.QWidget{
@@ -136,8 +174,7 @@ ASSET_WINDOW::ASSET_WINDOW(const QSize& size)
                         border-top-right-radius:5px;
                         })");
 	this->setFixedSize(size);
-	//this->setMouseTracking(true);
-	this->show_type = NONE;
+	this->asset_type = NONE;
 
 	QPixmap crossPix = QPixmap(ICOPATH(cross.svg));
 	cross.setFixedSize(QSize(20, 20));
@@ -152,7 +189,7 @@ void ASSET_WINDOW::paintEvent(QPaintEvent* event)
 	QPainter painter(this);
 	painter.setRenderHint(QPainter::Antialiasing, true);
 	
-	switch (show_type)
+	switch (asset_type)
 	{
 	case ASSET_WINDOW::IMAGE:
 		painter.drawImage(rect, show_img);
@@ -165,4 +202,3 @@ void ASSET_WINDOW::paintEvent(QPaintEvent* event)
 		break;
 	}
 }
-

@@ -15,6 +15,7 @@ class XA_UIMODULE_GLWidget : public QWidget
 public:
 	XA_UIMODULE_GLWidget(QWidget* parent,const std::string& title,int width,int height);
 	~XA_UIMODULE_GLWidget();
+	XA_GLMODULE_RENDER* getRender();
 	void setWindowInfoPanel(XA_UIMODULE_WindowInfo* inst);
 	void __setMinimumSize(const QSize& size);
 	void __setMaximumSize(const QSize& size);

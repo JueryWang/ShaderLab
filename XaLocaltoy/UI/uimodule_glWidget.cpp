@@ -25,7 +25,6 @@ XA_UIMODULE_GLWidget::XA_UIMODULE_GLWidget(QWidget* parent, const std::string& t
 	XA_UIMODULE_GLWidget::_glwgt_buffingsize = XA_GLMODULE_RENDER::SCR_WIDTH * XA_GLMODULE_RENDER::SCR_HEIGHT * 3 * sizeof(uchar);
 	_renderThread = new QThread(this);
 	_glBackendRender->moveToThread(_renderThread);
-	//_glBackendRender->addShader("Shader/birthday_cake.vs", "Shader/birthday_cake.fs","birthdayCake");
 
 	connect(this, &XA_UIMODULE_GLWidget::beginGLDraw, _glBackendRender, &XA_GLMODULE_RENDER::contextDraw);
 
@@ -40,6 +39,11 @@ XA_UIMODULE_GLWidget::~XA_UIMODULE_GLWidget()
 	_renderThread->quit();
 	delete _renderThread;
 	delete _glBackendRender;
+}
+
+XA_GLMODULE_RENDER* XA_UIMODULE_GLWidget::getRender()
+{
+	return this->_glBackendRender;
 }
 
 void XA_UIMODULE_GLWidget::setWindowInfoPanel(XA_UIMODULE_WindowInfo* inst)

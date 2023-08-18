@@ -1,4 +1,5 @@
 #include "OverallWindow.h"
+#include "UI/ui_defaultDfs.h"
 #include "Utilitys/uitilityDfs.h"
 #include "UI/uimodule_editorpage.h"
 #include "GL/gl_defaultDfs.h"
@@ -21,6 +22,7 @@
 
 QString OverallWindow::qssPath;
 QString OverallWindow::iconPath;
+QMap<QString, QString> global_font_mp = QMap<QString, QString>();
 
 OverallWindow::OverallWindow() 
 {
@@ -43,6 +45,7 @@ OverallWindow::OverallWindow()
 	_glWindow->__setMinimumSize(QSize(this->width() * GL_WIDGET_MIN_WIDTH_R, this->width() * GL_WIDGET_MIN_HEIGHT_R));
 	_glWindow->__setMaximumSize(QSize(this->width() * GL_WIDGET_MAX_WIDTH_R, this->width() * GL_WIDGET_MAX_HEIGHT_R));
 	connect(_glWindow, &XA_UIMODULE_GLWidget::resetGLWidget, this, &OverallWindow::on_restGLWidget);
+	XA_UIMODULE_ASSET_BAR::setAssetsReciver(_glWindow->getRender());
 
 	XA_UIMODULE_CodeEditor::setEditorSize(this->width() * (1. - GL_WIDGET_DEFAULT_WIDTH_R), this->height()* GL_WIDGET_DEFAULT_HEIGHT_R);
 	XA_UIMODULE_CodeEditor* codeEditorInst = XA_UIMODULE_CodeEditor::getEditor();

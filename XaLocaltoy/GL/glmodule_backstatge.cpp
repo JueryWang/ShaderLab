@@ -1,12 +1,15 @@
-#include  "glmodule_backstatge.h"
+#include "glmodule_backstatge.h"
+#include "gl_defaultDfs.h"
 #include "glmodule_render.h"
 #include "../UI/uimodule_glWidget.h"
+#include <QMutex>
 #include <QDebug>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
 XA_GLMODULE_BACKSTG* XA_GLMODULE_BACKSTG::_instance=nullptr;
+QMutex taskLocker;
 using namespace std;
 
 XA_GLMODULE_BACKSTG::XA_GLMODULE_BACKSTG()
@@ -55,6 +58,20 @@ void XA_GLMODULE_BACKSTG::addTask(std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK> new
 	taskLocker.unlock();
 }
 
+void XA_GLMODULE_BACKSTG::deleteTexture(int idx)
+{
+	auto texIter = _textures.begin();
+
+	for (; texIter != _textures.end(); texIter++)
+	{
+		if ((*texIter).index == idx)
+		{
+			delete (*texIter).address;
+		}
+		_textures.removeAt(texIter - _textures.begin());
+	}
+}
+
 void XA_GLMODULE_BACKSTG::run()
 {
 	while (1)
@@ -75,31 +92,30 @@ void XA_GLMODULE_BACKSTG::run()
 					}
 					case XA_GL_LOADTEXTURE:
 					{
-						unsigned int textureID;
-						glGenTextures(1, &textureID);
-
 						int width, height, nrComponents;
 						unsigned char* data = stbi_load(crt_task.second.param.loadTexture_param.texture_path, &width, &height, &nrComponents, 0);
-						if (data)
-						{
-							GLenum format;
-							if (nrComponents == 1)
-								format = GL_RED;
-							else if (nrComponents == 3)
-								format = GL_RGB;
-							else if (nrComponents == 4)
-								format = GL_RGBA;
+						//if (data)
+						//{
+						//	GLenum format;
+						//	if (nrComponents == 1)
+						//		format = GL_RED;
+						//	else if (nrComponents == 3)
+						//		format = GL_RGB;
+						//	else if (nrComponents == 4)
+						//		format = GL_RGBA;
 
-							glBindTexture(GL_TEXTURE_2D, textureID);
-							glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-							glGenerateMipmap(GL_TEXTURE_2D);
+						//	glBindTexture(GL_TEXTURE_2D, textureID);
+						//	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+						//	glGenerateMipmap(GL_TEXTURE_2D);
 
-							glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-							glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-							glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-							glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
-						}
-						crt_task.first->_textures[crt_task.second.param.loadTexture_param.texture_name] = textureID;
+						//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+						//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+						//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+						//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
+						//}
+						qDebug() << crt_task.second.param.loadTexture_param.index;
+						//crt_task.first->_textures[crt_task.second.param.loadTexture_param.texture_name] = textureID;
+						//glLocker.unlock();
 						break;
 					}
 					case XA_GL_COMPILE_SHADER:

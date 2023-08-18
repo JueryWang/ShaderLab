@@ -113,6 +113,7 @@
     <ClCompile Include="UI\uimodule_varShowboard.cpp" />
     <ClCompile Include="UI\uimodule_windowmenu.cpp" />
     <ClCompile Include="UI\uimodule_windowInfo.cpp" />
+    <ClCompile Include="Utilitys\AssetsLoader\utils_textureLoader.cpp" />
     <ClCompile Include="Utilitys\Parser\utils_shaderParser.cpp" />
     <ClCompile Include="XaLocaltoy.cpp" />
   </ItemGroup>
@@ -443,6 +444,7 @@
     <ClInclude Include="UI\ui_defaultDfs.h" />
     <QtMoc Include="UI\uimodule_lookmenu.h" />
     <QtMoc Include="UI\uimodule_glWidget.h" />
+    <ClInclude Include="Utilitys\AssetsLoader\utils_textureLoader.h" />
     <ClInclude Include="Utilitys\Parser\parser_defaultDfs.h" />
     <QtMoc Include="Utilitys\Parser\utils_shaderParser.h" />
     <ClInclude Include="Utilitys\uitilityDfs.h" />
