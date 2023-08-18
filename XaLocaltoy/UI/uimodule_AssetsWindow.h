@@ -7,14 +7,12 @@
 #include <QLabel>
 #include <QList>
 
-
 class ASSET_WINDOW : public QWidget
 {
 public:
 	ASSET_WINDOW(const QSize& size);
 protected:
 	virtual void paintEvent(QPaintEvent* event);
-
 public:
 	enum ShowType
 	{
@@ -22,8 +20,11 @@ public:
 		IMAGE,
 		AUDIO
 	}show_type;
+
+	QLabel cross;
 	QString asset_path;
 	QImage show_img;
+	QRect cross_rect;
 };
 
 class XA_UIMODULE_ASSET_WINDOW : public QWidget
@@ -36,6 +37,7 @@ private:
 	QVBoxLayout* _vlay;
 	ASSET_WINDOW* _window;
 	QLabel* _label;
+	bool opened_asset = false;
 
 	QImage show_img;
 	QString img_file;

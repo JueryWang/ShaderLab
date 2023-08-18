@@ -63,32 +63,43 @@ bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 		return true;
 	}
 
+
 	if (event->type() == QEvent::MouseButtonPress)
 	{
 		QMouseEvent* mouseEvent = (QMouseEvent*)event;
-		if (mouseEvent->buttons() & Qt::LeftButton)
+		if (mouseEvent->buttons() && Qt::LeftButton)
 		{
-			static QStringList pictureSuffixValidator = { "jpg","png" };
-			static QStringList audioSuffixValidator = {"mp3","wav","ogg"};
-			QString fileName = QFileDialog::getOpenFileName(this, _STRING_WRAPPER("打开文件"), "Resources",
-				"Picuture (*.jpg *.png);; Audio (*.mp3 *.wav *.ogg)");
-			if (fileName.size())
+			if (opened_asset && _window->cross_rect.contains(_window->mapFromGlobal(QCursor().pos())))
 			{
-				QFileInfo fileInfo(fileName);
-				if (pictureSuffixValidator.contains(fileInfo.suffix()))
+				opened_asset = false;
+				_window->show_type = ASSET_WINDOW::NONE;
+				_window->repaint();
+			}
+			else
+			{
+				static QStringList pictureSuffixValidator = { "jpg","png" };
+				static QStringList audioSuffixValidator = {"mp3","wav","ogg"};
+				QString fileName = QFileDialog::getOpenFileName(this, _STRING_WRAPPER("打开文件"), "Resources",
+					"Picuture (*.jpg *.png);; Audio (*.mp3 *.wav *.ogg)");
+				if (fileName.size())
 				{
-					_window->asset_path = fileName;
-					_window->show_type = ASSET_WINDOW::IMAGE;
-					_window->show_img = QImage(fileName).scaled(_window->width(),_window->height(),Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-					_window->update();
-				}
-				if (audioSuffixValidator.contains(fileInfo.suffix()))
-				{
-					_window->asset_path = fileName;
-					_window->show_type = ASSET_WINDOW::AUDIO;
-					audio_file = fileName;
-					img_file = "";
-				}
+					QFileInfo fileInfo(fileName);
+					if (pictureSuffixValidator.contains(fileInfo.suffix()))
+					{
+						_window->asset_path = fileName;
+						_window->show_type = ASSET_WINDOW::IMAGE;
+						_window->show_img = QImage(fileName).scaled(_window->width(),_window->height(),Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+						_window->update();
+					}
+					if (audioSuffixValidator.contains(fileInfo.suffix()))
+					{
+						_window->asset_path = fileName;
+						_window->show_type = ASSET_WINDOW::AUDIO;
+						audio_file = fileName;
+						img_file = "";
+					}
+					opened_asset = true;
+			}
 			}
 			return true;
 		}
@@ -125,17 +136,27 @@ ASSET_WINDOW::ASSET_WINDOW(const QSize& size)
                         border-top-right-radius:5px;
                         })");
 	this->setFixedSize(size);
+	//this->setMouseTracking(true);
 	this->show_type = NONE;
+
+	QPixmap crossPix = QPixmap(ICOPATH(cross.svg));
+	cross.setFixedSize(QSize(20, 20));
+	cross.setPixmap(crossPix);
+	cross.setAttribute(Qt::WA_TranslucentBackground);
+	cross_rect = QRect(this->width() - 25, 5, 20, 20);
 }
 
 void ASSET_WINDOW::paintEvent(QPaintEvent* event)
 {
 	static QRect rect = QRect(0, 0, this->width(), this->height());
 	QPainter painter(this);
+	painter.setRenderHint(QPainter::Antialiasing, true);
+	
 	switch (show_type)
 	{
 	case ASSET_WINDOW::IMAGE:
 		painter.drawImage(rect, show_img);
+		painter.drawPixmap(cross_rect, cross.grab());
 		painter.end();
 		break;
 	case ASSET_WINDOW::AUDIO:
@@ -144,3 +165,4 @@ void ASSET_WINDOW::paintEvent(QPaintEvent* event)
 		break;
 	}
 }
+
