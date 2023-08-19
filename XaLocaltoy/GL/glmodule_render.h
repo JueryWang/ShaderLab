@@ -5,7 +5,6 @@
 #include <QObject>
 #include <QWidget>
 #include <vector>
-#include <array>
 #include <string>
 #include <atomic>
 #include <shader.h>
@@ -29,11 +28,13 @@ public:
 	void __start();
 	void __pause();
 	void __restart();
+	void __update();
 	static void __reset(const QSize& newSize);
 
 private:
 	void renderQuad(int context_width, int context_height);
 	void loadTextures();
+	void updateGLContex();
 	struct Deleter {
 		void operator()(GLFWwindow* w)
 		{
@@ -80,9 +81,9 @@ private:
 	int activeShader = 0;
 
 	float anchor_time;
-	std::array<bool, 10> texture_mask;
 	std::atomic<bool> paused = false;
 	std::atomic<bool> exit = false;
+	std::atomic<bool> updateState = false;
 };
 
 #endif

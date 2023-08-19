@@ -68,13 +68,21 @@ struct XA_GL_TASK
 	Task_param param;
 };
 
+enum TEXTURE_STATUS
+{
+	TEXTURE_UNLOAD = 0,
+	TEXTURE_LOADED,
+	TEXTURE_DUPLICATED
+};
+
 struct XA_GL_TEXTURE_INFO
 {
-	int index;
+	int index = -1;
 	int width;
 	int height;
 	GLenum format;
 	GLuint textureID;
 	unsigned char* address;
+	TEXTURE_STATUS status = TEXTURE_DUPLICATED;
 };
 #endif

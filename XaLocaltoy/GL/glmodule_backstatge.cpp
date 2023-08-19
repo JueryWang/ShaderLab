@@ -64,11 +64,12 @@ void XA_GLMODULE_BACKSTG::deleteTexture(int idx)
 
 	for (; texIter != _textures.end(); texIter++)
 	{
-		if ((*texIter).index == idx)
+		if (((*texIter).index == idx) && ((*texIter).address != nullptr))
 		{
+			(*texIter).index = -1;
 			delete (*texIter).address;
 		}
-		_textures.removeAt(texIter - _textures.begin());
+		(*texIter).status = TEXTURE_DUPLICATED;
 	}
 	if (texIter == _textures.end())
 	{
@@ -96,7 +97,6 @@ void XA_GLMODULE_BACKSTG::run()
 					}
 					case XA_GL_LOADTEXTURE:
 					{
-						XA_GL_TEXTURE_INFO new_texture;
 						int width, height, nrComponents;
 						unsigned char* data = stbi_load(crt_task.second.param.loadTexture_param.texture_path, &width, &height, &nrComponents, 0);
 						if (data)
@@ -109,12 +109,14 @@ void XA_GLMODULE_BACKSTG::run()
 							else if (nrComponents == 4)
 								format = GL_RGBA;
 
-							new_texture.index = crt_task.second.param.loadTexture_param.index;
-							new_texture.address = data;
-							new_texture.width = width;
-							new_texture.height = height;
-							new_texture.format = format;
-							_textures.push_back(new_texture);
+							int index = crt_task.second.param.loadTexture_param.index;
+							_textures[index].index = index;
+							_textures[index].address = data;
+							_textures[index].width = width;
+							_textures[index].height = height;
+							_textures[index].format = format;
+							_textures[index].status = TEXTURE_UNLOAD;
+							crt_task.first->__update();
 						}
 						break;
 					}

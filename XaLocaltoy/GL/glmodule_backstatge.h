@@ -5,6 +5,7 @@
 #include <utility>
 #include <vector>
 #include <queue>
+#include <array>
 #include <QThread>
 
 class XA_GLMODULE_RENDER;
@@ -35,7 +36,7 @@ private:
 	std::vector<XA_GLMODULE_RENDER*> _renders;
 	std::queue<std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK>> _task_queue; 
 
-	QList<XA_GL_TEXTURE_INFO> _textures;
+	std::array<XA_GL_TEXTURE_INFO,10> _textures;
 
 };
 #endif

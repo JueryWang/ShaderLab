@@ -20,7 +20,6 @@ unsigned int quadVBO;
 XA_GLMODULE_RENDER::XA_GLMODULE_RENDER(const std::string& title, StorageType type, QObject* reciver) :_title(title),_type(type)
 {
 	this->_reciver = reciver;
-	texture_mask.fill(false);
 	if (XA_GLMODULE_RENDER::SCR_WIDTH == 0 || XA_GLMODULE_RENDER::SCR_HEIGHT == 0)
 	{
 		//Do some Log operation
@@ -102,6 +101,11 @@ void XA_GLMODULE_RENDER::__restart()
 	exit.store(false, memory_order_release);
 }
 
+void XA_GLMODULE_RENDER::__update()
+{
+	updateState.store(true, memory_order_release);
+}
+
 void XA_GLMODULE_RENDER::__exit()
 {
 	exit.store(true, memory_order_release);
@@ -157,6 +161,11 @@ void XA_GLMODULE_RENDER::contextDraw()
 		{
 			QThread::msleep(10);
 			continue;
+		}
+		if (updateState.load(memory_order_acquire))
+		{
+			updateGLContex();
+			updateState = false;
 		}
 		auto time = static_cast<float>(glfwGetTime());
 		deltaTime = time - lastTime;
@@ -222,20 +231,32 @@ void XA_GLMODULE_RENDER::loadTextures()
 {
 	for (XA_GL_TEXTURE_INFO& texture_info : XA_GLMODULE_BACKSTG::getBackStage()->_textures)
 	{
-		glActiveTexture(GL_TEXTURE0 + texture_info.index);
-		unsigned int textureID;
-		glGenTextures(1, &textureID);
-		texture_info.textureID = textureID;
+		if (texture_info.status == TEXTURE_UNLOAD)
+		{
+			glActiveTexture(GL_TEXTURE0 + texture_info.index);
+			unsigned int textureID;
+			glGenTextures(1, &textureID);
+			texture_info.textureID = textureID;
 		
-		glBindTexture(GL_TEXTURE_2D, textureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, texture_info.format, texture_info.width, 
-		texture_info.height, 0, texture_info.format, GL_UNSIGNED_BYTE, texture_info.address);
-		glGenerateMipmap(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, textureID);
+			glTexImage2D(GL_TEXTURE_2D, 0, texture_info.format, texture_info.width, 
+			texture_info.height, 0, texture_info.format, GL_UNSIGNED_BYTE, texture_info.address);
+			glGenerateMipmap(GL_TEXTURE_2D);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		texture_mask[texture_info.index] = true;
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			texture_info.status = TEXTURE_LOADED;
+		}
+		if(texture_info.status == TEXTURE_DUPLICATED)
+		{
+			glDeleteTextures(1, &texture_info.textureID);
+		}
 	}
+}
+
+void XA_GLMODULE_RENDER::updateGLContex()
+{
+	loadTextures();
 }
