@@ -1,4 +1,5 @@
 #include "glmodule_render.h"
+#include "glmodule_backstatge.h"
 #include "glmodule_EvSendFrame.h"
 #include <QApplication>
 #include <QThread>
@@ -19,6 +20,7 @@ unsigned int quadVBO;
 XA_GLMODULE_RENDER::XA_GLMODULE_RENDER(const std::string& title, StorageType type, QObject* reciver) :_title(title),_type(type)
 {
 	this->_reciver = reciver;
+	texture_mask.fill(false);
 	if (XA_GLMODULE_RENDER::SCR_WIDTH == 0 || XA_GLMODULE_RENDER::SCR_HEIGHT == 0)
 	{
 		//Do some Log operation
@@ -41,9 +43,8 @@ XA_GLMODULE_RENDER::XA_GLMODULE_RENDER(const std::string& title, StorageType typ
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_SAMPLES, 4);
+	//glfwWindowHint(GLFW_SAMPLES, 4);
 	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-
 }
 
 XA_GLMODULE_RENDER::~XA_GLMODULE_RENDER()
@@ -84,18 +85,23 @@ void XA_GLMODULE_RENDER::flip(uint8_t** buf, int context_width, int context_heig
 void XA_GLMODULE_RENDER::__pause()
 {
 	paused.store(true, memory_order_release);
+	anchor_time = glfwGetTime();
 }
 
 void XA_GLMODULE_RENDER::__start()
 {
 	paused.store(false, memory_order_release);
 	exit.store(false, memory_order_release);
+	glfwSetTime(anchor_time);
 }
 
 void XA_GLMODULE_RENDER::__restart()
 {
-
+	glfwSetTime(0.0f);
+	paused.store(false, memory_order_release);
+	exit.store(false, memory_order_release);
 }
+
 void XA_GLMODULE_RENDER::__exit()
 {
 	exit.store(true, memory_order_release);
@@ -138,10 +144,12 @@ void XA_GLMODULE_RENDER::contextDraw()
 	}
 	_shader = new Shader(this->_vs_source.c_str(),this->_fs_source.c_str());
 	_shader->use();
+	
+	loadTextures();
 
 	glUniform2iv(glGetUniformLocation(_shader->ID, "iResolution"), 1, &resolution[0]);
-	glEnable(GL_SAMPLE_SHADING);
-	glMinSampleShading(0.7f);
+	//glEnable(GL_SAMPLE_SHADING);
+	//glMinSampleShading(0.7f);
 
 	while (!exit.load(memory_order_acquire))
 	{
@@ -208,4 +216,26 @@ void XA_GLMODULE_RENDER::renderQuad(int context_width, int context_height)
 	glBindVertexArray(quadVAO);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glBindVertexArray(0);
+}
+
+void XA_GLMODULE_RENDER::loadTextures()
+{
+	for (XA_GL_TEXTURE_INFO& texture_info : XA_GLMODULE_BACKSTG::getBackStage()->_textures)
+	{
+		glActiveTexture(GL_TEXTURE0 + texture_info.index);
+		unsigned int textureID;
+		glGenTextures(1, &textureID);
+		texture_info.textureID = textureID;
+		
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, texture_info.format, texture_info.width, 
+		texture_info.height, 0, texture_info.format, GL_UNSIGNED_BYTE, texture_info.address);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		texture_mask[texture_info.index] = true;
+	}
 }

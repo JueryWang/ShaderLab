@@ -11,6 +11,7 @@ class XA_GLMODULE_RENDER;
 
 class XA_GLMODULE_BACKSTG : public QThread
 {
+	friend class XA_GLMODULE_RENDER;
 	Q_OBJECT
 public:
 	static XA_GLMODULE_BACKSTG* getBackStage();

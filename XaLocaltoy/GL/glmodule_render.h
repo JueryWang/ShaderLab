@@ -5,12 +5,14 @@
 #include <QObject>
 #include <QWidget>
 #include <vector>
-#include <map>
+#include <array>
 #include <string>
 #include <atomic>
 #include <shader.h>
 #include <map>
 #include <QDebug>
+
+class XA_GL_TEXTURE_INFO;
 
 class XA_GLMODULE_RENDER : public QObject
 {
@@ -31,6 +33,7 @@ public:
 
 private:
 	void renderQuad(int context_width, int context_height);
+	void loadTextures();
 	struct Deleter {
 		void operator()(GLFWwindow* w)
 		{
@@ -76,6 +79,8 @@ private:
 	int windowBufSize;
 	int activeShader = 0;
 
+	float anchor_time;
+	std::array<bool, 10> texture_mask;
 	std::atomic<bool> paused = false;
 	std::atomic<bool> exit = false;
 };

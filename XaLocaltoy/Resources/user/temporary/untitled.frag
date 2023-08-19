@@ -1,3 +1,29 @@
+#version 420 core                      
+                                       
+out vec4 fragColor;                    
+in vec2  fragCoord;                    
+										
+layout (binding = 0) uniform sampler2D iChannel0;
+layout (binding = 1) uniform sampler2D iChannel1;
+layout (binding = 2) uniform sampler2D iChannel2;
+layout (binding = 3) uniform sampler2D iChannel3;
+layout (binding = 4) uniform sampler2D iChannel4;
+layout (binding = 5) uniform sampler2D iChannel5;
+layout (binding = 6) uniform sampler2D iChannel6;
+layout (binding = 7) uniform sampler2D iChannel7;
+layout (binding = 8) uniform sampler2D iChannel8;
+layout (binding = 9) uniform sampler2D iChannel9;
+                                       
+struct runtime_param                   
+{                                      
+   float iTime;                        
+	ivec4 iMouse;						
+};                                     
+uniform runtime_param runtime_data;    
+uniform ivec2 iResolution;             
+                                       
+#define iTime runtime_data.iTime       
+#define iMouse runtime_data.iMouse		
 #define float2 vec2
 #define float3 vec3
 #define float4 vec4
@@ -219,8 +245,7 @@ float distanceAttenuation(float distance)
     return linAtt/(distance*distance);
 }
 
-void main()
-{    
+void main(){    
 	float2 uv = fragCoord.xy / iResolution.xy;
 	fragColor = float4(uv,0.5+0.5*sin(iTime),1.0);
     float time = iTime;

@@ -74,6 +74,7 @@ struct XA_GL_TEXTURE_INFO
 	int width;
 	int height;
 	GLenum format;
+	GLuint textureID;
 	unsigned char* address;
 };
 #endif

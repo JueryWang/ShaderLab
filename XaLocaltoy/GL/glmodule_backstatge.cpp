@@ -70,6 +70,10 @@ void XA_GLMODULE_BACKSTG::deleteTexture(int idx)
 		}
 		_textures.removeAt(texIter - _textures.begin());
 	}
+	if (texIter == _textures.end())
+	{
+		//Do some Log here
+	}
 }
 
 void XA_GLMODULE_BACKSTG::run()
@@ -92,30 +96,26 @@ void XA_GLMODULE_BACKSTG::run()
 					}
 					case XA_GL_LOADTEXTURE:
 					{
+						XA_GL_TEXTURE_INFO new_texture;
 						int width, height, nrComponents;
 						unsigned char* data = stbi_load(crt_task.second.param.loadTexture_param.texture_path, &width, &height, &nrComponents, 0);
-						//if (data)
-						//{
-						//	GLenum format;
-						//	if (nrComponents == 1)
-						//		format = GL_RED;
-						//	else if (nrComponents == 3)
-						//		format = GL_RGB;
-						//	else if (nrComponents == 4)
-						//		format = GL_RGBA;
+						if (data)
+						{
+							GLenum format;
+							if (nrComponents == 1)
+								format = GL_RED;
+							else if (nrComponents == 3)
+								format = GL_RGB;
+							else if (nrComponents == 4)
+								format = GL_RGBA;
 
-						//	glBindTexture(GL_TEXTURE_2D, textureID);
-						//	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-						//	glGenerateMipmap(GL_TEXTURE_2D);
-
-						//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-						//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-						//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-						//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
-						//}
-						qDebug() << crt_task.second.param.loadTexture_param.index;
-						//crt_task.first->_textures[crt_task.second.param.loadTexture_param.texture_name] = textureID;
-						//glLocker.unlock();
+							new_texture.index = crt_task.second.param.loadTexture_param.index;
+							new_texture.address = data;
+							new_texture.width = width;
+							new_texture.height = height;
+							new_texture.format = format;
+							_textures.push_back(new_texture);
+						}
 						break;
 					}
 					case XA_GL_COMPILE_SHADER:
