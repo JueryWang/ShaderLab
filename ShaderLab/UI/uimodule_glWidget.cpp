@@ -4,6 +4,7 @@
 #include "../GL/glmodule_render.h"
 #include "../Utilitys/uitilityDfs.h"
 #include "../OverallWindow.h"
+#include <QApplication>
 #include <QPainter>
 #include <QPainterPath>
 #include <QResizeEvent>
@@ -95,16 +96,21 @@ void XA_UIMODULE_GLWidget::on_clickUnlockSize()
 
 void XA_UIMODULE_GLWidget::on_clickResetSize()
 {
-	size_locked = true;
-	wgt_width = default_size.width(); wgt_height = default_size.height();
+	size_locked = false;
 	this->setMaximumSize(maximum_size);
 	this->setMinimumSize(minimum_size);
-	this->setFixedSize(default_size);
 
-	_infoPanel->lockbtn->setText(_STRING_WRAPPER("解锁当前宽高"));
-	_infoPanel->lockbtn->setIcon(QIcon(ICOPATH(unlock.svg)));
+	QResizeEvent *ev = new QResizeEvent(default_size,QSize(wgt_width,wgt_height));
+	QApplication::postEvent(this, ev);
+	emit resetGLWidget(default_size);
+
+	wgt_width = default_size.width(); wgt_height = default_size.height();
+
+	_infoPanel->lockbtn->setText(_STRING_WRAPPER("锁定当前宽高"));
+	_infoPanel->lockbtn->setIcon(QIcon(ICOPATH(locksize.svg)));
 	disconnect(_infoPanel->lockbtn, &QPushButton::clicked, this, &XA_UIMODULE_GLWidget::on_clickLockSize);
-	connect(_infoPanel->lockbtn, &QPushButton::clicked, this, &XA_UIMODULE_GLWidget::on_clickUnlockSize);
+	disconnect(_infoPanel->lockbtn, &QPushButton::clicked, this, &XA_UIMODULE_GLWidget::on_clickUnlockSize);
+	connect(_infoPanel->lockbtn, &QPushButton::clicked, this, &XA_UIMODULE_GLWidget::on_clickLockSize);
 }
 
 void XA_UIMODULE_GLWidget::paintEvent(QPaintEvent* event)
