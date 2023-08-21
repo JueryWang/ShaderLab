@@ -14,21 +14,10 @@ using namespace std;
 
 XA_GLMODULE_BACKSTG::XA_GLMODULE_BACKSTG()
 {
-	_renders.resize(MAX_GL_RENDERER);
-	for (int i = 0; i < MAX_GL_RENDERER; i++)
-	{
-		XA_GLMODULE_RENDER* render = new XA_GLMODULE_RENDER("BACKSTG RENDERER "+i);
-		_renders.emplace_back(render);
-	}
 }
 
 XA_GLMODULE_BACKSTG::~XA_GLMODULE_BACKSTG()
 {
-	for (int i = 0; i < MAX_GL_RENDERER; i++)
-	{
-		if(_renders[i]!=nullptr)
-			delete _renders[i];
-	}
 }
 
 XA_GLMODULE_BACKSTG* XA_GLMODULE_BACKSTG::getBackStage()
@@ -39,16 +28,6 @@ XA_GLMODULE_BACKSTG* XA_GLMODULE_BACKSTG::getBackStage()
 		_instance->start(QThread::NormalPriority);
 	}
 	return _instance;
-}
-
-XA_GLMODULE_RENDER* XA_GLMODULE_BACKSTG::requestRenderer()
-{
-	for (int i = 0; i < MAX_GL_RENDERER; i++)
-	{
-		if (_renders[i]->rd_state == INACTIVE)
-			return _renders[i];
-	}
-	return nullptr;
 }
 
 void XA_GLMODULE_BACKSTG::addTask(std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK> newTask)

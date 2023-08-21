@@ -79,6 +79,7 @@ bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 				if (_window->asset_type == ASSET_WINDOW::IMAGE)
 				{
 					XA_GLMODULE_BACKSTG::getBackStage()->deleteTexture(_index);
+					XA_UIMODULE_ASSET_BAR::_reciver->__update();
 				}
 				opened_asset = false;
 				_window->asset_type = ASSET_WINDOW::NONE;
