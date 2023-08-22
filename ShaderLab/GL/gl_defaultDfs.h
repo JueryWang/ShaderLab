@@ -55,7 +55,7 @@ struct CompileTask_param
 	char fs_path[64];
 };
 
-union Task_param
+union GL_Task_param
 {
 	DrawFrontTask_param drawFront_param;
 	LoadTextureTask_param loadTexture_param;
@@ -65,7 +65,7 @@ union Task_param
 struct XA_GL_TASK
 {
 	XA_GL_TASK_TYPE type;
-	Task_param param;
+	GL_Task_param param;
 };
 
 enum TEXTURE_STATUS

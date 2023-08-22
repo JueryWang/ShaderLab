@@ -97,6 +97,12 @@
     <ClCompile Include="Utilitys\AssetsManager\Audio\utils_audioPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Utilitys\utils_ffmpegHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilitys\utils_backendThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="MenuLayertop.h">
@@ -145,6 +151,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="ShaderLab.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Utilitys\utils_backendThread.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -1053,6 +1062,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utilitys\AssetsManager\Audio\utils_audioPlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilitys\utils_ffmpegHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilitys\utilsDfs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

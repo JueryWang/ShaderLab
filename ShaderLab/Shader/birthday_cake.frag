@@ -1,16 +1,4 @@
-#version 450 core
-
-out vec4 fragColor;
-in vec2 fragCoord;
-
-struct runtime_param
-{
-    float iTime;
-};
-uniform runtime_param runtime_data;
-uniform ivec2 iResolution;
-
-#define time runtime_data.iTime
+#define time runtime_data.iTime 
 
 //Set ANTIALIAS_ALWAYS to false if the animation is too slow
 #define ANTIALIAS_ALWAYS true

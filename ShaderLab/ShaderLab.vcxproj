@@ -68,15 +68,15 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <AdditionalIncludeDirectories>GL/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>GL/include;include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>qscintilla2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;qscintilla2_qt5d.lib;assimp-vc142-mt.lib;freetype.lib;$(Qt_LIBS_);%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>bin</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;qscintilla2_qt5d.lib;assimp-vc142-mt.lib;freetype.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;$(Qt_LIBS_);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -117,6 +117,8 @@
     <ClCompile Include="UI\uimodule_windowInfo.cpp" />
     <ClCompile Include="Utilitys\AssetsManager\Audio\utils_audioPlayer.cpp" />
     <ClCompile Include="Utilitys\Parser\utils_shaderParser.cpp" />
+    <ClCompile Include="Utilitys\utils_backendThread.cpp" />
+    <ClCompile Include="Utilitys\utils_ffmpegHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="MenuLayertop.h" />
@@ -125,6 +127,9 @@
     <QtMoc Include="OverallWindow.h" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="Utilitys\utils_backendThread.h" />
+    <ClInclude Include="Utilitys\utilsDfs.h" />
+    <ClInclude Include="Utilitys\utils_ffmpegHelper.h" />
     <QtMoc Include="UI\uimodule_aboutmenu.h" />
     <QtMoc Include="UI\uimodule_customIconStyle.h" />
     <QtMoc Include="UI\uimodule_filemenu.h" />

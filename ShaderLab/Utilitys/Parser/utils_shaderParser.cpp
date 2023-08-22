@@ -97,8 +97,9 @@ bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type
 			//Do some log here
 		}
 		_file_handler->close();
-		QString cmd = QString("cd bin && glslangValidator %1").arg(_file_handler->fileName());
-		validator_output = _UTIL_GET_VALADITOR_RES(cmd.toLatin1().data());
+
+		validator_output = _UTIL_GET_VALADITOR_RES(_file_handler->fileName());
+		qDebug() << validator_output;
 		if (validator_output.size())
 		{
 			err_code = parser::ErrorCode::PARSE_ERROR;

@@ -9,7 +9,7 @@
 #include <stb_image.h>
 
 XA_GLMODULE_BACKSTG* XA_GLMODULE_BACKSTG::_instance=nullptr;
-QMutex taskLocker;
+static QMutex taskLocker;
 using namespace std;
 
 XA_GLMODULE_BACKSTG::XA_GLMODULE_BACKSTG()
@@ -58,7 +58,7 @@ void XA_GLMODULE_BACKSTG::deleteTexture(int idx)
 
 void XA_GLMODULE_BACKSTG::run()
 {
-	while (1)
+	while (true)
 	{
 		if (taskLocker.try_lock())
 		{

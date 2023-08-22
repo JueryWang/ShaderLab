@@ -3,7 +3,7 @@
 #include <QString>
 #include <iostream>
 #include <stdio.h>
-
+#include <QProcess>
 namespace parser
 {
 
@@ -49,22 +49,18 @@ namespace parser
 		"#define iMouse runtime_data.iMouse		\n";
 
 #ifdef Q_OS_WIN
-
-	static QString _UTIL_GET_VALADITOR_RES(const char* cmd)
+	static QString _UTIL_GET_VALADITOR_RES(const QString &file)
 	{
-		FILE* pipe = _popen(cmd, "r");
-		if (!pipe) return "";
-
-		static char buffer[1024];
-		QString result;
-		while (!feof(pipe))
-		{
-			if (fgets(buffer, 1024, pipe) != NULL)
-				result += buffer;
-		}
-		_pclose(pipe);
-
-		return result;
+		static QProcess process;
+		process.setProgram("glslangValidator");
+		QStringList argument;
+		argument << "/c" << file;
+		process.setArguments(argument);
+		process.start();
+		process.waitForStarted();
+		process.waitForFinished();
+		QString outputInfo = QString::fromLocal8Bit(process.readAllStandardOutput()); 
+		return outputInfo;
 	}
 #endif
 }
