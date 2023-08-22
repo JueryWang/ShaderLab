@@ -4,6 +4,7 @@
 #include "../GL/gl_defaultDfs.h"
 #include "../GL/glmodule_backstatge.h"
 #include "../GL/glmodule_render.h"
+#include "../Utilitys/AssetsManager/Audio/utils_audioPlayer.h"
 #include <QFont>
 #include <QFileDialog>
 #include <QMouseEvent>
@@ -106,6 +107,9 @@ bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 					{
 						_window->asset_path = fileName;
 						_window->asset_type = ASSET_WINDOW::AUDIO;
+						_window->show_img = QImage(ICOPATH(music.png)).scaled(_window->width(), _window->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+						_window->update();
+						sendAssets(ASSET_WINDOW::AUDIO);
 					}
 					opened_asset = true;
 			}
@@ -135,7 +139,10 @@ void XA_UIMODULE_ASSET_WINDOW::sendAssets(ASSET_WINDOW::AssetType type)
 		break;
 	}
 	case ASSET_WINDOW::AUDIO:
+	{
+		XA_AUDIO_PLAYER::paly(_window->asset_path);
 		break;
+	}
 	default:
 		break;
 	}
@@ -198,6 +205,9 @@ void ASSET_WINDOW::paintEvent(QPaintEvent* event)
 		painter.end();
 		break;
 	case ASSET_WINDOW::AUDIO:
+		painter.drawImage(rect, show_img);
+		painter.drawPixmap(cross_rect, cross.grab());
+		painter.end();
 		break;
 	default:
 		break;

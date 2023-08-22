@@ -10,6 +10,8 @@ using namespace std;
 std::atomic<int> XA_GLMODULE_RENDER::SCR_WIDTH = 0;
 std::atomic<int> XA_GLMODULE_RENDER::SCR_HEIGHT = 0;
 int XA_GLMODULE_RENDER::resolution[2];
+
+
 std::timed_mutex glLocker;
 
 float deltaTime = 0.0f;
@@ -81,34 +83,53 @@ void XA_GLMODULE_RENDER::flip(uint8_t** buf, int context_width, int context_heig
 	}
 }
 
+void XA_GLMODULE_RENDER::setStatus(uint8_t bit_mask,bool open_bit)
+{
+	if (open_bit)
+	{
+		uint8_t temp = state_bit.load(memory_order_consume) | bit_mask;
+		state_bit.store(temp, memory_order_release);
+	}
+	else
+	{
+		uint8_t temp = state_bit.load(memory_order_consume);
+		temp = temp & (bit_mask ^ temp);
+		state_bit.store(temp, memory_order_release);
+	}
+
+}
+
+bool XA_GLMODULE_RENDER::getFlag(XA_RENDER_FLAG_BIT_POS pos)
+{
+	return state_bit.load(memory_order_consume) & (1 << pos);
+}
+
 void XA_GLMODULE_RENDER::__pause()
 {
-	paused.store(true, memory_order_release);
+	setStatus(RENDER_PAUSE,true);
 	anchor_time = glfwGetTime();
 }
 
 void XA_GLMODULE_RENDER::__start()
 {
-	paused.store(false, memory_order_release);
-	exit.store(false, memory_order_release);
+	setStatus( RENDER_PAUSE | RENDER_EXIT, false);
 	glfwSetTime(anchor_time);
 }
 
 void XA_GLMODULE_RENDER::__restart()
 {
 	glfwSetTime(0.0f);
-	paused.store(false, memory_order_release);
-	exit.store(false, memory_order_release);
+	setStatus(RENDER_PAUSE | RENDER_EXIT, false);
 }
 
 void XA_GLMODULE_RENDER::__update()
 {
-	updateState.store(true, memory_order_release);
+	setStatus(RENDER_UPDATE,true);
 }
 
 void XA_GLMODULE_RENDER::__exit()
 {
-	exit.store(true, memory_order_release);
+	setStatus(RENDER_EXIT, true);
 }
 
 
@@ -155,17 +176,17 @@ void XA_GLMODULE_RENDER::contextDraw()
 	//glEnable(GL_SAMPLE_SHADING);
 	//glMinSampleShading(0.7f);
 
-	while (!exit.load(memory_order_acquire))
+	while (!getFlag(BIT_EXIT_POS))
 	{
-		if (paused.load(memory_order_acquire))
+		if (getFlag(BIT_PAUSE_POS))
 		{
 			QThread::msleep(10);
 			continue;
 		}
-		if (updateState.load(memory_order_acquire))
+		if (getFlag(BIT_UPDATE_POS))
 		{
 			updateGLContex();
-			updateState = false;
+			setStatus(RENDER_PAUSE, false);
 		}
 		auto time = static_cast<float>(glfwGetTime());
 		deltaTime = time - lastTime;

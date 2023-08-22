@@ -1,11 +1,13 @@
 #include "uimodule_varShowboard.h"
 #include "ui_defaultDfs.h"
+#include "../Utilitys/uitilityDfs.h"
 #include <QPixmap>
 #include <QVBoxLayout>
 #include <QFont>
 #include <QLineEdit>
 #include <QMouseEvent>
 #include <QFontDatabase>
+#include <QPushButton>
 #include <QDebug>
 
 QFont var_font;
@@ -95,7 +97,13 @@ void XA_UIMODULE_ShowBoard::setVariantMap(const QMap<QString, QVariant>& var_mp)
 		var_grid->addWidget(editor, row, 1, 1, 2);
 		row++;
 	}
-
+	QPushButton* commitBtn = new QPushButton();
+	commitBtn->setStyleSheet(WINDOWINFO_BTN_STYLE_1);
+	commitBtn->setIconSize(QSize(20, 20));
+	commitBtn->setIcon(QIcon(ICOPATH(commit.svg)));
+	commitBtn->setFixedSize(120,22);
+	commitBtn->setText(_STRING_WRAPPER("上传变量"));
+	var_grid->addWidget(commitBtn, row, 1,1, 2, Qt::AlignTop | Qt::AlignRight);
 	var_grid->update();
 }
 

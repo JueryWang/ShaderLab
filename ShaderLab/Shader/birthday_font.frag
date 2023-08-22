@@ -1,16 +1,3 @@
-#version 420 core
-
-out vec4 fragColor;
-in vec2 fragCoord;
-
-struct runtime_param
-{
-    float iTime;
-};
-uniform runtime_param runtime_data;
-uniform ivec2 iResolution;
-#define iTime runtime_data.iTime
-
 float pi = atan(1.0)*4.0;
 float tau = atan(1.0)*8.0;
 

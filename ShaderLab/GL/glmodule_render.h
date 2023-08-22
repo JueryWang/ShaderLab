@@ -62,6 +62,8 @@ public:
 	static std::atomic<int> SCR_WIDTH;
 	static std::atomic<int> SCR_HEIGHT;
 	static int resolution[2];
+	void setStatus(uint8_t bit_mask,bool open_bit);
+	bool getFlag(XA_RENDER_FLAG_BIT_POS pos);
 	XA_RENDERER_STATE rd_state = INACTIVE;
 
 private:
@@ -81,9 +83,9 @@ private:
 	int activeShader = 0;
 
 	float anchor_time;
-	std::atomic<bool> paused = false;
-	std::atomic<bool> exit = false;
-	std::atomic<bool> updateState = false;
+	//use uint_8 flags to express 8 bools
+	//0 reserved ... 5. update |6 pause | 7 exit 
+	std::atomic<uint8_t> state_bit = 0x00000000;
 };
 
 #endif

@@ -94,6 +94,9 @@
     <ClCompile Include="ShaderLab.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Utilitys\AssetsManager\Audio\utils_audioPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="MenuLayertop.h">
@@ -1047,6 +1050,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UI\uimodule_AssetsWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilitys\AssetsManager\Audio\utils_audioPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
