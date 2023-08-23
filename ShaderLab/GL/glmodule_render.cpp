@@ -186,7 +186,7 @@ void XA_GLMODULE_RENDER::contextDraw()
 		if (getFlag(BIT_UPDATE_POS))
 		{
 			updateGLContex();
-			setStatus(RENDER_PAUSE, false);
+			setStatus(RENDER_UPDATE, false);
 		}
 		auto time = static_cast<float>(glfwGetTime());
 		deltaTime = time - lastTime;

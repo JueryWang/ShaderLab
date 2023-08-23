@@ -6,7 +6,6 @@
 #include <QProcess>
 namespace parser
 {
-
 	const static QString PARSER_PREFIX_VERTEX = \
 		"#version 420 core\n"
 		"layout(location = 0) in vec3 position; \n"
@@ -48,21 +47,23 @@ namespace parser
 		"#define iTime runtime_data.iTime       \n"
 		"#define iMouse runtime_data.iMouse		\n";
 
-#ifdef Q_OS_WIN
-	static QString _UTIL_GET_VALADITOR_RES(const QString &file)
+	static QString _UTILS_GET_VALADITOR_RES(const QString& file)
 	{
 		static QProcess process;
 		process.setProgram("glslangValidator");
 		QStringList argument;
+#ifdef Q_OS_WIN
 		argument << "/c" << file;
+#elif Q_OS_UNIX
+		argument << "-c" << file;
+#endif
 		process.setArguments(argument);
 		process.start();
 		process.waitForStarted();
 		process.waitForFinished();
-		QString outputInfo = QString::fromLocal8Bit(process.readAllStandardOutput()); 
+		QString outputInfo = QString::fromLocal8Bit(process.readAllStandardOutput());
 		return outputInfo;
 	}
-#endif
 }
 
 #endif // UTIL_DEFAULTDFS_H

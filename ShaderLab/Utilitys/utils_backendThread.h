@@ -12,7 +12,9 @@ class XA_UTILS_BACKEND : public QThread
 	Q_OBJECT
 public:
 	static XA_UTILS_BACKEND* getUtilBackend();
-
+	static void setCachePath(const char* path);
+	static void cleanCache();
+	void addTask(std::pair<QObject*, XA_UTILS_TASK> newTask);
 protected:
 	void run() override;
 
@@ -22,8 +24,16 @@ private:
 
 private:
 	static XA_UTILS_BACKEND* _instance;
-
+	static const char* cache_path;
+	static char default_au_outputFile[256];
+	
 	QAudioFormat audio_format;
+	QAudioOutput *crt_audioOut = NULL;
+	int audio_periodsz;
+	char* audio_buf;
+
+	QIODevice* crt_IO;
+
 	FILE* audio_fileHandler = NULL;
 	std::queue<std::pair<QObject*, XA_UTILS_TASK>> _task_queue;
 };

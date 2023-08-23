@@ -8,7 +8,7 @@ class XA_AUDIO_PLAYER : public QObject
 {
 public:
 	static XA_AUDIO_PLAYER* get_player();
-	static void paly(const QString& au_src);
+	void paly(const QString& au_src);
 
 private:
 	XA_AUDIO_PLAYER();

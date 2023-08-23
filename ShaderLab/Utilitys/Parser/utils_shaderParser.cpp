@@ -9,7 +9,7 @@
 using namespace parser;
 
 XA_UTILS_ShaderParser* XA_UTILS_ShaderParser::_instance = nullptr;
-QString XA_UTILS_ShaderParser::cache_path;
+const char* XA_UTILS_ShaderParser::cache_path;
 
 XA_UTILS_ShaderParser::XA_UTILS_ShaderParser()
 {
@@ -98,7 +98,7 @@ bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type
 		}
 		_file_handler->close();
 
-		validator_output = _UTIL_GET_VALADITOR_RES(_file_handler->fileName());
+		validator_output = _UTILS_GET_VALADITOR_RES(_file_handler->fileName());
 		qDebug() << validator_output;
 		if (validator_output.size())
 		{
@@ -122,7 +122,7 @@ XA_UTILS_ShaderParser* XA_UTILS_ShaderParser::getParser()
 	return _instance;
 }
 
-void XA_UTILS_ShaderParser::setCachePath(const QString& path)
+void XA_UTILS_ShaderParser::setCachePath(const char* path)
 {
 	QDir dir_helper;
 	if (!dir_helper.exists(path))

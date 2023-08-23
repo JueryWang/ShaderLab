@@ -84,8 +84,8 @@ private:
 
 	float anchor_time;
 	//use uint_8 flags to express 8 bools
-	//0 reserved ... 5. update |6 pause | 7 exit 
-	std::atomic<uint8_t> state_bit = 0x00000000;
+	//0-4 reserved ... 5. update |6 pause | 7 exit 
+	std::atomic<uint8_t> state_bit = 0b00000000;
 };
 
 #endif

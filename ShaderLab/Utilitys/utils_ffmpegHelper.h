@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QMap>
-
+#include "utilsDfs.h"
 extern "C"
 {
 #include <libavformat/avformat.h>
@@ -13,7 +13,7 @@ class XA_FFMPEG_HELPER : QObject
 {
 public:
 	static XA_FFMPEG_HELPER* getHelper();
-	QMap<QString, int> getAudioInfo(const QString& src);
+	void getAudioInfo(utils_ffmpeg::XA_FFMPEG_AU_INFO* info, const char* src);
 
 private:
 	XA_FFMPEG_HELPER();

@@ -5,8 +5,9 @@
 #include "GL/gl_defaultDfs.h"
 #include "GL/glmodule_render.h"
 #include "GL/glmodule_backstatge.h"
-#include "Utilitys/Parser/utils_shaderParser.h"
 #include "Utilitys/uitilityDfs.h"
+#include "Utilitys/Parser/utils_shaderParser.h"
+#include "Utilitys/utils_backendThread.h"
 #include <QtConcurrent/QtConcurrent>
 #include <QToolButton>
 #include <windows.h>
@@ -110,6 +111,7 @@ OverallWindow::OverallWindow()
 
 	this->setWindowIcon(QIcon("Resources/icon/ShaderLabIco.png"));
 	this->setWindowFlags(Qt::FramelessWindowHint);
+
 }
 
 OverallWindow::~OverallWindow()
@@ -232,7 +234,12 @@ void OverallWindow::init()
 	XA_GLMODULE_RENDER::__reset(QSize(monitor_resolution.width() * GL_WIDGET_MAX_WIDTH_R,
 		monitor_resolution.height() * GL_WIDGET_MAX_HEIGHT_R));
 	XA_UTILS_ShaderParser::setCachePath(USER_TEMPORARY_SHADER_PATH);
+
 	XA_GLMODULE_BACKSTG* gl_backstgThread = XA_GLMODULE_BACKSTG::getBackStage();
+	gl_backstgThread->start(QThread::NormalPriority);
+	
+	XA_UTILS_BACKEND::setCachePath(USER_TEMPORARY_AUDIO_PATH);
+	XA_UTILS_BACKEND* utils_backendThread = XA_UTILS_BACKEND::getUtilBackend();
 	gl_backstgThread->start(QThread::NormalPriority);
 }
 

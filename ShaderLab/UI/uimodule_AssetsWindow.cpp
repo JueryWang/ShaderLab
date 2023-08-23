@@ -48,6 +48,9 @@ XA_UIMODULE_ASSET_WINDOW::XA_UIMODULE_ASSET_WINDOW(int index):_index(index)
 	_vlay->addWidget(_label);
 	_vlay->setSpacing(0);
 	this->setLayout(_vlay);
+	//Test
+	XA_AUDIO_PLAYER::get_player()->paly("Resources/user/audio/01-Monk-Turner-Fascinoma-Its-Your-Birthday.wav");
+
 }
 
 
@@ -140,7 +143,7 @@ void XA_UIMODULE_ASSET_WINDOW::sendAssets(ASSET_WINDOW::AssetType type)
 	}
 	case ASSET_WINDOW::AUDIO:
 	{
-		XA_AUDIO_PLAYER::paly(_window->asset_path);
+		XA_AUDIO_PLAYER::get_player()->paly(_window->asset_path);
 		break;
 	}
 	default:

@@ -47,7 +47,7 @@ class XA_UTILS_ShaderParser : public QObject
 	Q_OBJECT
 public:
 	static XA_UTILS_ShaderParser* getParser();
-	static void setCachePath(const QString &path);
+	static void setCachePath(const char* path);
 	static void cleanCache();
 	void setContextParserRule(parser::ParserRule rule);
 	void setCurrentFileName(const QString& name, parser::ShaderType type);
@@ -70,7 +70,7 @@ private:
 	QString crt_file;
 
 	static XA_UTILS_ShaderParser* _instance;
-	static QString cache_path;
+	static const char* cache_path;
 	QString validator_output;
 };
 #endif // XA_UTILS_SHADERPARSER_H
