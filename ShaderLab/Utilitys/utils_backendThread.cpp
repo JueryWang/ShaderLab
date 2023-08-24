@@ -7,6 +7,7 @@
 #endif // Q_OS_WIN
 #include <QMutex>
 #include <QDir>
+#include <QDebug>
 #include "utilsDfs.h"
 using namespace utils_ffmpeg;
 
@@ -62,49 +63,7 @@ void XA_UTILS_BACKEND::run()
 				{
 					case XA_UTIL_PLAYAUDIO:
 					{
-						if (audio_fileHandler == NULL)
-						{
-							XA_FFMPEG_AU_INFO au_info;
-
-							XA_FFMPEG_HELPER::getHelper()
-								->getAudioInfo(&au_info,crt_task.second.param.playAudio_pram.audio_path);
-							_UTILS_GENERATE_PCM(au_info, crt_task.second.param.playAudio_pram.audio_path, default_au_outputFile);
-							QThread::usleep(10);//wait for detached ffmpeg gen-pcm process completely executed
-							audio_format.setSampleRate(au_info.sampleRate);
-							audio_format.setSampleSize(au_info.sampleSize);
-							audio_format.setChannelCount(au_info.channel);
-							audio_format.setByteOrder(QAudioFormat::LittleEndian);
-							audio_format.setSampleType(QAudioFormat::UnSignedInt);
-							crt_audioOut = new QAudioOutput(audio_format);
-							crt_IO = crt_audioOut->start();
-							
-							audio_fileHandler = fopen(default_au_outputFile, "rb");
-							audio_periodsz = crt_audioOut->periodSize();
-							audio_buf = new char[audio_periodsz];
-						}
-						else
-						{
-							if (!feof(audio_fileHandler))
-							{
-								if (crt_audioOut->bytesFree() >= audio_periodsz)
-								{
-									int len = fread(audio_buf, 1, audio_periodsz, audio_fileHandler);
-									if (len > 0)
-									{
-										crt_IO->write(audio_buf, len);
-										//not play end yet ,so make task again to the queue tail
-										_task_queue.push(crt_task);
-									}
-								}
-							}
-							else
-							{
-								fclose(audio_fileHandler);
-								delete crt_audioOut;
-								delete crt_IO;
-								delete audio_buf;
-							}
-						}
+						handlePlayAudio(crt_task);
 						break;
 					}
 
@@ -126,4 +85,56 @@ XA_UTILS_BACKEND::XA_UTILS_BACKEND()
 XA_UTILS_BACKEND::~XA_UTILS_BACKEND()
 {
 
+}
+
+void XA_UTILS_BACKEND::handlePlayAudio(const std::pair<QObject*, XA_UTILS_TASK>& crt_task)
+{
+	if (audio_fileHandler == NULL)
+	{
+		XA_FFMPEG_AU_INFO au_info;
+
+		XA_FFMPEG_HELPER::getHelper()
+			->getAudioInfo(&au_info, crt_task.second.param.playAudio_pram.audio_path);
+		_UTILS_GENERATE_PCM(au_info, crt_task.second.param.playAudio_pram.audio_path, default_au_outputFile);
+		audio_format.setSampleRate(au_info.sampleRate);
+		audio_format.setSampleSize(au_info.sampleSize);
+		audio_format.setChannelCount(au_info.channel);
+		audio_format.setCodec("audio/pcm");
+		audio_format.setByteOrder(QAudioFormat::LittleEndian);
+		audio_format.setSampleType(QAudioFormat::UnSignedInt);
+		crt_audioOut = new QAudioOutput(audio_format);
+		crt_IO = crt_audioOut->start();
+
+		audio_fileHandler = fopen(default_au_outputFile, "rb");
+		audio_periodsz = crt_audioOut->periodSize();
+		audio_buf = new char[audio_periodsz];
+		_task_queue.push(crt_task);
+	}
+	else
+	{
+		if (!feof(audio_fileHandler))
+		{
+			if (crt_audioOut->bytesFree() < audio_periodsz)
+			{
+				_task_queue.push(crt_task);
+				return;
+			}
+			int len = fread(audio_buf, 1, audio_periodsz, audio_fileHandler);
+
+			if (len <= 0)
+				return;
+			else
+			{
+				crt_IO->write(audio_buf, len);
+				_task_queue.push(crt_task);
+			}
+		}
+		else
+		{
+			fclose(audio_fileHandler);
+			delete crt_audioOut;
+			delete crt_IO;
+			delete audio_buf;
+		}
+	}
 }

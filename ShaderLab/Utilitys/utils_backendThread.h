@@ -21,6 +21,7 @@ protected:
 private:
 	XA_UTILS_BACKEND();
 	~XA_UTILS_BACKEND();
+	void handlePlayAudio(const std::pair<QObject*, XA_UTILS_TASK> &crt_task);
 
 private:
 	static XA_UTILS_BACKEND* _instance;

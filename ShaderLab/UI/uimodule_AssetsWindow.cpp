@@ -49,8 +49,6 @@ XA_UIMODULE_ASSET_WINDOW::XA_UIMODULE_ASSET_WINDOW(int index):_index(index)
 	_vlay->setSpacing(0);
 	this->setLayout(_vlay);
 	//Test
-	XA_AUDIO_PLAYER::get_player()->paly("Resources/user/audio/01-Monk-Turner-Fascinoma-Its-Your-Birthday.wav");
-
 }
 
 

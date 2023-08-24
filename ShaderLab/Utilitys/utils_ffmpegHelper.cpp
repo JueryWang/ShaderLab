@@ -31,7 +31,7 @@ void XA_FFMPEG_HELPER::getAudioInfo(utils_ffmpeg::XA_FFMPEG_AU_INFO* info, const
 	{
 		char buf[1024] = { 0 };
 		av_strerror(re, buf, sizeof(buf) - 1);
-		//Do sone log here
+		//Do some log here
 	}
 
 	re = avformat_find_stream_info(ic, 0);
@@ -43,7 +43,7 @@ void XA_FFMPEG_HELPER::getAudioInfo(utils_ffmpeg::XA_FFMPEG_AU_INFO* info, const
 	{
 		info->sampleRate = as->codecpar->sample_rate;
 		info->channel = as->codecpar->channels;
-		info->sampleSize = as->codecpar->format * as->codecpar->channels;
+		info->sampleSize = 16;
 	}
 
 	if (ic)

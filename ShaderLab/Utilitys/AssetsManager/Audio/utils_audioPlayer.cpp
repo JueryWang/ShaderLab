@@ -21,6 +21,7 @@ void XA_AUDIO_PLAYER::paly(const QString& au_src)
 	audio_playTask.second.type = XA_UTIL_PLAYAUDIO;
 	QByteArray s = au_src.toLatin1();
 	strcpy(audio_playTask.second.param.playAudio_pram.audio_path, s.data());
+	printf("audio path = %s\n", audio_playTask.second.param.playAudio_pram.audio_path);
 	XA_UTILS_BACKEND::getUtilBackend()->addTask(audio_playTask);
 }
 

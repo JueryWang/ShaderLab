@@ -237,10 +237,10 @@ void OverallWindow::init()
 
 	XA_GLMODULE_BACKSTG* gl_backstgThread = XA_GLMODULE_BACKSTG::getBackStage();
 	gl_backstgThread->start(QThread::NormalPriority);
-	
+
 	XA_UTILS_BACKEND::setCachePath(USER_TEMPORARY_AUDIO_PATH);
 	XA_UTILS_BACKEND* utils_backendThread = XA_UTILS_BACKEND::getUtilBackend();
-	gl_backstgThread->start(QThread::NormalPriority);
+	utils_backendThread->start(QThread::NormalPriority);
 }
 
 

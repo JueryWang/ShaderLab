@@ -2,6 +2,7 @@
 #define UTILS_SUPPORT
 
 #include <QProcess>
+#include <QDebug>
 enum XA_UTILS_TASK_TYPE
 {
 	XA_UTIL_PLAYAUDIO = 0,
@@ -46,9 +47,10 @@ namespace utils_ffmpeg
 		argument << "-ac" << QString::fromLatin1(c_str_temp);
 		memset(c_str_temp, 0, 8);
 		itoa(info.sampleRate, c_str_temp, 10);
-		argument << "-ac" << QString::fromLatin1(c_str_temp);
+		argument << "-ar" << QString::fromLatin1(c_str_temp);
 		argument << "-acodec" << "pcm_s16le";
 		argument << output;
+		qDebug() << argument;
 		QProcess::startDetached("ffmpeg", argument);
 	}
 }
