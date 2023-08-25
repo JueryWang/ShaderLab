@@ -100,5 +100,19 @@ const static QString WINDOWINFO_BTN_STYLE_2 = R"(.QPushButton{
 		border-radius:5px;
 })";
 
+const static QString WINDOW_ASEETBAR_BTN_STYLE = R"(.QPushButton{
+		border-style:none;
+		color:#FFFFFE;
+		padding:5px;
+		min-height:1px;
+		background:transparent;
+		}
+
+		.QPushButton:hover{
+		border:2px solid #9C9EA3;
+		background:transparent;
+		border-radius:5px;
+})";
+
 extern QMap<QString, QString> global_font_mp;
 #endif // UI_DEFAULT_DFS\

@@ -18,7 +18,6 @@ public:
 private:
 	XA_FFMPEG_HELPER();
 	~XA_FFMPEG_HELPER();
-
 private:
 	static XA_FFMPEG_HELPER* _instance;
 };

@@ -432,7 +432,7 @@
     <ClInclude Include="GL\include\stb_image_write.h" />
     <QtMoc Include="UI\uimodule_codeEditor.h" />
     <QtMoc Include="ShaderLab.h" />
-    <ClInclude Include="UI\uimodule_AssetsWindow.h" />
+    <QtMoc Include="UI\uimodule_AssetsWindow.h" />
     <ClInclude Include="UI\uimodule_editorpage.h" />
     <ClInclude Include="UI\uimodule_profilemenu.h" />
     <QtMoc Include="UI\uimodule_windowmenu.h" />

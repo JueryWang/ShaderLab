@@ -252,7 +252,7 @@ void XA_GLMODULE_RENDER::loadTextures()
 {
 	for (XA_GL_TEXTURE_INFO& texture_info : XA_GLMODULE_BACKSTG::getBackStage()->_textures)
 	{
-		if (texture_info.status == TEXTURE_UNLOAD)
+		if (texture_info.status == TEXTURE_ST_UNLOAD)
 		{
 			glActiveTexture(GL_TEXTURE0 + texture_info.index);
 			unsigned int textureID;
@@ -268,9 +268,9 @@ void XA_GLMODULE_RENDER::loadTextures()
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			texture_info.status = TEXTURE_LOADED;
+			texture_info.status = TEXTURE_ST_LOADED;
 		}
-		if(texture_info.status == TEXTURE_DEPRECATED)
+		if(texture_info.status == TEXTURE_ST_DEPRECATED)
 		{
 			glDeleteTextures(1, &texture_info.textureID);
 		}

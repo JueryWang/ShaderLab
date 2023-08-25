@@ -31,19 +31,70 @@ XA_UIMODULE_ASSET_WINDOW::XA_UIMODULE_ASSET_WINDOW(int index):_index(index)
 
 	_window = new ASSET_WINDOW(QSize(200, 100));
 	
+	_audioToolbar = new QWidget();
+	_audioToolbar->setStyleSheet(R"(.QWidget{
+                        background-color:white;
+                        border-bottom-left-radius:5px;
+                        border-bottom-right-radius:5px;
+                        })");
+	_audioToolbar->setFixedHeight(20);
+	_audioSetsLay = new QHBoxLayout();
+	_audioSetsLay->setContentsMargins(0, 0, 0, 0);
+	_audioSetsLay->setSpacing(0);
+
+	//for audio
 	_label = new QLabel();
 	_label->setAlignment(Qt::AlignLeft);
 	_label->setText(QString(" iChannel%1").arg(index));
-	QFont label_font;
-	label_font.setFamily(global_font_mp["OpenSans-Regular"]);
-	label_font.setPointSize(10);
-	_label->setFont(label_font);
-	_label->setFixedHeight(25);
 	_label->setStyleSheet(R"(.QLabel{
                         background-color:white;
                         border-bottom-left-radius:5px;
                         border-bottom-right-radius:5px;
                         })");
+	QFont label_font;
+	label_font.setFamily(global_font_mp["OpenSans-Regular"]);
+	label_font.setPointSize(10);
+	_label->setFont(label_font);
+	_label->setFixedHeight(20);
+	
+	pauseBtn = new QPushButton(_audioToolbar);
+	pauseBtn->setAttribute(Qt::WA_TranslucentBackground, true); 
+	pauseBtn->setStyleSheet(WINDOW_ASEETBAR_BTN_STYLE);
+	pauseBtn->setIconSize(QSize(13, 13));
+	pauseBtn->setFixedWidth(20);
+	pauseBtn->setIcon(QIcon(ICOPATH(pause.svg)));
+	connect(pauseBtn, &QPushButton::clicked, this, &XA_UIMODULE_ASSET_WINDOW::on_clcAudioPause);
+
+	QPushButton* rewindBtn = new QPushButton(_audioToolbar);
+	rewindBtn->setAttribute(Qt::WA_TranslucentBackground, true); 
+	rewindBtn->setStyleSheet(WINDOW_ASEETBAR_BTN_STYLE);
+	rewindBtn->setFixedWidth(20);
+	rewindBtn->setIconSize(QSize(13, 13));
+	rewindBtn->setIcon(QIcon(ICOPATH(rewind.svg)));
+	connect(rewindBtn, &QPushButton::clicked, this, &XA_UIMODULE_ASSET_WINDOW::on_clcAudioRewind);
+
+	QPushButton* volumeBtn = new QPushButton(_audioToolbar);
+	volumeBtn->setAttribute(Qt::WA_TranslucentBackground, true);
+	volumeBtn->setStyleSheet(WINDOW_ASEETBAR_BTN_STYLE);
+	volumeBtn->setIconSize(QSize(18, 18));
+	volumeBtn->setFixedWidth(20);
+	volumeBtn->setIcon(QIcon(ICOPATH(audio-volume.svg)));
+	connect(volumeBtn, &QPushButton::clicked, this, &XA_UIMODULE_ASSET_WINDOW::on_clcAudioVolume);
+
+	QPushButton* settingBtn = new QPushButton(_audioToolbar);
+	settingBtn->setAttribute(Qt::WA_TranslucentBackground, true);
+	settingBtn->setStyleSheet(WINDOW_ASEETBAR_BTN_STYLE);
+	settingBtn->setIconSize(QSize(13, 13));
+	settingBtn->setFixedWidth(20);
+	settingBtn->setIcon(QIcon(ICOPATH(setting.svg)));
+	connect(settingBtn, &QPushButton::clicked, this, &XA_UIMODULE_ASSET_WINDOW::on_clcAudioSetting);
+	
+	_audioSetsLay->addWidget(pauseBtn, Qt::AlignRight);
+	_audioSetsLay->addWidget(rewindBtn, Qt::AlignRight);
+	_audioSetsLay->addWidget(volumeBtn, Qt::AlignRight);
+	_audioSetsLay->addWidget(settingBtn, Qt::AlignRight);
+	_audioToolbar->setLayout(_audioSetsLay);
+
 	_vlay->addWidget(_window);
 	_vlay->addWidget(_label);
 	_vlay->setSpacing(0);
@@ -76,13 +127,18 @@ bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 		QMouseEvent* mouseEvent = (QMouseEvent*)event;
 		if (mouseEvent->buttons() && Qt::LeftButton)
 		{
-			if (opened_asset && _window->cross_rect.contains(_window->mapFromGlobal(QCursor().pos())))
+			if (opened_asset && _window->cross_rect.contains(_window->mapFromGlobal(QCursor().pos())))//close
 			{
 				if (_window->asset_type == ASSET_WINDOW::IMAGE)
 				{
 					XA_GLMODULE_BACKSTG::getBackStage()->deleteTexture(_index);
 					XA_UIMODULE_ASSET_BAR::_reciver->__update();
 				}
+				if (_window->asset_type == ASSET_WINDOW::AUDIO)
+				{
+					unsetupAudioSets();
+				}
+				
 				opened_asset = false;
 				_window->asset_type = ASSET_WINDOW::NONE;
 				_window->repaint();
@@ -108,6 +164,7 @@ bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 					{
 						_window->asset_path = fileName;
 						_window->asset_type = ASSET_WINDOW::AUDIO;
+						setupAudioSets();
 						_window->show_img = QImage(ICOPATH(music.png)).scaled(_window->width(), _window->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 						_window->update();
 						sendAssets(ASSET_WINDOW::AUDIO);
@@ -147,6 +204,49 @@ void XA_UIMODULE_ASSET_WINDOW::sendAssets(ASSET_WINDOW::AssetType type)
 	default:
 		break;
 	}
+}
+
+void XA_UIMODULE_ASSET_WINDOW::setupAudioSets()
+{
+	_vlay->replaceWidget(_label,_audioToolbar);
+	_label->setParent(NULL);
+}
+
+void XA_UIMODULE_ASSET_WINDOW::unsetupAudioSets()
+{
+	_vlay->replaceWidget(_audioToolbar,_label);
+	_audioToolbar->setParent(NULL);
+}
+
+void XA_UIMODULE_ASSET_WINDOW::on_clcAudioPause()
+{
+	XA_AUDIO_PLAYER::get_player()->pause();
+	disconnect(pauseBtn, &QPushButton::clicked, this, &XA_UIMODULE_ASSET_WINDOW::on_clcAudioPause);
+	pauseBtn->setIcon(QIcon(ICOPATH(play.svg)));
+	connect(pauseBtn, &QPushButton::clicked, this, &XA_UIMODULE_ASSET_WINDOW::on_clcAudioResume);
+}
+
+void XA_UIMODULE_ASSET_WINDOW::on_clcAudioResume()
+{
+	XA_AUDIO_PLAYER::get_player()->resume();
+	disconnect(pauseBtn, &QPushButton::clicked, this, &XA_UIMODULE_ASSET_WINDOW::on_clcAudioResume);
+	pauseBtn->setIcon(QIcon(ICOPATH(pause.svg)));
+	connect(pauseBtn, &QPushButton::clicked, this, &XA_UIMODULE_ASSET_WINDOW::on_clcAudioPause);
+}
+
+void XA_UIMODULE_ASSET_WINDOW::on_clcAudioRewind()
+{
+	XA_AUDIO_PLAYER::get_player()->rewind();
+}
+
+void XA_UIMODULE_ASSET_WINDOW::on_clcAudioVolume()
+{
+
+}
+
+void XA_UIMODULE_ASSET_WINDOW::on_clcAudioSetting()
+{
+
 }
 
 XA_UIMODULE_ASSET_BAR::XA_UIMODULE_ASSET_BAR(int width)

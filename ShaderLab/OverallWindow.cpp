@@ -186,9 +186,9 @@ void OverallWindow::on_compileCode()
 	QEventLoop loop;
 	QFutureWatcher<QMap<QString, QVariant>> watcher;
 	connect(&watcher, &QFutureWatcher<void>::finished, &loop, &QEventLoop::quit);
+	connect(&watcher, &QFutureWatcher<void>::finished, &loop, &QEventLoop::deleteLater);
 	watcher.setFuture(QtConcurrent::run(parseCode,parser,task_param));
 	loop.exec();
-	watcher.waitForFinished();
 	_varboard->setVariantMap(watcher.future());
 
 	std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK> new_task;

@@ -1,5 +1,6 @@
 #include "utils_backendThread.h"
 #include "utils_ffmpegHelper.h"
+#include "AssetsManager/Audio/utils_audioPlayer.h"
 #ifdef Q_OS_WIN
 #include <io.h>
 #else
@@ -10,6 +11,7 @@
 #include <QDebug>
 #include "utilsDfs.h"
 using namespace utils_ffmpeg;
+using namespace std;
 
 XA_UTILS_BACKEND* XA_UTILS_BACKEND::_instance = nullptr;
 const char* XA_UTILS_BACKEND::cache_path;
@@ -79,16 +81,32 @@ void XA_UTILS_BACKEND::run()
 XA_UTILS_BACKEND::XA_UTILS_BACKEND()
 {
 
-
 }
 
 XA_UTILS_BACKEND::~XA_UTILS_BACKEND()
 {
-
+	delete crt_audioOut;
+	delete crt_IO;
+	delete audio_fileHandler;
 }
 
 void XA_UTILS_BACKEND::handlePlayAudio(const std::pair<QObject*, XA_UTILS_TASK>& crt_task)
 {
+	XA_AUDIO_STATE crt_state = au_state.load(memory_order_consume);
+	
+	if (crt_state == AUDIO_ST_DEPRECATED)
+	{
+		if (audio_fileHandler)
+		{
+			fclose(audio_fileHandler);
+			delete crt_audioOut;
+			delete crt_IO;
+			delete audio_buf;
+			audio_fileHandler = NULL;
+		}
+		return;
+	}
+
 	if (audio_fileHandler == NULL)
 	{
 		XA_FFMPEG_AU_INFO au_info;
@@ -119,22 +137,75 @@ void XA_UTILS_BACKEND::handlePlayAudio(const std::pair<QObject*, XA_UTILS_TASK>&
 				_task_queue.push(crt_task);
 				return;
 			}
-			int len = fread(audio_buf, 1, audio_periodsz, audio_fileHandler);
+			int len = 0;
+			if(crt_state != AUDIO_ST_PAUSE)
+				len = fread(audio_buf, 1, audio_periodsz, audio_fileHandler);
 
 			if (len <= 0)
 				return;
-			else
+			switch (crt_state)
 			{
-				crt_IO->write(audio_buf, len);
-				_task_queue.push(crt_task);
+				case AUDIO_ST_PAUSE:
+					//no need to push this task again stop reading audio
+					return;
+					break;
+				case AUDIO_ST_REWIND:
+					rewind(audio_fileHandler);
+					au_state.store(AUDIO_ST_ONPLAY, memory_order_release);
+					_task_queue.push(crt_task);
+					break;
+				case AUDIO_ST_MUTE:
+					_task_queue.push(crt_task);//don't write to Sound output,so there is no Sound
+					break;
+				default://resume | onplay
+					crt_IO->write(audio_buf, len);
+					_task_queue.push(crt_task);
+					break;
 			}
+			
 		}
-		else
+		else//play done
 		{
+			au_state = AUDIO_ST_DEPRECATED;
 			fclose(audio_fileHandler);
 			delete crt_audioOut;
 			delete crt_IO;
 			delete audio_buf;
+			audio_fileHandler = NULL;
 		}
 	}
+}
+
+void XA_UTILS_BACKEND::AudioPlay()
+{
+	au_state.store(AUDIO_ST_ONPLAY, memory_order_release);
+}
+
+void XA_UTILS_BACKEND::AudioPause()
+{
+	au_state.store(AUDIO_ST_PAUSE, memory_order_release);
+}
+
+void XA_UTILS_BACKEND::AudioRewind()
+{
+	au_state.store(AUDIO_ST_REWIND, memory_order_release);
+}
+
+void XA_UTILS_BACKEND::AudioMute()
+{
+	au_state.store(AUDIO_ST_MUTE, memory_order_release);
+}
+
+void XA_UTILS_BACKEND::AudioQuit()
+{
+	au_state.store(AUDIO_ST_DEPRECATED, memory_order_release);
+}
+
+void XA_UTILS_BACKEND::AudioResume()
+{
+	au_state.store(AUDIO_ST_RESUME, memory_order_release);
+	std::pair<QObject*, XA_UTILS_TASK> audio_playTask;
+	audio_playTask.first = XA_AUDIO_PLAYER::get_player();
+	audio_playTask.second.type = XA_UTIL_PLAYAUDIO;
+	addTask(audio_playTask);
 }

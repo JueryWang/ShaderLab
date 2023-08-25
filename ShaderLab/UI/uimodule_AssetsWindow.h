@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QScrollArea>
 #include <QVBoxLayout>
+#include <QPushButton>
+#include <QSlider>
 #include <QLabel>
 #include <QList>
 
@@ -31,17 +33,30 @@ public:
 
 class XA_UIMODULE_ASSET_WINDOW : public QWidget
 {
+	Q_OBJECT
 public:
 	XA_UIMODULE_ASSET_WINDOW(int index);
 protected:
 	virtual bool eventFilter(QObject* obj, QEvent* event);
 private:
 	void sendAssets(ASSET_WINDOW::AssetType type);
+	void setupAudioSets();
+	void unsetupAudioSets();
+public slots:
+	void on_clcAudioPause();
+	void on_clcAudioResume();
+	void on_clcAudioRewind();
+	void on_clcAudioVolume();
+	void on_clcAudioSetting();
 
 private:
 	QVBoxLayout* _vlay;
+	QHBoxLayout* _audioSetsLay;
 	ASSET_WINDOW* _window;
+	QWidget* _audioToolbar;
 	QLabel* _label;
+	QPushButton* pauseBtn;
+	QSlider* _auVolumeSlider;
 
 	int _index;
 	bool opened_asset = false;

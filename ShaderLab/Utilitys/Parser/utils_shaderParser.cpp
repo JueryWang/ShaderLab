@@ -99,7 +99,6 @@ bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type
 		_file_handler->close();
 
 		validator_output = _UTILS_GET_VALADITOR_RES(_file_handler->fileName());
-		qDebug() << validator_output;
 		if (validator_output.size())
 		{
 			err_code = parser::ErrorCode::PARSE_ERROR;

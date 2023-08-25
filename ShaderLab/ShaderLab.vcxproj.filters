@@ -156,6 +156,9 @@
     <QtMoc Include="Utilitys\utils_backendThread.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="UI\uimodule_AssetsWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UI\ui_defaultDfs.h">
@@ -1056,9 +1059,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utilitys\Parser\parser_defaultDfs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\uimodule_AssetsWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utilitys\AssetsManager\Audio\utils_audioPlayer.h">

@@ -48,7 +48,7 @@ void XA_GLMODULE_BACKSTG::deleteTexture(int idx)
 			(*texIter).index = -1;
 			delete (*texIter).address;
 		}
-		(*texIter).status = TEXTURE_DEPRECATED;
+		(*texIter).status = TEXTURE_ST_DEPRECATED;
 	}
 	if (texIter == _textures.end())
 	{
@@ -120,7 +120,7 @@ void XA_GLMODULE_BACKSTG::handleLoadTexture(const std::pair<XA_GLMODULE_RENDER*,
 		_textures[index].width = width;
 		_textures[index].height = height;
 		_textures[index].format = format;
-		_textures[index].status = TEXTURE_UNLOAD;
+		_textures[index].status = TEXTURE_ST_UNLOAD;
 		crt_task.first->__update();
 	}
 }

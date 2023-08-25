@@ -40,7 +40,6 @@ private:
 		{
 			if (w != nullptr)
 			{
-				qDebug() << "window instance deleted~";
 				glfwTerminate();
 				glfwDestroyWindow(w);
 			}
