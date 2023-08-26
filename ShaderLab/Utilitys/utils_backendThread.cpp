@@ -52,6 +52,12 @@ void XA_UTILS_BACKEND::addTask(std::pair<QObject*, XA_UTILS_TASK> newTask)
 	taskLocker.unlock();
 }
 
+void XA_UTILS_BACKEND::setAuVolume(float volume)
+{
+	audio_changed.store(true, memory_order_release);
+	crt_auVolume = volume;
+}
+
 void XA_UTILS_BACKEND::run()
 {
 	while (true)
@@ -68,7 +74,6 @@ void XA_UTILS_BACKEND::run()
 						handlePlayAudio(crt_task);
 						break;
 					}
-
 				}
 				_task_queue.pop();
 			}
@@ -93,18 +98,18 @@ XA_UTILS_BACKEND::~XA_UTILS_BACKEND()
 void XA_UTILS_BACKEND::handlePlayAudio(const std::pair<QObject*, XA_UTILS_TASK>& crt_task)
 {
 	XA_AUDIO_STATE crt_state = au_state.load(memory_order_consume);
-	
 	if (crt_state == AUDIO_ST_DEPRECATED)
 	{
-		if (audio_fileHandler)
+		if (audio_fileHandler != NULL)
 		{
 			fclose(audio_fileHandler);
 			delete crt_audioOut;
 			delete crt_IO;
 			delete audio_buf;
 			audio_fileHandler = NULL;
+			crt_state = AUDIO_ST_ONPLAY;
+			return;
 		}
-		return;
 	}
 
 	if (audio_fileHandler == NULL)
@@ -114,6 +119,7 @@ void XA_UTILS_BACKEND::handlePlayAudio(const std::pair<QObject*, XA_UTILS_TASK>&
 		XA_FFMPEG_HELPER::getHelper()
 			->getAudioInfo(&au_info, crt_task.second.param.playAudio_pram.audio_path);
 		_UTILS_GENERATE_PCM(au_info, crt_task.second.param.playAudio_pram.audio_path, default_au_outputFile);
+		QThread::usleep(10);
 		audio_format.setSampleRate(au_info.sampleRate);
 		audio_format.setSampleSize(au_info.sampleSize);
 		audio_format.setChannelCount(au_info.channel);
@@ -130,6 +136,11 @@ void XA_UTILS_BACKEND::handlePlayAudio(const std::pair<QObject*, XA_UTILS_TASK>&
 	}
 	else
 	{
+		if (audio_changed.load(memory_order_consume))
+		{
+			crt_audioOut->setVolume(crt_auVolume);
+			audio_changed.store(false, memory_order_release);
+		}
 		if (!feof(audio_fileHandler))
 		{
 			if (crt_audioOut->bytesFree() < audio_periodsz)
@@ -142,7 +153,13 @@ void XA_UTILS_BACKEND::handlePlayAudio(const std::pair<QObject*, XA_UTILS_TASK>&
 				len = fread(audio_buf, 1, audio_periodsz, audio_fileHandler);
 
 			if (len <= 0)
+			{
+				emit audioplayDone();
 				return;
+			}
+			//for (int i = 0; i < len; i++)
+			//	audio_buf[i] *= crt_auVolume;
+
 			switch (crt_state)
 			{
 				case AUDIO_ST_PAUSE:
@@ -166,12 +183,15 @@ void XA_UTILS_BACKEND::handlePlayAudio(const std::pair<QObject*, XA_UTILS_TASK>&
 		}
 		else//play done
 		{
-			au_state = AUDIO_ST_DEPRECATED;
-			fclose(audio_fileHandler);
-			delete crt_audioOut;
-			delete crt_IO;
-			delete audio_buf;
-			audio_fileHandler = NULL;
+			XA_AUDIO_PLAYER::get_player()->playDone();
+			if (audio_fileHandler != NULL)
+			{
+				fclose(audio_fileHandler);
+				delete crt_audioOut;
+				delete crt_IO;
+				delete audio_buf;
+				audio_fileHandler = NULL;
+			}
 		}
 	}
 }
@@ -204,6 +224,16 @@ void XA_UTILS_BACKEND::AudioQuit()
 void XA_UTILS_BACKEND::AudioResume()
 {
 	au_state.store(AUDIO_ST_RESUME, memory_order_release);
+	std::pair<QObject*, XA_UTILS_TASK> audio_playTask;
+	audio_playTask.first = XA_AUDIO_PLAYER::get_player();
+	audio_playTask.second.type = XA_UTIL_PLAYAUDIO;
+	addTask(audio_playTask);
+}
+
+void XA_UTILS_BACKEND::AudioReplay()
+{
+	au_state = AUDIO_ST_ONPLAY;
+	rewind(audio_fileHandler);
 	std::pair<QObject*, XA_UTILS_TASK> audio_playTask;
 	audio_playTask.first = XA_AUDIO_PLAYER::get_player();
 	audio_playTask.second.type = XA_UTIL_PLAYAUDIO;

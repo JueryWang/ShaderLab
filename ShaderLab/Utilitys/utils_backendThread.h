@@ -16,6 +16,12 @@ public:
 	static void setCachePath(const char* path);
 	static void cleanCache();
 	void addTask(std::pair<QObject*, XA_UTILS_TASK> newTask);
+	void setAuVolume(float volume);
+
+signals:
+	void audioplayDone();
+
+
 protected:
 	void run() override;
 
@@ -29,6 +35,7 @@ private:
 	void AudioMute();
 	void AudioQuit();
 	void AudioResume();
+	void AudioReplay();
 
 private:
 	static XA_UTILS_BACKEND* _instance;
@@ -36,6 +43,8 @@ private:
 	static char default_au_outputFile[256];
 	
 	std::atomic<XA_AUDIO_STATE> au_state;
+	std::atomic<bool> audio_changed = false;
+	float crt_auVolume = 1.0;
 	QAudioFormat audio_format;
 	QAudioOutput *crt_audioOut = NULL;
 	int audio_periodsz;

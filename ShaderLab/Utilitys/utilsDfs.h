@@ -19,7 +19,7 @@ enum XA_AUDIO_STATE
 
 struct PlayAudioTask_param
 {
-	char audio_path[64];
+	char audio_path[128];
 };
 
 union UTILS_TASK_param

@@ -5,6 +5,7 @@
 #include "../GL/glmodule_backstatge.h"
 #include "../GL/glmodule_render.h"
 #include "../Utilitys/AssetsManager/Audio/utils_audioPlayer.h"
+#include "uimodule_radioVolume.h"
 #include <QFont>
 #include <QFileDialog>
 #include <QMouseEvent>
@@ -14,7 +15,7 @@
 #include <QPainter>
 #include <QDebug>
 
-XA_GLMODULE_RENDER* XA_UIMODULE_ASSET_BAR::_reciver;
+XA_GLMODULE_RENDER* XA_UIMODULE_ASSET_BAR::_glReciver;
 
 XA_UIMODULE_ASSET_WINDOW::XA_UIMODULE_ASSET_WINDOW(int index):_index(index)
 {
@@ -31,7 +32,7 @@ XA_UIMODULE_ASSET_WINDOW::XA_UIMODULE_ASSET_WINDOW(int index):_index(index)
 
 	_window = new ASSET_WINDOW(QSize(200, 100));
 	
-	_audioToolbar = new QWidget();
+	_audioToolbar = new QWidget(this);
 	_audioToolbar->setStyleSheet(R"(.QWidget{
                         background-color:white;
                         border-bottom-left-radius:5px;
@@ -65,7 +66,7 @@ XA_UIMODULE_ASSET_WINDOW::XA_UIMODULE_ASSET_WINDOW(int index):_index(index)
 	pauseBtn->setIcon(QIcon(ICOPATH(pause.svg)));
 	connect(pauseBtn, &QPushButton::clicked, this, &XA_UIMODULE_ASSET_WINDOW::on_clcAudioPause);
 
-	QPushButton* rewindBtn = new QPushButton(_audioToolbar);
+	rewindBtn = new QPushButton(_audioToolbar);
 	rewindBtn->setAttribute(Qt::WA_TranslucentBackground, true); 
 	rewindBtn->setStyleSheet(WINDOW_ASEETBAR_BTN_STYLE);
 	rewindBtn->setFixedWidth(20);
@@ -73,7 +74,7 @@ XA_UIMODULE_ASSET_WINDOW::XA_UIMODULE_ASSET_WINDOW(int index):_index(index)
 	rewindBtn->setIcon(QIcon(ICOPATH(rewind.svg)));
 	connect(rewindBtn, &QPushButton::clicked, this, &XA_UIMODULE_ASSET_WINDOW::on_clcAudioRewind);
 
-	QPushButton* volumeBtn = new QPushButton(_audioToolbar);
+	volumeBtn = new QPushButton(_audioToolbar);
 	volumeBtn->setAttribute(Qt::WA_TranslucentBackground, true);
 	volumeBtn->setStyleSheet(WINDOW_ASEETBAR_BTN_STYLE);
 	volumeBtn->setIconSize(QSize(18, 18));
@@ -81,7 +82,7 @@ XA_UIMODULE_ASSET_WINDOW::XA_UIMODULE_ASSET_WINDOW(int index):_index(index)
 	volumeBtn->setIcon(QIcon(ICOPATH(audio-volume.svg)));
 	connect(volumeBtn, &QPushButton::clicked, this, &XA_UIMODULE_ASSET_WINDOW::on_clcAudioVolume);
 
-	QPushButton* settingBtn = new QPushButton(_audioToolbar);
+	settingBtn = new QPushButton(_audioToolbar);
 	settingBtn->setAttribute(Qt::WA_TranslucentBackground, true);
 	settingBtn->setStyleSheet(WINDOW_ASEETBAR_BTN_STYLE);
 	settingBtn->setIconSize(QSize(13, 13));
@@ -132,11 +133,13 @@ bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 				if (_window->asset_type == ASSET_WINDOW::IMAGE)
 				{
 					XA_GLMODULE_BACKSTG::getBackStage()->deleteTexture(_index);
-					XA_UIMODULE_ASSET_BAR::_reciver->__update();
+					XA_UIMODULE_ASSET_BAR::_glReciver->__update();
 				}
 				if (_window->asset_type == ASSET_WINDOW::AUDIO)
 				{
+					XA_AUDIO_PLAYER::get_player()->quit();
 					unsetupAudioSets();
+					playingAudio = false;
 				}
 				
 				opened_asset = false;
@@ -162,12 +165,25 @@ bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 					}
 					if (audioSuffixValidator.contains(fileInfo.suffix()))
 					{
-						_window->asset_path = fileName;
-						_window->asset_type = ASSET_WINDOW::AUDIO;
-						setupAudioSets();
-						_window->show_img = QImage(ICOPATH(music.png)).scaled(_window->width(), _window->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-						_window->update();
-						sendAssets(ASSET_WINDOW::AUDIO);
+						if (!opened_asset)
+						{
+							_window->asset_path = fileName;
+							_window->asset_type = ASSET_WINDOW::AUDIO;
+							setupAudioSets();
+							_window->show_img = QImage(ICOPATH(music.png)).scaled(_window->width(), _window->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+							_window->update();
+							sendAssets(ASSET_WINDOW::AUDIO);
+							playingAudio = true;
+						}
+						else
+						{
+							qDebug() << "open other audio file";
+							XA_AUDIO_PLAYER::get_player()->quit();
+							_window->asset_path = fileName;
+							_window->asset_type = ASSET_WINDOW::AUDIO;
+							sendAssets(ASSET_WINDOW::AUDIO);
+							//Show MessageBox
+						}
 					}
 					opened_asset = true;
 			}
@@ -186,7 +202,7 @@ void XA_UIMODULE_ASSET_WINDOW::sendAssets(ASSET_WINDOW::AssetType type)
 	{
 	case ASSET_WINDOW::IMAGE:
 	{	
-		new_task.first = XA_UIMODULE_ASSET_BAR::_reciver;
+		new_task.first = XA_UIMODULE_ASSET_BAR::_glReciver;
 		new_task.second.type = XA_GL_LOADTEXTURE;
 		
 		QByteArray s = _label->text().toLatin1();
@@ -198,7 +214,8 @@ void XA_UIMODULE_ASSET_WINDOW::sendAssets(ASSET_WINDOW::AssetType type)
 	}
 	case ASSET_WINDOW::AUDIO:
 	{
-		XA_AUDIO_PLAYER::get_player()->paly(_window->asset_path);
+		XA_AUDIO_PLAYER::get_player()->play(_window->asset_path);
+		XA_AUDIO_PLAYER::get_player()->_invoker = this;
 		break;
 	}
 	default:
@@ -218,6 +235,12 @@ void XA_UIMODULE_ASSET_WINDOW::unsetupAudioSets()
 	_audioToolbar->setParent(NULL);
 }
 
+void XA_UIMODULE_ASSET_WINDOW::setAudioPlayDone()
+{
+	playingAudio = false;
+	this->on_clcAudioPause();
+}
+
 void XA_UIMODULE_ASSET_WINDOW::on_clcAudioPause()
 {
 	XA_AUDIO_PLAYER::get_player()->pause();
@@ -228,10 +251,15 @@ void XA_UIMODULE_ASSET_WINDOW::on_clcAudioPause()
 
 void XA_UIMODULE_ASSET_WINDOW::on_clcAudioResume()
 {
+	if (playingAudio == false)
+	{
+		XA_AUDIO_PLAYER::get_player()->replay();
+	}
 	XA_AUDIO_PLAYER::get_player()->resume();
 	disconnect(pauseBtn, &QPushButton::clicked, this, &XA_UIMODULE_ASSET_WINDOW::on_clcAudioResume);
 	pauseBtn->setIcon(QIcon(ICOPATH(pause.svg)));
 	connect(pauseBtn, &QPushButton::clicked, this, &XA_UIMODULE_ASSET_WINDOW::on_clcAudioPause);
+	qDebug() << "XA_UIMODULE_ASSET_WINDOW::on_clcAudioResume end";
 }
 
 void XA_UIMODULE_ASSET_WINDOW::on_clcAudioRewind()
@@ -241,7 +269,10 @@ void XA_UIMODULE_ASSET_WINDOW::on_clcAudioRewind()
 
 void XA_UIMODULE_ASSET_WINDOW::on_clcAudioVolume()
 {
-
+	XA_UIMODULE_RadioVolume* volumeSlider = new XA_UIMODULE_RadioVolume();
+	QPoint show_pos = volumeBtn->mapToGlobal(QPoint(0, 0))- QPoint(0,volumeSlider->height());
+	volumeSlider->move(show_pos);
+	volumeSlider->show();
 }
 
 void XA_UIMODULE_ASSET_WINDOW::on_clcAudioSetting()
@@ -271,7 +302,7 @@ XA_UIMODULE_ASSET_BAR::XA_UIMODULE_ASSET_BAR(int width)
 
 void XA_UIMODULE_ASSET_BAR::setAssetsReciver(XA_GLMODULE_RENDER* reciver)
 {
-	XA_UIMODULE_ASSET_BAR::_reciver = reciver;
+	XA_UIMODULE_ASSET_BAR::_glReciver = reciver;
 }
 
 ASSET_WINDOW::ASSET_WINDOW(const QSize& size)

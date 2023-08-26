@@ -112,6 +112,7 @@
     <ClCompile Include="UI\uimodule_lookmenu.cpp" />
     <ClCompile Include="UI\uimodule_profilemenu.cpp" />
     <ClCompile Include="UI\uimodule_MsgBox.cpp" />
+    <ClCompile Include="UI\uimodule_radioVolume.cpp" />
     <ClCompile Include="UI\uimodule_varShowboard.cpp" />
     <ClCompile Include="UI\uimodule_windowmenu.cpp" />
     <ClCompile Include="UI\uimodule_windowInfo.cpp" />
@@ -128,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Utilitys\utils_backendThread.h" />
+    <QtMoc Include="UI\uimodule_radioVolume.h" />
     <ClInclude Include="Utilitys\utilsDfs.h" />
     <ClInclude Include="Utilitys\utils_ffmpegHelper.h" />
     <QtMoc Include="UI\uimodule_aboutmenu.h" />
@@ -442,7 +444,7 @@
     <ClInclude Include="UI\ui_defaultDfs.h" />
     <QtMoc Include="UI\uimodule_lookmenu.h" />
     <QtMoc Include="UI\uimodule_glWidget.h" />
-    <ClInclude Include="Utilitys\AssetsManager\Audio\utils_audioPlayer.h" />
+    <QtMoc Include="Utilitys\AssetsManager\Audio\utils_audioPlayer.h" />
     <ClInclude Include="Utilitys\Parser\parser_defaultDfs.h" />
     <QtMoc Include="Utilitys\Parser\utils_shaderParser.h" />
     <ClInclude Include="Utilitys\uitilityDfs.h" />

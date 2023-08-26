@@ -36,6 +36,7 @@ class XA_UIMODULE_ASSET_WINDOW : public QWidget
 	Q_OBJECT
 public:
 	XA_UIMODULE_ASSET_WINDOW(int index);
+	void setAudioPlayDone();
 protected:
 	virtual bool eventFilter(QObject* obj, QEvent* event);
 private:
@@ -56,10 +57,14 @@ private:
 	QWidget* _audioToolbar;
 	QLabel* _label;
 	QPushButton* pauseBtn;
+	QPushButton* volumeBtn;
+	QPushButton* rewindBtn;
+	QPushButton* settingBtn;
 	QSlider* _auVolumeSlider;
 
 	int _index;
 	bool opened_asset = false;
+	bool playingAudio = false;//only play one audio
 
 	QImage show_img;
 };
@@ -73,6 +78,6 @@ public:
 
 private:
 	QList<XA_UIMODULE_ASSET_WINDOW*> asset_win_list;
-	static XA_GLMODULE_RENDER* _reciver;
+	static XA_GLMODULE_RENDER* _glReciver;
 };
 #endif

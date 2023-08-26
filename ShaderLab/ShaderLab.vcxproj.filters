@@ -103,6 +103,9 @@
     <ClCompile Include="Utilitys\utils_backendThread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UI\uimodule_radioVolume.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="MenuLayertop.h">
@@ -157,6 +160,12 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="UI\uimodule_AssetsWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Utilitys\AssetsManager\Audio\utils_audioPlayer.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="UI\uimodule_radioVolume.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -1059,9 +1068,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utilitys\Parser\parser_defaultDfs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Utilitys\AssetsManager\Audio\utils_audioPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utilitys\utils_ffmpegHelper.h">
