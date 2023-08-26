@@ -54,8 +54,7 @@ void XA_UTILS_BACKEND::addTask(std::pair<QObject*, XA_UTILS_TASK> newTask)
 
 void XA_UTILS_BACKEND::setAuVolume(float volume)
 {
-	audio_changed.store(true, memory_order_release);
-	crt_auVolume = volume;
+	crt_auVolume.store(volume, memory_order_release);
 }
 
 void XA_UTILS_BACKEND::run()
@@ -136,11 +135,6 @@ void XA_UTILS_BACKEND::handlePlayAudio(const std::pair<QObject*, XA_UTILS_TASK>&
 	}
 	else
 	{
-		if (audio_changed.load(memory_order_consume))
-		{
-			crt_audioOut->setVolume(crt_auVolume);
-			audio_changed.store(false, memory_order_release);
-		}
 		if (!feof(audio_fileHandler))
 		{
 			if (crt_audioOut->bytesFree() < audio_periodsz)
@@ -157,8 +151,12 @@ void XA_UTILS_BACKEND::handlePlayAudio(const std::pair<QObject*, XA_UTILS_TASK>&
 				emit audioplayDone();
 				return;
 			}
-			//for (int i = 0; i < len; i++)
-			//	audio_buf[i] *= crt_auVolume;
+
+			float factor = crt_auVolume.load(memory_order_consume);
+			if (abs(factor - 1.0) > eps) //remap pcm data to certain volume level
+			{
+				raiseVolume(audio_buf, audio_periodsz, factor);
+			}
 
 			switch (crt_state)
 			{
@@ -238,4 +236,44 @@ void XA_UTILS_BACKEND::AudioReplay()
 	audio_playTask.first = XA_AUDIO_PLAYER::get_player();
 	audio_playTask.second.type = XA_UTIL_PLAYAUDIO;
 	addTask(audio_playTask);
+}
+
+void XA_UTILS_BACKEND::raiseVolume(char* buf, int len, float factor)
+{
+	signed short MIN = -0x8000;
+	signed short MAX = 0x7FFF;
+	signed short low = 0, high = 0, data = 0, maxData = 0, minData = 0;
+	for (int i = 0; i < len; i += 2)
+	{
+		low = buf[i];
+		high = buf[i + 1];
+		data = low + (high << 8);
+		maxData = maxData > data ? maxData : data;
+		minData = minData < data ? minData : data;
+	}
+
+	signed short maxfactor = maxData != 0 ? MAX / maxData : 1;
+	signed short minfactor = minData != 0 ? MIN / minData : 1;
+	if(minfactor == 1 || maxfactor == 1)
+	{
+		return;
+	}
+
+	signed short newData = 0;
+	for (int i = 0; i < len; i += 2) {
+		low = buf[i];
+		high = buf[i + 1];
+		data = low + (high << 8);
+		newData = data * factor + 0.50;
+		if (newData < MIN) {
+			newData = MIN;
+		}
+		else if (newData > MAX)
+		{
+			newData = MAX;
+		}
+		data = newData & 0xffff;
+		buf[i] = data & 0x00ff;
+		buf[i + 1] = (data & 0xff00) >> 8;
+	}
 }

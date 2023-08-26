@@ -36,6 +36,7 @@ private:
 	void AudioQuit();
 	void AudioResume();
 	void AudioReplay();
+	void inline raiseVolume(char* buf,int len,float factor);
 
 private:
 	static XA_UTILS_BACKEND* _instance;
@@ -43,8 +44,7 @@ private:
 	static char default_au_outputFile[256];
 	
 	std::atomic<XA_AUDIO_STATE> au_state;
-	std::atomic<bool> audio_changed = false;
-	float crt_auVolume = 1.0;
+	std::atomic<float> crt_auVolume = 1.0;
 	QAudioFormat audio_format;
 	QAudioOutput *crt_audioOut = NULL;
 	int audio_periodsz;

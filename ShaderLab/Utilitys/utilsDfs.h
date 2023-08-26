@@ -62,4 +62,6 @@ namespace utils_ffmpeg
 		QProcess::startDetached("ffmpeg", argument);
 	}
 }
+
+#define eps 0.001
 #endif
