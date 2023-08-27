@@ -19,6 +19,9 @@ public:
 	void addTask(std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK> newTask);
 	void deleteTexture(int idx);
 
+signals:
+	void shaderParsedone();
+
 protected:
 	void run() override;
 

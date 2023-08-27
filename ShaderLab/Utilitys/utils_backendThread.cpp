@@ -61,22 +61,23 @@ void XA_UTILS_BACKEND::run()
 {
 	while (true)
 	{
-		if (taskLocker.try_lock())
+		while (!_task_queue.empty())
 		{
-			while (!_task_queue.empty())
+			if (taskLocker.try_lock())
 			{
 				std::pair<QObject*, XA_UTILS_TASK> crt_task = _task_queue.front();
 				switch (crt_task.second.type)
 				{
-					case XA_UTIL_PLAYAUDIO:
-					{
-						handlePlayAudio(crt_task);
-						break;
-					}
+				case XA_UTIL_PLAYAUDIO:
+				{
+					handlePlayAudio(crt_task);
+					break;
+				}
 				}
 				_task_queue.pop();
+				taskLocker.unlock();
 			}
-			taskLocker.unlock();
+			QThread::usleep(1);//reserved time to add new task in main thread 
 		}
 		QThread::msleep(1);
 	}
@@ -116,8 +117,8 @@ void XA_UTILS_BACKEND::handlePlayAudio(const std::pair<QObject*, XA_UTILS_TASK>&
 		XA_FFMPEG_AU_INFO au_info;
 
 		XA_FFMPEG_HELPER::getHelper()
-			->getAudioInfo(&au_info, crt_task.second.param.playAudio_pram.audio_path);
-		_UTILS_GENERATE_PCM(au_info, crt_task.second.param.playAudio_pram.audio_path, default_au_outputFile);
+			->getAudioInfo(&au_info, crt_task.second.param.playAudio_param.audio_path);
+		_UTILS_GENERATE_PCM(au_info, crt_task.second.param.playAudio_param.audio_path, default_au_outputFile);
 		QThread::usleep(10);
 		audio_format.setSampleRate(au_info.sampleRate);
 		audio_format.setSampleSize(au_info.sampleSize);

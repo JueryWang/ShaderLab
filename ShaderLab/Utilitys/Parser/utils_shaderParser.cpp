@@ -1,4 +1,3 @@
-#include "parser_defaultDfs.h"
 #include "utils_shaderParser.h"
 #include <QString>
 #include <QVariant>
@@ -47,6 +46,7 @@ bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type
 		if (QVariant(re.cap(2)).toFloat() && QVariant(re.cap(2)).toBool())
 		{
 			parsedVariant.insert(re.cap(1), QVariant(re.cap(2)));
+			qDebug() << parsedVariant.size();
 		}
 	}
 
@@ -65,6 +65,7 @@ bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type
 		}
 		//TODO:Add custom_var_mp to parse_res
 	}
+
 
 	pos = 0;
 	re.setPattern("main(.*)?(?:\\{)");

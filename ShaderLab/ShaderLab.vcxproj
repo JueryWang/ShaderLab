@@ -99,6 +99,7 @@
     <ClCompile Include="GL\glmodule_render.cpp" />
     <ClCompile Include="GL\include\glad\glad.c" />
     <ClCompile Include="GL\include\glm\detail\glm.cpp" />
+    <ClCompile Include="GL\testOpenGLWgt.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MenuLayertop.cpp" />
     <ClCompile Include="OverallWindow.cpp" />
@@ -130,6 +131,7 @@
   <ItemGroup>
     <QtMoc Include="Utilitys\utils_backendThread.h" />
     <QtMoc Include="UI\uimodule_radioVolume.h" />
+    <QtMoc Include="GL\testOpenGLWgt.h" />
     <ClInclude Include="Utilitys\utilsDfs.h" />
     <ClInclude Include="Utilitys\utils_ffmpegHelper.h" />
     <QtMoc Include="UI\uimodule_aboutmenu.h" />

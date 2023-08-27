@@ -2,9 +2,11 @@
 #define UTILS_SUPPORT
 
 #include <QProcess>
+
 enum XA_UTILS_TASK_TYPE
 {
 	XA_UTIL_PLAYAUDIO = 0,
+	XA_UTIL_COMPILECODE,
 };
 
 enum XA_AUDIO_STATE
@@ -24,7 +26,7 @@ struct PlayAudioTask_param
 
 union UTILS_TASK_param
 {
-	PlayAudioTask_param playAudio_pram;
+	PlayAudioTask_param playAudio_param;
 };
 
 struct XA_UTILS_TASK

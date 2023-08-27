@@ -6,8 +6,8 @@
 #include "GL/glmodule_render.h"
 #include "GL/glmodule_backstatge.h"
 #include "Utilitys/uitilityDfs.h"
-#include "Utilitys/Parser/utils_shaderParser.h"
 #include "Utilitys/utils_backendThread.h"
+#include "Utilitys/Parser/utils_shaderParser.h"
 #include <QtConcurrent/QtConcurrent>
 #include <QToolButton>
 #include <windows.h>
@@ -153,50 +153,17 @@ void OverallWindow::on_restGLWidget(const QSize& size)
 
 void OverallWindow::on_compileCode()
 {
-	XA_UTILS_ShaderParser* parser = XA_UTILS_ShaderParser::getParser();
-	CompileTask_param* task_param = new CompileTask_param;
-
-	auto parseCode = [&](XA_UTILS_ShaderParser* parser, CompileTask_param* param)
-	{
-		QFileInfo fileInfo(XA_UIMODULE_CodeEditor::getEditor()->_current_file->fileName());
-		QString file_name = fileInfo.baseName();
-		QsciScintilla* page = (QsciScintilla*)XA_UIMODULE_CodeEditor::getEditor()->currentWidget();
-		parser->setContextParserRule(parser::ShaderToy);
-
-		QByteArray s = file_name.toLatin1();//for correctly convert from QString to c_str
-
-		strcpy(task_param->vs_path, USER_TEMPORARY_SHADER_PATH);
-		strcat(task_param->vs_path, "/");
-		strcat(task_param->vs_path, s.data());
-		strcat(task_param->vs_path, ".vert");
-
-		strcpy(task_param->fs_path, USER_TEMPORARY_SHADER_PATH);
-		strcat(task_param->fs_path, "/");
-		strcat(task_param->fs_path, s.data());
-		strcat(task_param->fs_path, ".frag");
-
-		parser->setCurrentFileName(file_name + ".vert", parser::VERTEX);
-		parser->parse("", parser::VERTEX);
-
-		parser->setCurrentFileName(file_name + ".frag", parser::FRAGMENT);
-		parser->parse(page->text(), parser::FRAGMENT);
-
-		return parser->getParsedVar();
-	};
-	QEventLoop loop;
-	QFutureWatcher<QMap<QString, QVariant>> watcher;
-	connect(&watcher, &QFutureWatcher<void>::finished, &loop, &QEventLoop::quit);
-	connect(&watcher, &QFutureWatcher<void>::finished, &loop, &QEventLoop::deleteLater);
-	watcher.setFuture(QtConcurrent::run(parseCode,parser,task_param));
-	loop.exec();
-	_varboard->setVariantMap(watcher.future());
-
 	std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK> new_task;
 	new_task.first = this->_glWindow->_glBackendRender;
 	new_task.second.type = XA_GL_COMPILE_SHADER;
-	new_task.second.param.compileTask_parm = *task_param;
+	new_task.second.param.compileTask_parm.rule = parser::ShaderToy;
+	new_task.second.param.compileTask_parm.varboard = this->_varboard;
 	XA_GLMODULE_BACKSTG::getBackStage()->addTask(new_task);
-	delete task_param;
+}
+
+void OverallWindow::on_updateVarBoard()
+{
+	this->_varboard->setVariantMap(XA_UTILS_ShaderParser::getParser()->getParsedVar());
 }
 
 void OverallWindow::rollbackNormal()
@@ -237,6 +204,7 @@ void OverallWindow::init()
 
 	XA_GLMODULE_BACKSTG* gl_backstgThread = XA_GLMODULE_BACKSTG::getBackStage();
 	gl_backstgThread->start(QThread::NormalPriority);
+	connect(gl_backstgThread, &XA_GLMODULE_BACKSTG::shaderParsedone, this, &OverallWindow::on_updateVarBoard);
 
 	XA_UTILS_BACKEND::setCachePath(USER_TEMPORARY_AUDIO_PATH);
 	XA_UTILS_BACKEND* utils_backendThread = XA_UTILS_BACKEND::getUtilBackend();

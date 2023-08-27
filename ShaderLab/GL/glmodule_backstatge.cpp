@@ -1,7 +1,11 @@
 #include "glmodule_backstatge.h"
 #include "gl_defaultDfs.h"
 #include "glmodule_render.h"
+#include "../Utilitys/uitilityDfs.h"
 #include "../UI/uimodule_glWidget.h"
+#include "../UI/uimodule_codeEditor.h"
+#include "../Utilitys/Parser/utils_shaderParser.h"
+#include <Qsci/qsciscintilla.h>
 #include <QMutex>
 #include <QDebug>
 
@@ -127,11 +131,47 @@ void XA_GLMODULE_BACKSTG::handleLoadTexture(const std::pair<XA_GLMODULE_RENDER*,
 
 void XA_GLMODULE_BACKSTG::handleCompileShader(const std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK>& crt_task)
 {
-	crt_task.first->__exit();
-	crt_task.first->rd_state = INACTIVE;
-	crt_task.first->_vs_source = crt_task.second.param.compileTask_parm.vs_path;
-	crt_task.first->_fs_source = crt_task.second.param.compileTask_parm.fs_path;
-	XA_UIMODULE_GLWidget* glwgt = (XA_UIMODULE_GLWidget*)crt_task.first->_reciver;
-	glwgt->__reshow();
-	crt_task.first->__start();
+	char vs_path[128];
+	char fs_path[128];
+
+	switch (crt_task.second.param.compileTask_parm.rule)
+	{
+		case parser::ShaderToy:
+		{
+			XA_UTILS_ShaderParser* parser = XA_UTILS_ShaderParser::getParser();
+			QFileInfo fileInfo(XA_UIMODULE_CodeEditor::getEditor()->_current_file->fileName());
+			QString filename = fileInfo.baseName();
+			QsciScintilla* page = (QsciScintilla*)XA_UIMODULE_CodeEditor::getEditor()->currentWidget();
+			parser->setContextParserRule(parser::ShaderToy);
+
+			QByteArray s = filename.toLatin1();
+
+			strcpy(vs_path, USER_TEMPORARY_SHADER_PATH);
+			strcat(vs_path, "/");
+			strcat(vs_path, s.data());
+			strcat(vs_path, ".vert");
+
+			strcpy(fs_path, USER_TEMPORARY_SHADER_PATH);
+			strcat(fs_path, "/");
+			strcat(fs_path, s.data());
+			strcat(fs_path, ".frag");
+
+			parser->setCurrentFileName(filename + ".vert", parser::VERTEX);
+			parser->parse("", parser::VERTEX);
+
+			parser->setCurrentFileName(filename + ".frag", parser::FRAGMENT);
+			parser->parse(page->text(), parser::FRAGMENT);
+			emit shaderParsedone();
+
+	
+			crt_task.first->__exit();
+			crt_task.first->_vs_source = vs_path;
+			crt_task.first->_fs_source = fs_path;
+			crt_task.first->rd_state = INACTIVE;
+			XA_UIMODULE_GLWidget* glwgt = (XA_UIMODULE_GLWidget*)crt_task.first->_reciver;
+			glwgt->__reshow();
+			crt_task.first->__start();
+			break;
+		}
+	}
 }

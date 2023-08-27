@@ -4,8 +4,42 @@
 #include <iostream>
 #include <stdio.h>
 #include <QProcess>
+
 namespace parser
 {
+	enum ParserRule
+	{
+		ShaderToy = 0,
+		DefaultGLSL
+	};
+
+	enum ShaderType
+	{
+		VERTEX = 0,
+		TES_CONTROL,
+		TES_EVAL,
+		GEOMETRY,
+		FRAGMENT
+	};
+
+	enum VariantType
+	{
+		INT = 0,
+		FLOAT,
+		VEC2,
+		VEC3,
+		VEC4,
+	};
+
+	enum ErrorCode
+	{
+		PARSE_ERROR = 0,
+		NO_FILE_SET,
+		NO_MAIN_FUNC,
+		NO_DETECTED_VARS,
+		NO_ERROR
+	};
+
 	const static QString PARSER_PREFIX_VERTEX = \
 		"#version 420 core\n"
 		"layout(location = 0) in vec3 position; \n"

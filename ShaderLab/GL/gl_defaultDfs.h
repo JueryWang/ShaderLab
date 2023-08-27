@@ -5,8 +5,8 @@
 #include <GLFW/glfw3.h>
 #include <shader.h>
 #include <QObject>
-#include <chrono>
-#include <mutex>
+#include "../Utilitys/Parser/parser_defaultDfs.h"
+#include "../UI/uimodule_varShowboard.h"
 
 #define MAX_GL_RENDERER 3
 //set ratio to fit high dpi screen
@@ -51,8 +51,8 @@ struct LoadTextureTask_param
 
 struct CompileTask_param
 {
-	char vs_path[64];
-	char fs_path[64];
+	parser::ParserRule rule;
+	XA_UIMODULE_ShowBoard* varboard;
 };
 
 union GL_Task_param

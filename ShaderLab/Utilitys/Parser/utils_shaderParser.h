@@ -1,46 +1,12 @@
 #ifndef XA_UTILS_SHADERPARSER_H
 #define XA_UTILS_SHADERPARSER_H
 
+#include "parser_defaultDfs.h"
 #include <QObject>
+#include <QFileInfo>
 #include <QFile>
 #include <QPair>
 #include <QMap>
-
-namespace parser
-{
-	enum ParserRule
-	{
-		ShaderToy = 0,
-		DefaultGLSL
-	};
-
-	enum ShaderType
-	{
-		VERTEX = 0,
-		TES_CONTROL,
-		TES_EVAL,
-		GEOMETRY,
-		FRAGMENT
-	};
-
-	enum VariantType
-	{
-		INT = 0,
-		FLOAT,
-		VEC2,
-		VEC3,
-		VEC4,
-	};
-
-	enum ErrorCode
-	{
-		PARSE_ERROR = 0,
-		NO_FILE_SET,
-		NO_MAIN_FUNC,
-		NO_DETECTED_VARS,
-		NO_ERROR
-	};
-}
 
 class XA_UTILS_ShaderParser : public QObject
 {
@@ -65,7 +31,7 @@ private:
 	QMap<QString, QVariant> parsedVariant;
 
 
-	QFile* _file_handler;
+	QFile* _file_handler = nullptr;
 	parser::ShaderType crt_handle_type;
 	QString crt_file;
 
