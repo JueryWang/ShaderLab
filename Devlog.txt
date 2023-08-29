@@ -1,2 +1,2 @@
-[8/24] Shader compileBtn cause memory leak.     
+[8/24] Shader compileBtn cause memory leak.    solved[not delete program before new Shader create]
 [8/26] open two audio UI block

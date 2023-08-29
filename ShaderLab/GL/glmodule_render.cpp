@@ -165,6 +165,7 @@ void XA_GLMODULE_RENDER::contextDraw()
 
 	if (_shader != nullptr)
 	{
+		glDeleteProgram(_shader->ID);
 		delete _shader;
 	}
 	_shader = new Shader(this->_vs_source.c_str(),this->_fs_source.c_str());

@@ -72,7 +72,7 @@
       <PreprocessorDefinitions>qscintilla2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;qscintilla2_qt5d.lib;assimp-vc142-mt.lib;freetype.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;vld.lib;$(Qt_LIBS_);%(AdditionalDependencies)</AdditionalDependencies>
