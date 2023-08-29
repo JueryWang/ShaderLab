@@ -23,6 +23,7 @@ XA_UTILS_ShaderParser::~XA_UTILS_ShaderParser()
 
 bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type, bool custom_var /*= false*/, const QMap<QString, QVariant>& custom_var_mp /*= QMap<QString, QVariant>()*/)
 {
+
 	QString parse_res;
 	switch (type)
 	{
@@ -38,6 +39,7 @@ bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type
 
 	parsedVariant.clear();
 	QRegExp re("#define\\s+(.*)?\\s+(.*)?\\\r\\\n");//windows
+
 	re.setMinimal(true);
 	int pos = 0;
 	while ((pos = re.indexIn(source, pos)) != -1)
@@ -46,7 +48,6 @@ bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type
 		if (QVariant(re.cap(2)).toFloat() && QVariant(re.cap(2)).toBool())
 		{
 			parsedVariant.insert(re.cap(1), QVariant(re.cap(2)));
-			qDebug() << parsedVariant.size();
 		}
 	}
 
@@ -88,16 +89,16 @@ bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type
 
 	if (crt_file.size())
 	{
-		_file_handler->setFileName(QDir::currentPath()+"/"+cache_path+"/"+crt_file);
-		if (_file_handler->open(QIODevice::WriteOnly))
+		_file_handler->setFileName(QDir::currentPath() + "/" + cache_path + "/" + crt_file);
+		if (_file_handler->open(QIODevice::WriteOnly | QIODevice::Truncate))
 		{
-			_file_handler->write(parse_res.toUtf8(), parse_res.toUtf8().size());
+			_file_handler->write(parse_res.toUtf8().constData(), parse_res.toUtf8().size());
+			_file_handler->close();
 		}
 		else
 		{
 			//Do some log here
 		}
-		_file_handler->close();
 
 		validator_output = _UTILS_GET_VALADITOR_RES(_file_handler->fileName());
 		if (validator_output.size())
@@ -110,6 +111,7 @@ bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type
 		err_code = parser::ErrorCode::NO_FILE_SET;
 		return false;
 	}
+
 	return true;
 }
 

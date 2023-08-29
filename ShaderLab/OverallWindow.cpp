@@ -111,7 +111,6 @@ OverallWindow::OverallWindow()
 
 	this->setWindowIcon(QIcon("Resources/icon/ShaderLabIco.png"));
 	this->setWindowFlags(Qt::FramelessWindowHint);
-
 }
 
 OverallWindow::~OverallWindow()

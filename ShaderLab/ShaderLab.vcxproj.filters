@@ -106,9 +106,6 @@
     <ClCompile Include="UI\uimodule_radioVolume.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GL\testOpenGLWgt.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="MenuLayertop.h">
@@ -169,9 +166,6 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="UI\uimodule_radioVolume.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="GL\testOpenGLWgt.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

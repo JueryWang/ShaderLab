@@ -131,6 +131,7 @@ void XA_UTILS_BACKEND::handlePlayAudio(const std::pair<QObject*, XA_UTILS_TASK>&
 
 		audio_fileHandler = fopen(default_au_outputFile, "rb");
 		audio_periodsz = crt_audioOut->periodSize();
+		qDebug() << "audio_periodsz = " << audio_periodsz;
 		audio_buf = new char[audio_periodsz];
 		_task_queue.push(crt_task);
 	}
