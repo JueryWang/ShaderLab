@@ -114,5 +114,50 @@ const static QString WINDOW_ASEETBAR_BTN_STYLE = R"(.QPushButton{
 		border-radius:5px;
 })";
 
+const static QString PREFERENCE_WINDOW_STYLE = R"(QWidget{
+		border-color: rgb(99, 136, 148);
+		background-color: rgba(24, 24, 24, 230);
+	})";
+
+const static QString PREFERENCE_COLUMBTN_STYLE_FIRST = R"(.QPushButton{
+		border-style:none;
+		border-top-left-radius: 3px;
+		border-top-right-radius: 3px;
+		color:#FFFFFE;
+		padding-left:8px;
+		background:#545454;
+		}
+		.QPushButton:hover{
+		border:none;
+		padding-left:8px;
+		background:rgb(71,114,179);
+})";
+
+const static QString PREFERENCE_COLUMBTN_STYLE_LAST = R"(.QPushButton{
+		border-style:none;
+		border-bottom-left-radius: 3px;
+		border-bottom-right-radius: 3px;
+		color:#FFFFFE;
+		padding-left:8px;
+		background:#545454;
+		}
+		.QPushButton:hover{
+		border:none;
+		padding-left:8px;
+		background:rgb(71,114,179);
+})";
+
+const static QString PREFERENCE_COLUMBTN_STYLE_MEDIUM = R"(.QPushButton{
+		border-style:none;
+		color:#FFFFFE;
+		padding-left:8px;
+		background:#545454;
+		}
+		.QPushButton:hover{
+		border:none;
+		padding-left:8px;
+		background:rgb(71,114,179);
+})";
+
 extern QMap<QString, QString> global_font_mp;
 #endif // UI_DEFAULT_DFS\

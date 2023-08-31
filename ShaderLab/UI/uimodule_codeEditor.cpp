@@ -6,10 +6,13 @@
 #include <QMimeData>
 #include <QMimeDatabase>
 #include <QDragEnterEvent>
+#include <QTimer>
 #include <QDropEvent>
+#include <QTabBar>
 #include <QMap>
 #include <QFont>
 #include <QDir>
+#include <QDebug>
 XA_UIMODULE_CodeEditor* XA_UIMODULE_CodeEditor::_codeEditor;
 int XA_UIMODULE_CodeEditor::editor_width = 0;
 int XA_UIMODULE_CodeEditor::editor_height = 0;
@@ -47,6 +50,13 @@ XA_UIMODULE_CodeEditor::XA_UIMODULE_CodeEditor()
 	_editor_font->setPointSize(10);
 	this->setFont(*_editor_font);
 	connect(this, &QTabWidget::tabCloseRequested, this, &XA_UIMODULE_CodeEditor::on_closeTab);
+	
+	QIcon icon = QIcon::fromTheme(QLatin1String("window-new"));
+	this->addTab(new QWidget(), "");
+	this->setTabIcon(0, icon);
+
+	connect(this->tabBar(), &QTabBar::tabBarClicked, this, &XA_UIMODULE_CodeEditor::on_addNewScript);
+	connect(this->tabBar(), &QTabBar::tabBarDoubleClicked, this, &XA_UIMODULE_CodeEditor::on_changeTabText);
 
 	this->set_new_tab(nullptr, true);
 }
@@ -79,6 +89,7 @@ void XA_UIMODULE_CodeEditor::set_new_tab(const QString& path, bool is_new_file /
 	{
 		this->addTab(editor, "untitled");
 		this->setCurrentIndex(this->count() - 1);
+		crt_idx = this->count() - 1;
 		_current_file = std::make_unique<QFile>("untitled");
 		return;
 	}
@@ -98,6 +109,7 @@ void XA_UIMODULE_CodeEditor::set_new_tab(const QString& path, bool is_new_file /
 		if (this->tabText(i) == file_name)
 		{
 			this->setCurrentIndex(i);
+			crt_idx = this->count() - 1;
 			this->_current_file = std::make_unique<QFile>(path);
 			return;
 		}
@@ -117,6 +129,7 @@ void XA_UIMODULE_CodeEditor::set_new_tab(const QString& path, bool is_new_file /
 	}
 	this->_current_file = std::make_unique<QFile>(path);
 	this->setCurrentIndex(this->count() - 1);
+	crt_idx = this->count() - 1;
 }
 
 QsciScintilla* XA_UIMODULE_CodeEditor::get_new_page()
@@ -236,3 +249,15 @@ void XA_UIMODULE_CodeEditor::on_saveas()
 	_current_file.reset(path);
 }
 
+void XA_UIMODULE_CodeEditor::on_addNewScript(int tabIdx)
+{
+	if (tabIdx == 0)
+	{
+		QTimer::singleShot(0, [this]() { this->setCurrentIndex(crt_idx); });
+	}
+}
+
+void XA_UIMODULE_CodeEditor::on_changeTabText(int tabIdx)
+{
+
+}

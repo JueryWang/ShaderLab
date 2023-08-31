@@ -95,12 +95,11 @@ XA_UIModule_FILEMenu::XA_UIModule_FILEMenu(QString title, bool showIcon, const c
 	connect(saveVideoAct, &QAction::triggered, this, &XA_UIModule_FILEMenu::on_clcExportViedo);
 	exportMenu->addAction(saveVideoAct);
 	this->addMenu(exportMenu);
-	
+
 	QAction* quitAction = new QAction(_STRING_WRAPPER("ÍË³ö"));
 	connect(quitAction, &QAction::triggered, this, &XA_UIModule_FILEMenu::on_clcQuit);
 	quitAction->setIcon(QIcon(ICOPATH(quit.svg)));
 	this->addAction(quitAction);
-	
 }
 
 XA_UIModule_FILEMenu::~XA_UIModule_FILEMenu()

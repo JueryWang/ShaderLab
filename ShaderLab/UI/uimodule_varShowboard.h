@@ -3,22 +3,12 @@
 
 #include <QWidget>
 #include <QMap>
-#include <QLabel>
 #include <QVariant>
 #include <QScrollArea>
 #include <QPropertyAnimation>
 #include <QGridLayout>
+#include "ClickableLabel.h"
 
-class ClickableLabel : public QLabel
-{
-	Q_OBJECT
-public:
-	ClickableLabel(const QString& path = "", int size = 16);
-signals:
-	void clicked();
-protected:
-	void mousePressEvent(QMouseEvent* event) override;
-};
 
 class XA_UIMODULE_ShowBoard : public QWidget
 {

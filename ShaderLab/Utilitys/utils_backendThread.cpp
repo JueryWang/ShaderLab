@@ -119,7 +119,6 @@ void XA_UTILS_BACKEND::handlePlayAudio(const std::pair<QObject*, XA_UTILS_TASK>&
 		XA_FFMPEG_HELPER::getHelper()
 			->getAudioInfo(&au_info, crt_task.second.param.playAudio_param.audio_path);
 		_UTILS_GENERATE_PCM(au_info, crt_task.second.param.playAudio_param.audio_path, default_au_outputFile);
-		QThread::usleep(10);
 		audio_format.setSampleRate(au_info.sampleRate);
 		audio_format.setSampleSize(au_info.sampleSize);
 		audio_format.setChannelCount(au_info.channel);
@@ -131,7 +130,6 @@ void XA_UTILS_BACKEND::handlePlayAudio(const std::pair<QObject*, XA_UTILS_TASK>&
 
 		audio_fileHandler = fopen(default_au_outputFile, "rb");
 		audio_periodsz = crt_audioOut->periodSize();
-		qDebug() << "audio_periodsz = " << audio_periodsz;
 		audio_buf = new char[audio_periodsz];
 		_task_queue.push(crt_task);
 	}

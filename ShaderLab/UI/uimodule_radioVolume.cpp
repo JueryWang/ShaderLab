@@ -38,7 +38,7 @@ XA_UIMODULE_RadioVolume::XA_UIMODULE_RadioVolume()
 	this->setLayout(vlay);
 	raise();
 
-	setValue(100);
+	setValue(80);
 }
 
 XA_UIMODULE_RadioVolume::~XA_UIMODULE_RadioVolume()
@@ -81,7 +81,7 @@ void XA_UIMODULE_RadioVolume::onVolumeChanged()
 				"QSlider::handle:vertical:pressed{height:20px;width:21px;margin-top:0px;margin-bottom:0px;margin-left:-8px;margin-right:-8px;}");
 		}
 
-		XA_UTILS_BACKEND::getUtilBackend()->setAuVolume(value / 100.0);
+		XA_UTILS_BACKEND::getUtilBackend()->setAuVolume(value / 80.0);
 	}
 }
 

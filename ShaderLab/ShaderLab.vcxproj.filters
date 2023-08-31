@@ -106,6 +106,12 @@
     <ClCompile Include="UI\uimodule_radioVolume.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UI\uimodule_preferenceWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\ClickableLabel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="MenuLayertop.h">
@@ -166,6 +172,12 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="UI\uimodule_radioVolume.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="UI\uimodule_preferenceWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="UI\ClickableLabel.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

@@ -14,6 +14,7 @@ private://no need to add slots flag because there are no args between click sign
 	void on_clcNewWindow();
 	void on_clcOpenTerminal();
 	void on_clcCloseTerminal();
+	void on_clcPreference();
 
 	bool terminalOpened = false;
 };

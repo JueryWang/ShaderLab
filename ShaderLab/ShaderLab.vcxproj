@@ -106,6 +106,7 @@
     <ClCompile Include="MenuLayertop.cpp" />
     <ClCompile Include="OverallWindow.cpp" />
     <ClCompile Include="ShaderLab.cpp" />
+    <ClCompile Include="UI\ClickableLabel.cpp" />
     <ClCompile Include="UI\uimodule_aboutmenu.cpp" />
     <ClCompile Include="UI\uimodule_AssetsWindow.cpp" />
     <ClCompile Include="UI\uimodule_codeEditor.cpp" />
@@ -116,6 +117,7 @@
     <ClCompile Include="UI\uimodule_profilemenu.cpp" />
     <ClCompile Include="UI\uimodule_MsgBox.cpp" />
     <ClCompile Include="UI\uimodule_radioVolume.cpp" />
+    <ClCompile Include="UI\uimodule_preferenceWindow.cpp" />
     <ClCompile Include="UI\uimodule_varShowboard.cpp" />
     <ClCompile Include="UI\uimodule_windowmenu.cpp" />
     <ClCompile Include="UI\uimodule_windowInfo.cpp" />
@@ -133,6 +135,8 @@
   <ItemGroup>
     <QtMoc Include="Utilitys\utils_backendThread.h" />
     <QtMoc Include="UI\uimodule_radioVolume.h" />
+    <QtMoc Include="UI\uimodule_preferenceWindow.h" />
+    <QtMoc Include="UI\ClickableLabel.h" />
     <ClInclude Include="Utilitys\utilsDfs.h" />
     <ClInclude Include="Utilitys\utils_ffmpegHelper.h" />
     <QtMoc Include="UI\uimodule_aboutmenu.h" />

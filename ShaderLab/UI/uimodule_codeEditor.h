@@ -4,6 +4,7 @@
 #include <memory>
 #include <QMap>
 #include <QTabWidget>
+#include <QToolButton>
 
 class QFile;
 class QFont;
@@ -33,6 +34,8 @@ public slots:
 	void on_newfile();
 	void on_savefile();
 	void on_saveas();
+	void on_addNewScript(int tabIdx);
+	void on_changeTabText(int tabIdx);
 
 private:
 	XA_UIMODULE_CodeEditor();
@@ -43,12 +46,12 @@ public:
 	static XA_UIMODULE_CodeEditor* _codeEditor;
 	static int editor_width;
 	static int editor_height;
+	int crt_idx = -1;
 
 	QFont* _editor_font;
 	std::unique_ptr<QFile> _current_file;
 
 	XA_UIMODULE_EditorPage* _current_page;
 };
-
 
 #endif
