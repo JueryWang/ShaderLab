@@ -68,7 +68,7 @@ XA_UIMODULE_CodeEditor::XA_UIMODULE_CodeEditor()
 	tb->move(tb->pos() + QPoint(0, 9));
 	connect(this->tabBar(), &QTabBar::tabBarClicked, this, &XA_UIMODULE_CodeEditor::on_clickTab);
 
-	_tabLabelEditor = new TabLabelEditor();
+	_tabLabelEditor = new TabLabelEditor(this);
 	connect(_tabLabelEditor, &TabLabelEditor::labelChanged, this, &XA_UIMODULE_CodeEditor::on_pageLabelChanged);
 
 	this->set_new_tab(nullptr, true);
@@ -274,12 +274,12 @@ void XA_UIMODULE_CodeEditor::on_clickTab(int tabIdx)
 
 void XA_UIMODULE_CodeEditor::on_pageLabelChanged(int tabIdx, const QString& newLabel)
 {
-
+	this->setTabText(tabIdx, newLabel);
 }
 
-TabLabelEditor::TabLabelEditor()
+TabLabelEditor::TabLabelEditor(XA_UIMODULE_CodeEditor* codeEditor):_code_editor(codeEditor)
 {
-	this->setWindowFlags(Qt::FramelessWindowHint);
+	this->setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
 	this->setAttribute(Qt::WA_TranslucentBackground);
 	QWidget* ovWgt = new QWidget(this);
 	QVBoxLayout* owlay = new QVBoxLayout(this);
@@ -312,6 +312,11 @@ TabLabelEditor::TabLabelEditor()
 	ovWgt->setLayout(owlay);
 	ovWgt->setStyleSheet(".QWidget{background-color:wheat;border-radius:10px;}");
 	ovWgt->setFixedSize(440, 80);
+	connect(_toTab, &QLineEdit::returnPressed, [=]() {
+			emit labelChanged(tabIdx, _toTab->text()); 
+			this->label = "";
+			_toTab->setText(""); this->hide();
+		});
 	this->hide();
 }
 
@@ -319,5 +324,8 @@ void TabLabelEditor::setOriLabel(int tabIdx,const QString& orilabel)
 {
 	_fromTab->setText(orilabel);
 	this->tabIdx = tabIdx;
+	this->label = orilabel;
+	this->move(_code_editor->mapToGlobal(QPoint(0,0)) + 
+		QPoint(_code_editor->width() / 4, _code_editor->height()/2));
 	this->show();
 }

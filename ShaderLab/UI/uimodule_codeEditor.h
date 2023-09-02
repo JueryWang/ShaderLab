@@ -13,22 +13,7 @@ class QFont;
 class QStatusBar;
 class QsciScintilla;
 class XA_UIMODULE_EditorPage;
-
-class TabLabelEditor : public QWidget
-{
-	Q_OBJECT
-public:
-	TabLabelEditor();
-	void setOriLabel(int tabIdx,const QString& orilabel);
-signals:
-	void labelChanged(int tabIdx,const QString& newLabel);
-
-private:
-	QString label;
-	int tabIdx;
-	QLineEdit* _fromTab;
-	QLineEdit* _toTab;
-};
+class TabLabelEditor;
 
 class XA_UIMODULE_CodeEditor : public QTabWidget
 {
@@ -71,6 +56,24 @@ public:
 	std::unique_ptr<QFile> _current_file;
 
 	XA_UIMODULE_EditorPage* _current_page;
+};
+
+class TabLabelEditor : public QWidget
+{
+	Q_OBJECT
+public:
+	TabLabelEditor(XA_UIMODULE_CodeEditor *codeEditor);
+	void setOriLabel(int tabIdx, const QString& orilabel);
+
+signals:
+	void labelChanged(int tabIdx, const QString& newLabel);
+
+private:
+	QString label;
+	int tabIdx;
+	QLineEdit* _fromTab;
+	QLineEdit* _toTab;
+	XA_UIMODULE_CodeEditor* _code_editor;
 };
 
 #endif
