@@ -1,4 +1,5 @@
 #include "ui_defaultDfs.h"
+#include "../Utilitys/uitilityDfs.h"
 #include "uimodule_codeEditor.h"
 #include "uimodule_editorpage.h"
 #include <QFontDatabase>
@@ -11,9 +12,13 @@
 #include <QTabBar>
 #include <QMap>
 #include <QFont>
+#include <QToolBar>
+#include <QLabel>
 #include <QDir>
+#include <QHBoxLayout>
 #include <QDebug>
 XA_UIMODULE_CodeEditor* XA_UIMODULE_CodeEditor::_codeEditor;
+TabLabelEditor* XA_UIMODULE_CodeEditor::_tabLabelEditor;
 int XA_UIMODULE_CodeEditor::editor_width = 0;
 int XA_UIMODULE_CodeEditor::editor_height = 0;
 
@@ -44,19 +49,27 @@ XA_UIMODULE_CodeEditor::XA_UIMODULE_CodeEditor()
 
 	this->setContentsMargins(0, 0, 0, 0);
 	this->setTabsClosable(true);
-	this->setMovable(true);
+	this->setMovable(false);
 	this->setDocumentMode(true);
 	_editor_font->setFamily(global_font_mp["Caviar_Dreams_Bold"]);
 	_editor_font->setPointSize(10);
 	this->setFont(*_editor_font);
 	connect(this, &QTabWidget::tabCloseRequested, this, &XA_UIMODULE_CodeEditor::on_closeTab);
-	
-	QIcon icon = QIcon::fromTheme(QLatin1String("window-new"));
-	this->addTab(new QWidget(), "");
-	this->setTabIcon(0, icon);
 
-	connect(this->tabBar(), &QTabBar::tabBarClicked, this, &XA_UIMODULE_CodeEditor::on_addNewScript);
-	connect(this->tabBar(), &QTabBar::tabBarDoubleClicked, this, &XA_UIMODULE_CodeEditor::on_changeTabText);
+
+	QToolButton* tb = new QToolButton(this);
+	tb->setIcon(QIcon(ICOPATH(newscript.svg)));
+	tb->setStyleSheet(R"(background-color:#6F7285;
+	border-radius:9px;
+    border-style: none;)");
+	connect(tb, &QToolButton::clicked, this, &XA_UIMODULE_CodeEditor::on_addNewScript);
+	tb->setFixedWidth(20);
+	this->tabBar()->setTabButton(0, QTabBar::LeftSide, tb);
+	tb->move(tb->pos() + QPoint(0, 9));
+	connect(this->tabBar(), &QTabBar::tabBarClicked, this, &XA_UIMODULE_CodeEditor::on_clickTab);
+
+	_tabLabelEditor = new TabLabelEditor();
+	connect(_tabLabelEditor, &TabLabelEditor::labelChanged, this, &XA_UIMODULE_CodeEditor::on_pageLabelChanged);
 
 	this->set_new_tab(nullptr, true);
 }
@@ -249,15 +262,62 @@ void XA_UIMODULE_CodeEditor::on_saveas()
 	_current_file.reset(path);
 }
 
-void XA_UIMODULE_CodeEditor::on_addNewScript(int tabIdx)
+void XA_UIMODULE_CodeEditor::on_addNewScript()
 {
-	if (tabIdx == 0)
-	{
-		QTimer::singleShot(0, [this]() { this->setCurrentIndex(crt_idx); });
-	}
+	qDebug() << "XA_UIMODULE_CodeEditor::on_addNewScript()";
 }
 
-void XA_UIMODULE_CodeEditor::on_changeTabText(int tabIdx)
+void XA_UIMODULE_CodeEditor::on_clickTab(int tabIdx)
+{
+	_tabLabelEditor->setOriLabel(tabIdx,this->tabText(tabIdx));
+}
+
+void XA_UIMODULE_CodeEditor::on_pageLabelChanged(int tabIdx, const QString& newLabel)
 {
 
+}
+
+TabLabelEditor::TabLabelEditor()
+{
+	this->setWindowFlags(Qt::FramelessWindowHint);
+	this->setAttribute(Qt::WA_TranslucentBackground);
+	QWidget* ovWgt = new QWidget(this);
+	QVBoxLayout* owlay = new QVBoxLayout(this);
+	owlay->setContentsMargins(0, 0, 0, 0);
+	QHBoxLayout* upper_hlay = new QHBoxLayout();
+	upper_hlay->setContentsMargins(10, 2, 10, 2);
+	upper_hlay->setSpacing(4);
+	QLabel* tip1 = new QLabel(_STRING_WRAPPER("ÖØÃüÃû:"));
+	tip1->setFixedWidth(50);
+	tip1->setAlignment(Qt::AlignRight);
+	tip1->setFont(QFont("Microsoft YaHei",10));
+	upper_hlay->addWidget(tip1);
+	_fromTab = new QLineEdit();
+	_fromTab->setReadOnly(true);
+	_fromTab->setStyleSheet(TABLABLE_EDITOR_STYLE);
+	upper_hlay->addWidget(_fromTab);
+	QHBoxLayout* lower_hlay = new QHBoxLayout();
+	lower_hlay->setContentsMargins(10, 2, 10, 2);
+	upper_hlay->setSpacing(4);
+	QLabel* tip2 = new QLabel(_STRING_WRAPPER("Îª:"));
+	tip2->setFixedWidth(50);
+	tip2->setAlignment(Qt::AlignRight);
+	tip2->setFont(QFont("Microsoft YaHei", 10));
+	lower_hlay->addWidget(tip2);
+	_toTab = new QLineEdit();
+	_toTab->setStyleSheet(TABLABLE_EDITOR_STYLE);
+	lower_hlay->addWidget(_toTab);
+	owlay->addLayout(upper_hlay);
+	owlay->addLayout(lower_hlay);
+	ovWgt->setLayout(owlay);
+	ovWgt->setStyleSheet(".QWidget{background-color:wheat;border-radius:10px;}");
+	ovWgt->setFixedSize(440, 80);
+	this->hide();
+}
+
+void TabLabelEditor::setOriLabel(int tabIdx,const QString& orilabel)
+{
+	_fromTab->setText(orilabel);
+	this->tabIdx = tabIdx;
+	this->show();
 }

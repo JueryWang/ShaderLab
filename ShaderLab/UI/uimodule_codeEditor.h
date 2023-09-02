@@ -2,15 +2,33 @@
 #define UI_CODE_EDITOR_H
 
 #include <memory>
-#include <QMap>
 #include <QTabWidget>
 #include <QToolButton>
+#include <QLineEdit>
+#include <QLabel>
+#include <QTabBar>
 
 class QFile;
 class QFont;
 class QStatusBar;
 class QsciScintilla;
 class XA_UIMODULE_EditorPage;
+
+class TabLabelEditor : public QWidget
+{
+	Q_OBJECT
+public:
+	TabLabelEditor();
+	void setOriLabel(int tabIdx,const QString& orilabel);
+signals:
+	void labelChanged(int tabIdx,const QString& newLabel);
+
+private:
+	QString label;
+	int tabIdx;
+	QLineEdit* _fromTab;
+	QLineEdit* _toTab;
+};
 
 class XA_UIMODULE_CodeEditor : public QTabWidget
 {
@@ -34,9 +52,9 @@ public slots:
 	void on_newfile();
 	void on_savefile();
 	void on_saveas();
-	void on_addNewScript(int tabIdx);
-	void on_changeTabText(int tabIdx);
-
+	void on_addNewScript();
+	void on_clickTab(int tabIdx);
+	void on_pageLabelChanged(int index,const QString& newLabel);
 private:
 	XA_UIMODULE_CodeEditor();
 	~XA_UIMODULE_CodeEditor();
@@ -44,6 +62,7 @@ private:
 
 public:
 	static XA_UIMODULE_CodeEditor* _codeEditor;
+	static TabLabelEditor* _tabLabelEditor;
 	static int editor_width;
 	static int editor_height;
 	int crt_idx = -1;

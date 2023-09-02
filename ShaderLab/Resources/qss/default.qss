@@ -77,12 +77,12 @@ QTabWidget{
 QTabBar::tab{
     background-color:transparent;
     color: #d3d3d3;
-    min-width: 10ex;
+    min-width: 0ex;
     min-height: 3ex;
 	border-top-left-radius: 5px;    /*设置tab的边框的圆角（左上圆角）*/
 	border-top-right-radius: 5px;    /*设置tab的边框的圆角（右上圆角）*/
-    padding: 10px 20px;
-    border-style: none;;
+    padding: 10px 6px 10px 30px;
+    border-style: none;
 }
 
 QTabBar::tab::selected{

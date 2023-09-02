@@ -159,5 +159,47 @@ const static QString PREFERENCE_COLUMBTN_STYLE_MEDIUM = R"(.QPushButton{
 		background:rgb(71,114,179);
 })";
 
+const static QString TABLABLE_EDITOR_STYLE = R"(
+* {
+	outline: none;
+}
+
+QLineEdit {
+	border: 1px solid #A0A0A0;
+	border-radius: 3px;
+	padding-left: 5px;
+	background-color: #F2F2F2;
+	color: #A0A0A0;
+	selection-background-color: #A0A0A0;
+	selection-color: #2D2D2D;
+	font-family: "Microsoft YaHei";
+	font-size: 10pt;
+}
+
+QLineEdit:hover {
+	border: 1px solid #298DFF;
+	border-radius: 3px;
+	background-color: #F2F2F2;
+	color: #2D2D2D;
+	selection-background-color: #298DFF;
+	selection-color: #F2F2F2;
+}
+
+QLineEdit[echoMode="2"] {
+	lineedit-password-character: 9679;
+	lineedit-password-mask-delay: 2000;
+}
+
+QLineEdit:disabled {
+	border: 1px solid #CDCDCD;
+	background-color: #CDCDCD;
+	color: #B4B4B4;
+}
+
+QLineEdit:read-only {
+	background-color: #CDCDCD;
+	color: #2D2D2D;
+}
+)";
 extern QMap<QString, QString> global_font_mp;
 #endif // UI_DEFAULT_DFS\
