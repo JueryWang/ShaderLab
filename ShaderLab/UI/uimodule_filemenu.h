@@ -1,6 +1,8 @@
 #ifndef UI_MENU_FILE_H
 #define UI_MENU_FILE_H
+
 #include <QMenu>
+#include <QFile>
 
 class XA_UIModule_FILEMenu : public QMenu
 {
@@ -25,6 +27,9 @@ private://no need to add slots flag because there are no args between click sign
 	void on_clcExportSDL();
 	void on_clcExportViedo();
 	void on_clcQuit();
+
+private:
+	QFile* _file_handler;
 };
 
 #endif

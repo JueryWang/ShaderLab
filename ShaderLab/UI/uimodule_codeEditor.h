@@ -1,10 +1,13 @@
 #ifndef UI_CODE_EDITOR_H
 #define UI_CODE_EDITOR_H
 
+#include <deque>
+#include <utility>
 #include <memory>
 #include <QTabWidget>
 #include <QToolButton>
 #include <QLineEdit>
+#include <QMenu>
 #include <QLabel>
 #include <QTabBar>
 
@@ -22,9 +25,11 @@ class XA_UIMODULE_CodeEditor : public QTabWidget
 public:
 	static void setEditorSize(int width, int height);
 	static XA_UIMODULE_CodeEditor* getEditor();
+	void savefile();
 private:
 	void set_new_tab(const QString& path, bool is_new_file = false);
 	QsciScintilla* get_new_page();
+	void saveas();
 
 protected:
 	virtual void dragEnterEvent(QDragEnterEvent* event);
@@ -32,14 +37,15 @@ protected:
 
 public slots:
 	void on_closeTab(int index);
-	void on_show_hide_Tab();
 	void on_copy();
 	void on_newfile();
-	void on_savefile();
-	void on_saveas();
 	void on_addNewScript();
 	void on_clickTab(int tabIdx);
 	void on_pageLabelChanged(int index,const QString& newLabel);
+	void on_showClearMenu(const QPoint& pos);
+	void on_clearRightTab();
+	void on_excludeTab();
+
 private:
 	XA_UIMODULE_CodeEditor();
 	~XA_UIMODULE_CodeEditor();
@@ -48,14 +54,15 @@ private:
 public:
 	static XA_UIMODULE_CodeEditor* _codeEditor;
 	static TabLabelEditor* _tabLabelEditor;
+	static QMenu* _custmMenu;
 	static int editor_width;
 	static int editor_height;
-	int crt_idx = -1;
 
 	QFont* _editor_font;
 	std::unique_ptr<QFile> _current_file;
 
 	XA_UIMODULE_EditorPage* _current_page;
+	std::deque<std::pair<bool,std::string>> saved_state;
 };
 
 class TabLabelEditor : public QWidget

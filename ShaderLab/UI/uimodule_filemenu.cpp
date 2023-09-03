@@ -1,6 +1,8 @@
 #include "uimodule_filemenu.h"
 #include "uimodule_customIconStyle.h"
+#include "uimodule_codeEditor.h"
 #include "../Utilitys/uitilityDfs.h"
+#include <QApplication>
 #include <iostream>
 #include <QMenu>
 #include <QAction>
@@ -11,6 +13,7 @@ XA_UIModule_FILEMenu::XA_UIModule_FILEMenu(QString title, bool showIcon, const c
 	setProperty("class", "blackMenu");
 	setWindowFlags(this->windowFlags() | Qt::FramelessWindowHint);
 	this->setAttribute(Qt::WA_TranslucentBackground);
+	_file_handler = new QFile();
 
 	if (showIcon)
 	{
@@ -129,6 +132,12 @@ void XA_UIModule_FILEMenu::on_clcOpenDevice()
 
 void XA_UIModule_FILEMenu::on_tgrSaveContxt()
 {
+	if (QApplication::focusWidget() == XA_UIMODULE_CodeEditor::getEditor()->currentWidget())
+	{
+		XA_UIMODULE_CodeEditor::getEditor()->savefile();
+		return;
+	}
+
 	std::cout << "XA_UIModule_FILEMenu::on_tgrSaveContxt()" << std::endl;
 }
 

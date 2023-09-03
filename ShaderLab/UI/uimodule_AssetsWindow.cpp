@@ -177,7 +177,6 @@ bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 						}
 						else
 						{
-							qDebug() << "open other audio file";
 							XA_AUDIO_PLAYER::get_player()->quit();
 							_window->asset_path = fileName;
 							_window->asset_type = ASSET_WINDOW::AUDIO;

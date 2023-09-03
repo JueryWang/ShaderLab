@@ -5,6 +5,7 @@
 #include <QFontDatabase>
 #include <QFileDialog>
 #include <QMimeData>
+#include <QAction>
 #include <QMimeDatabase>
 #include <QDragEnterEvent>
 #include <QTimer>
@@ -15,12 +16,15 @@
 #include <QToolBar>
 #include <QLabel>
 #include <QDir>
+#include <QMouseEvent>
 #include <QHBoxLayout>
 #include <QDebug>
 XA_UIMODULE_CodeEditor* XA_UIMODULE_CodeEditor::_codeEditor;
 TabLabelEditor* XA_UIMODULE_CodeEditor::_tabLabelEditor;
+QMenu* XA_UIMODULE_CodeEditor::_custmMenu;
 int XA_UIMODULE_CodeEditor::editor_width = 0;
 int XA_UIMODULE_CodeEditor::editor_height = 0;
+using namespace std;
 
 
 XA_UIMODULE_CodeEditor::XA_UIMODULE_CodeEditor()
@@ -65,10 +69,20 @@ XA_UIMODULE_CodeEditor::XA_UIMODULE_CodeEditor()
 	connect(tb, &QToolButton::clicked, this, &XA_UIMODULE_CodeEditor::on_addNewScript);
 	tb->setFixedWidth(20);
 	this->tabBar()->setTabButton(0, QTabBar::LeftSide, tb);
+	this->tabBar()->setContextMenuPolicy(Qt::CustomContextMenu);
 	tb->move(tb->pos() + QPoint(0, 9));
-	connect(this->tabBar(), &QTabBar::tabBarClicked, this, &XA_UIMODULE_CodeEditor::on_clickTab);
 
 	_tabLabelEditor = new TabLabelEditor(this);
+	_custmMenu = new QMenu();
+	QAction* clearRightAct = new QAction(_STRING_WRAPPER("关闭右侧选项卡"));
+	connect(clearRightAct, &QAction::triggered, this, &XA_UIMODULE_CodeEditor::on_clearRightTab);
+	QAction* excludeTabAct = new QAction(_STRING_WRAPPER("仅保留该选项卡"));
+	connect(excludeTabAct, &QAction::triggered, this, &XA_UIMODULE_CodeEditor::on_excludeTab);
+	_custmMenu->addAction(clearRightAct);
+	_custmMenu->addAction(excludeTabAct);
+
+	connect(this->tabBar(), &QTabBar::tabBarDoubleClicked, this, &XA_UIMODULE_CodeEditor::on_clickTab);
+	connect(this->tabBar(), &QTabBar::customContextMenuRequested, this, &XA_UIMODULE_CodeEditor::on_showClearMenu);
 	connect(_tabLabelEditor, &TabLabelEditor::labelChanged, this, &XA_UIMODULE_CodeEditor::on_pageLabelChanged);
 
 	this->set_new_tab(nullptr, true);
@@ -102,8 +116,8 @@ void XA_UIMODULE_CodeEditor::set_new_tab(const QString& path, bool is_new_file /
 	{
 		this->addTab(editor, "untitled");
 		this->setCurrentIndex(this->count() - 1);
-		crt_idx = this->count() - 1;
 		_current_file = std::make_unique<QFile>("untitled");
+		saved_state.push_back(std::make_pair<bool,string>(false,""));
 		return;
 	}
 
@@ -122,7 +136,6 @@ void XA_UIMODULE_CodeEditor::set_new_tab(const QString& path, bool is_new_file /
 		if (this->tabText(i) == file_name)
 		{
 			this->setCurrentIndex(i);
-			crt_idx = this->count() - 1;
 			this->_current_file = std::make_unique<QFile>(path);
 			return;
 		}
@@ -142,7 +155,6 @@ void XA_UIMODULE_CodeEditor::set_new_tab(const QString& path, bool is_new_file /
 	}
 	this->_current_file = std::make_unique<QFile>(path);
 	this->setCurrentIndex(this->count() - 1);
-	crt_idx = this->count() - 1;
 }
 
 QsciScintilla* XA_UIMODULE_CodeEditor::get_new_page()
@@ -194,6 +206,7 @@ void XA_UIMODULE_CodeEditor::dropEvent(QDropEvent* event)
 		else
 		{
 			this->set_new_tab(new_file, false);
+			saved_state.push_back(make_pair<bool, string>(true,new_file.toStdString()));
 		}
 	}
 	else
@@ -205,11 +218,6 @@ void XA_UIMODULE_CodeEditor::dropEvent(QDropEvent* event)
 void XA_UIMODULE_CodeEditor::on_closeTab(int index)
 {
 	this->removeTab(index);
-}
-
-void XA_UIMODULE_CodeEditor::on_show_hide_Tab()
-{
-
 }
 
 void XA_UIMODULE_CodeEditor::on_copy()
@@ -225,15 +233,16 @@ void XA_UIMODULE_CodeEditor::on_newfile()
 	set_new_tab(nullptr, true);
 }
 
-void XA_UIMODULE_CodeEditor::on_savefile()
+void XA_UIMODULE_CodeEditor::savefile()
 {
-	if (_current_file == nullptr && this->count() > 0)
+	if ((!saved_state[this->currentIndex()].first) && this->count() > 0)
 	{
-		this->on_saveas();
+		this->saveas();
 		return;
 	}
 
 	QsciScintilla* editor = (QsciScintilla*)this->currentWidget();
+	_current_file->setFileName(QString::fromStdString(saved_state[this->currentIndex()].second));
 	if (_current_file->open(QIODevice::WriteOnly))
 	{
 		_current_file->write(editor->text().toUtf8());
@@ -241,13 +250,12 @@ void XA_UIMODULE_CodeEditor::on_savefile()
 	_current_file->close();
 }
 
-void XA_UIMODULE_CodeEditor::on_saveas()
+void XA_UIMODULE_CodeEditor::saveas()
 {
 	QsciScintilla* editor = (QsciScintilla*)this->currentWidget();
 	if (editor == nullptr)
 		return;
 
-	//replace QDir::currentPath() with last user save path
 	QString file_path = QFileDialog::getSaveFileName(this, "Save as", QDir::currentPath());
 	if (!file_path.length())
 		return;
@@ -260,11 +268,13 @@ void XA_UIMODULE_CodeEditor::on_saveas()
 	path->close();
 	this->setTabText(this->currentIndex(), path->fileName());
 	_current_file.reset(path);
+	saved_state[this->currentIndex()].first = true;
+	saved_state[this->currentIndex()].second = file_path.toStdString();
 }
 
 void XA_UIMODULE_CodeEditor::on_addNewScript()
 {
-	qDebug() << "XA_UIMODULE_CodeEditor::on_addNewScript()";
+	this->set_new_tab(nullptr, true);
 }
 
 void XA_UIMODULE_CodeEditor::on_clickTab(int tabIdx)
@@ -275,6 +285,42 @@ void XA_UIMODULE_CodeEditor::on_clickTab(int tabIdx)
 void XA_UIMODULE_CodeEditor::on_pageLabelChanged(int tabIdx, const QString& newLabel)
 {
 	this->setTabText(tabIdx, newLabel);
+	saved_state[tabIdx].first = false;
+	saved_state[tabIdx].second = "";
+}
+
+void XA_UIMODULE_CodeEditor::on_showClearMenu(const QPoint& pos)
+{
+	_custmMenu->move(this->mapToGlobal(QPoint(0, 0)) + pos);
+	_custmMenu->show();
+}
+
+void XA_UIMODULE_CodeEditor::on_clearRightTab()
+{
+	int tab = this->tabBar()->count()-1;
+	int crt_tabIdx = this->currentIndex();
+	for (; tab > crt_tabIdx; tab--)
+	{
+		this->removeTab(tab);
+		saved_state.pop_back();
+	}
+}
+
+void XA_UIMODULE_CodeEditor::on_excludeTab()
+{
+	int tabcount = this->tabBar()->count();
+	int crt_tabIdx = this->currentIndex();
+	bool cross = false;
+	for (int i = 0; i < tabcount; i++)
+	{
+		if (i == crt_tabIdx)
+		{
+			cross = true;
+			continue;
+		}
+		this->removeTab(cross? 1 : 0);
+		cross? saved_state.pop_front() : saved_state.pop_back();
+	}
 }
 
 TabLabelEditor::TabLabelEditor(XA_UIMODULE_CodeEditor* codeEditor):_code_editor(codeEditor)
@@ -327,5 +373,6 @@ void TabLabelEditor::setOriLabel(int tabIdx,const QString& orilabel)
 	this->label = orilabel;
 	this->move(_code_editor->mapToGlobal(QPoint(0,0)) + 
 		QPoint(_code_editor->width() / 4, _code_editor->height()/2));
-	this->show();
+	if(this->label.size())
+		this->show();
 }
