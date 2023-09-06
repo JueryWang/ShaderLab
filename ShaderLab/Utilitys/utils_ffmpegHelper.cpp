@@ -37,13 +37,20 @@ void XA_FFMPEG_HELPER::init_context()
 	stream->codecpar->bit_rate = bitrate * 1000;
 	avcodec_parameters_to_context(cctx, stream->codecpar);
 	cctx->time_base = { 1,1 };
-	cctx->max_b_frames = 2;
+	cctx->max_b_frames = 0;
 	cctx->gop_size = 12;
 	cctx->framerate = { fps,1 };
 
-	//swsCtx = sws_getContext(cctx->width, cctx->height, AV_PIX_FMT_RGB24, cctx->width,
-		//cctx->height, AV_PIX_FMT_YUV420P, SWS_BICUBIC, 0, 0, 0);
-	std::cout << "cctx.width = " << cctx->width << " cctx->height = " << cctx->height << std::endl;
+	videoFrame = av_frame_alloc();
+	videoFrame->format = AV_PIX_FMT_YUV420P;
+	videoFrame->width = cctx->width;
+	videoFrame->height = cctx->height;
+	if ((err = av_frame_get_buffer(videoFrame, 32)) < 0) {
+		std::cout << "Failed to allocate picture" << err << std::endl;
+	}
+
+	swsCtx = sws_getContext(cctx->width, cctx->height, AV_PIX_FMT_RGB24, cctx->width,
+		cctx->height, AV_PIX_FMT_YUV420P, SWS_BICUBIC, 0, 0, 0);
 
 	if (stream->codecpar->codec_id == AV_CODEC_ID_H264)
 	{
@@ -110,6 +117,18 @@ void XA_FFMPEG_HELPER::finish()
 
 void XA_FFMPEG_HELPER::free()
 {
+	if (videoFrame) {
+		av_frame_free(&videoFrame);
+	}
+	if (cctx) {
+		avcodec_free_context(&cctx);
+	}
+	if (ofctx) {
+		avformat_free_context(ofctx);
+	}
+	if (swsCtx) {
+		sws_freeContext(swsCtx);
+	}
 }
 
 XA_FFMPEG_HELPER* XA_FFMPEG_HELPER::getHelper()
@@ -152,7 +171,6 @@ void XA_FFMPEG_HELPER::getAudioInfo(utils_ffmpeg::XA_FFMPEG_AU_INFO* info, const
 void XA_FFMPEG_HELPER::setAVRecordParam(const std::string& filename, int width, int height)
 {
 	rec_target_file = filename;
-	std::cout << "record file = " << rec_target_file << std::endl;
 	this->width = width;
 	this->height = height;
 	this->frameCounter = 0;
@@ -167,18 +185,10 @@ void XA_FFMPEG_HELPER::pushFrame(uchar* frameraw)
 	int err;
 
 	if (!videoFrame) {
-		videoFrame = av_frame_alloc();
-		videoFrame->format = AV_PIX_FMT_YUV420P;
-		videoFrame->width = cctx->width;
-		videoFrame->height = cctx->height;
-		if ((err = av_frame_get_buffer(videoFrame, 32)) < 0) {
-			std::cout << "Failed to allocate picture" << err << std::endl;
-			return;
-		}
+		return;
 	}
 	if (!swsCtx) {
-		swsCtx = sws_getContext(cctx->width, cctx->height, AV_PIX_FMT_RGB24, cctx->width,
-			cctx->height, AV_PIX_FMT_YUV420P, SWS_BICUBIC, 0, 0, 0);
+		return;
 	}
 	int inLinesize[1] = { 3 * cctx->width };
 	// From RGB to YUV
@@ -186,9 +196,11 @@ void XA_FFMPEG_HELPER::pushFrame(uchar* frameraw)
 		videoFrame->data, videoFrame->linesize);
 	videoFrame->pts = (1.0 / 30.0) * 90000 * (frameCounter++);
 	if ((err = avcodec_send_frame(cctx, videoFrame)) < 0) {
+		frameCounter--;
 		std::cout << "Failed to send frame" << err << std::endl;
 		return;
 	}
+
 	AVPacket pkt;
 	av_init_packet(&pkt);
 	pkt.data = NULL;
