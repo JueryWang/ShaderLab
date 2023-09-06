@@ -50,6 +50,7 @@ XA_GLMODULE_RENDER* XA_UIMODULE_GLWidget::getRender()
 void XA_UIMODULE_GLWidget::setWindowInfoPanel(XA_UIMODULE_WindowInfo* inst)
 {
 	this->_infoPanel = inst;
+	inst->glWindow_Inst = this;
 	connect(_infoPanel->lockbtn, &QPushButton::clicked, this, &XA_UIMODULE_GLWidget::on_clickLockSize);
 	connect(_infoPanel->resetbtn, &QPushButton::clicked, this, &XA_UIMODULE_GLWidget::on_clickResetSize);
 }
@@ -69,6 +70,16 @@ void XA_UIMODULE_GLWidget::__setMaximumSize(const QSize& size)
 void XA_UIMODULE_GLWidget::__reshow()
 {
 	emit beginGLDraw();
+}
+
+void XA_UIMODULE_GLWidget::__startRecord()
+{
+	_glBackendRender->__record();
+}
+
+void XA_UIMODULE_GLWidget::__endRecord()
+{
+	_glBackendRender->__endrecord();
 }
 
 void XA_UIMODULE_GLWidget::on_clickLockSize()

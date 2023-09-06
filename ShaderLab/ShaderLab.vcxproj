@@ -64,11 +64,11 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <Optimization>Disabled</Optimization>
+      <Optimization>Full</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <AdditionalIncludeDirectories>GL/include;include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>GL/include;include;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>qscintilla2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -122,6 +122,7 @@
     <ClCompile Include="UI\uimodule_windowmenu.cpp" />
     <ClCompile Include="UI\uimodule_windowInfo.cpp" />
     <ClCompile Include="Utilitys\AssetsManager\Audio\utils_audioPlayer.cpp" />
+    <ClCompile Include="Utilitys\AssetsManager\Video\utils_videoPlayer.cpp" />
     <ClCompile Include="Utilitys\Parser\utils_shaderParser.cpp" />
     <ClCompile Include="Utilitys\utils_backendThread.cpp" />
     <ClCompile Include="Utilitys\utils_ffmpegHelper.cpp" />
@@ -137,6 +138,7 @@
     <QtMoc Include="UI\uimodule_radioVolume.h" />
     <QtMoc Include="UI\uimodule_preferenceWindow.h" />
     <QtMoc Include="UI\ClickableLabel.h" />
+    <QtMoc Include="Utilitys\AssetsManager\Video\utils_videoPlayer.h" />
     <ClInclude Include="Utilitys\utilsDfs.h" />
     <ClInclude Include="Utilitys\utils_ffmpegHelper.h" />
     <QtMoc Include="UI\uimodule_aboutmenu.h" />

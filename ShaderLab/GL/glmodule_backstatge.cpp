@@ -1,10 +1,11 @@
 #include "glmodule_backstatge.h"
 #include "gl_defaultDfs.h"
 #include "glmodule_render.h"
-#include "../Utilitys/uitilityDfs.h"
-#include "../UI/uimodule_glWidget.h"
-#include "../UI/uimodule_codeEditor.h"
-#include "../Utilitys/Parser/utils_shaderParser.h"
+#include "Utilitys/uitilityDfs.h"
+#include "UI/uimodule_glWidget.h"
+#include "UI/uimodule_codeEditor.h"
+#include "Utilitys/Parser/utils_shaderParser.h"
+#include "Utilitys/AssetsManager/Video/utils_videoPlayer.h"
 #include <Qsci/qsciscintilla.h>
 #include <QMutex>
 #include <QDebug>
@@ -36,9 +37,7 @@ XA_GLMODULE_BACKSTG* XA_GLMODULE_BACKSTG::getBackStage()
 
 void XA_GLMODULE_BACKSTG::addTask(std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK> newTask)
 {
-	taskLocker.lock();
 	_task_queue.push(newTask);
-	taskLocker.unlock();
 }
 
 void XA_GLMODULE_BACKSTG::deleteTexture(int idx)
@@ -84,6 +83,11 @@ void XA_GLMODULE_BACKSTG::run()
 					case XA_GL_COMPILE_SHADER:
 					{
 						handleCompileShader(crt_task);
+						break;
+					}
+					case XA_GL_RECORD:
+					{
+						handleAVRecord(crt_task);
 						break;
 					}
 					default:
@@ -145,6 +149,7 @@ void XA_GLMODULE_BACKSTG::handleCompileShader(const std::pair<XA_GLMODULE_RENDER
 			parser->setContextParserRule(parser::ShaderToy);
 
 			QByteArray s = filename.toLatin1();
+			crt_task.first->setTitle(s.data());
 
 			strcpy(vs_path, USER_TEMPORARY_SHADER_PATH);
 			strcat(vs_path, "/");
@@ -174,4 +179,9 @@ void XA_GLMODULE_BACKSTG::handleCompileShader(const std::pair<XA_GLMODULE_RENDER
 			break;
 		}
 	}
+}
+
+void XA_GLMODULE_BACKSTG::handleAVRecord(const std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK>& crt_task)
+{
+	XA_VIDEO_PLAYER::get_player()->writeRecord(crt_task.second.param.recordTask_param.frameAddr);
 }

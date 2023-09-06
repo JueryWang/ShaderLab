@@ -21,6 +21,7 @@ public:
 
 signals:
 	void shaderParsedone();
+	void videoRecordDone();
 
 protected:
 	void run() override;
@@ -31,6 +32,7 @@ private:
 	void handleDrawFront(const std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK>& crt_task);
 	void handleLoadTexture(const std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK>& crt_task);
 	void handleCompileShader(const std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK>& crt_task);
+	void handleAVRecord(const std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK>& crt_task);
 	/*
 	* multi Window Instance Rendering need to be reconstructed by vulkan
 	  std::priority_queue<GL_windowBuffer*> hierarchy_layer;

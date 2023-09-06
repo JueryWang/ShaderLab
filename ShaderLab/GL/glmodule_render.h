@@ -22,6 +22,7 @@ public:
 	XA_GLMODULE_RENDER(const std::string& title,StorageType type = XA_GL_RGB,QObject* reciver = nullptr);
 	~XA_GLMODULE_RENDER();
 	void setReciver(QObject* reciver);
+	void setTitle(const char* title);
 	//void addShader(const char* vertexPath, const char* fragmentPath,const char* name);
 	inline void flip(uint8_t** buf,int context_width,int context_height);
 	void __exit();
@@ -29,6 +30,8 @@ public:
 	void __pause();
 	void __restart();
 	void __update();
+	void __record();
+	void __endrecord();
 	static void __reset(const QSize& newSize);
 
 private:
@@ -83,7 +86,7 @@ private:
 
 	float anchor_time;
 	//use uint_8 flags to express 8 bools
-	//0-4 reserved ... 5. update |6 pause | 7 exit 
+	//0-3 reserved 4.record| 5. update |6 pause | 7 exit 
 	std::atomic<uint8_t> state_bit = 0b00000000;
 };
 

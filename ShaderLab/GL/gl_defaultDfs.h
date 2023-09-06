@@ -35,7 +35,8 @@ enum XA_GL_TASK_TYPE
 {
 	XA_GL_DRAWFRONT = 0,
 	XA_GL_COMPILE_SHADER,
-	XA_GL_LOADTEXTURE
+	XA_GL_LOADTEXTURE,
+	XA_GL_RECORD,
 };
 
 struct DrawFrontTask_param
@@ -55,11 +56,17 @@ struct CompileTask_param
 	XA_UIMODULE_ShowBoard* varboard;
 };
 
+struct RecordTask_param
+{
+	uchar* frameAddr;
+};
+
 union GL_Task_param
 {
 	DrawFrontTask_param drawFront_param;
 	LoadTextureTask_param loadTexture_param;
 	CompileTask_param compileTask_parm;
+	RecordTask_param recordTask_param;
 };
 
 struct XA_GL_TASK
@@ -88,6 +95,7 @@ struct XA_GL_TEXTURE_INFO
 
 enum XA_RENDER_FLAG_BIT
 {
+	RENDER_RECORD = 0b00001000,
 	RENDER_UPDATE = 0b00000100,
 	RENDER_PAUSE  = 0b00000010,
 	RENDER_EXIT   = 0b00000001,
@@ -95,6 +103,7 @@ enum XA_RENDER_FLAG_BIT
 
 enum XA_RENDER_FLAG_BIT_POS
 {
+	BIT_RECORD_POS	= 3,
 	BIT_UPDATE_POS  = 2,
 	BIT_PAUSE_POS   = 1,
 	BIT_EXIT_POS    = 0

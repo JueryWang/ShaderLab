@@ -20,6 +20,8 @@ public:
 	void __setMinimumSize(const QSize& size);
 	void __setMaximumSize(const QSize& size);
 	void __reshow();
+	void __startRecord();
+	void __endRecord();
 
 public slots:
 	void on_clickLockSize();

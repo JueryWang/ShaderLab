@@ -1,6 +1,7 @@
 #include "glmodule_render.h"
 #include "glmodule_backstatge.h"
 #include "glmodule_EvSendFrame.h"
+#include "Utilitys/AssetsManager/Video/utils_videoPlayer.h"
 #include <QApplication>
 #include <QThread>
 #include <memory>
@@ -57,6 +58,11 @@ XA_GLMODULE_RENDER::~XA_GLMODULE_RENDER()
 void XA_GLMODULE_RENDER::setReciver(QObject* reciver)
 {
 	this->_reciver = reciver;
+}
+
+void XA_GLMODULE_RENDER::setTitle(const char* title)
+{
+	_title = title;
 }
 
 int XA_GLMODULE_RENDER::getWidth() const
@@ -127,6 +133,18 @@ void XA_GLMODULE_RENDER::__update()
 	setStatus(RENDER_UPDATE,true);
 }
 
+void XA_GLMODULE_RENDER::__record()
+{
+	XA_VIDEO_PLAYER::get_player()->setRecordParam(_title.c_str(),XA_GLMODULE_RENDER::SCR_WIDTH, XA_GLMODULE_RENDER::SCR_HEIGHT);
+	setStatus(RENDER_RECORD, true);
+}
+
+void XA_GLMODULE_RENDER::__endrecord()
+{
+	setStatus(RENDER_RECORD, false);
+	emit XA_GLMODULE_BACKSTG::getBackStage()->videoRecordDone();
+}
+
 void XA_GLMODULE_RENDER::__exit()
 {
 	setStatus(RENDER_EXIT, true);
@@ -139,6 +157,11 @@ void XA_GLMODULE_RENDER::__reset(const QSize& newSize)
 	XA_GLMODULE_RENDER::SCR_HEIGHT.store(newSize.height(), memory_order_release);
 	XA_GLMODULE_RENDER::resolution[0] = newSize.width();
 	XA_GLMODULE_RENDER::resolution[1] = newSize.height();
+}
+
+inline void RGBA2RBG(uchar** src, uchar** dst)
+{
+
 }
 
 void XA_GLMODULE_RENDER::contextDraw()
@@ -215,6 +238,28 @@ void XA_GLMODULE_RENDER::contextDraw()
 
 		auto event = std::make_unique<EvSendFrame>(_windowbuf, windowBufSize);
 		QApplication::postEvent(_reciver, event.release(), Qt::HighEventPriority);
+
+		if (getFlag(BIT_RECORD_POS))
+		{
+			std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK> recordTask;
+			recordTask.first = this;
+			recordTask.second.type = XA_GL_RECORD;
+			int frame_size = context_width * context_height * 3 * sizeof(uchar);
+			uchar* newFrame = (uchar*)malloc(frame_size);
+			switch (_type)
+			{
+				case XA_GL_RGB:
+					memcpy(newFrame, _windowbuf, frame_size);
+					recordTask.second.param.recordTask_param.frameAddr = newFrame;
+					break;
+				case XA_GL_RGBA:
+					//ignore alpha bit
+					RGBA2RBG(&newFrame, &((uchar*)_windowbuf));
+					recordTask.second.param.recordTask_param.frameAddr = newFrame;
+					break;
+			}
+			XA_GLMODULE_BACKSTG::getBackStage()->addTask(recordTask);
+		}
 
 		glfwSwapBuffers(window_inst);
 		glfwSwapInterval(1);

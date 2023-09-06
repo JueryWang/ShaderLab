@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QPushButton>
 
+class XA_UIMODULE_GLWidget;
 class XA_UIMODULE_WindowInfo : public QWidget
 {
 	friend class XA_UIMODULE_GLWidget;
@@ -30,6 +31,8 @@ private:
 	QSize _crtSoucesize;
 	QSize _crtWindowsize;
 	QString _source;
+
+	XA_UIMODULE_GLWidget* glWindow_Inst = nullptr;
 };
 
 #endif

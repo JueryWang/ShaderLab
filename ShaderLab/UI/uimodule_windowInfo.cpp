@@ -1,6 +1,7 @@
-#include "ui_defaultDfs.h"
 #include "uimodule_windowInfo.h"
-#include "../Utilitys/uitilityDfs.h"
+#include "ui_defaultDfs.h"
+#include "Utilitys/uitilityDfs.h"
+#include "uimodule_glWidget.h"
 
 #include <QLabel>
 #include <QHBoxLayout>
@@ -90,6 +91,10 @@ void XA_UIMODULE_WindowInfo::on_clcRecord()
 {
 	disconnect(recbtn, &QPushButton::clicked, this, &XA_UIMODULE_WindowInfo::on_clcRecord);
 	recbtn->setIcon(QIcon(ICOPATH(recording.svg)));
+	if (glWindow_Inst)
+	{
+		glWindow_Inst->__startRecord();
+	}
 	connect(recbtn, &QPushButton::clicked, this, &XA_UIMODULE_WindowInfo::on_clcEndRecord);
 
 }
@@ -98,6 +103,10 @@ void XA_UIMODULE_WindowInfo::on_clcEndRecord()
 {
 	disconnect(recbtn, &QPushButton::clicked, this, &XA_UIMODULE_WindowInfo::on_clcEndRecord);
 	recbtn->setIcon(QIcon(ICOPATH(record.svg)));
+	if (glWindow_Inst)
+	{
+		glWindow_Inst->__endRecord();
+	}
 	connect(recbtn, &QPushButton::clicked, this, &XA_UIMODULE_WindowInfo::on_clcRecord);
 }
 

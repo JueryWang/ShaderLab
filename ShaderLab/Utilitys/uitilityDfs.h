@@ -21,5 +21,6 @@ static unsigned int xa_context = 0x00000000U;
 
 #define USER_TEMPORARY_SHADER_PATH "Resources/user/temporary"
 #define USER_TEMPORARY_AUDIO_PATH "Resources/user/temporary"
+#define GL_DEFAULT_RECORD_VIDEO_PATH "Resources/user/video"
 
 #endif
