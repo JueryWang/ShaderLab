@@ -6,7 +6,6 @@ using namespace std;
 using namespace utils_ffmpeg;
 
 XA_FFMPEG_HELPER* XA_FFMPEG_HELPER::_instance = nullptr;
-bool context_inited = false;
 
 XA_FFMPEG_HELPER::XA_FFMPEG_HELPER()
 {
@@ -95,8 +94,6 @@ void XA_FFMPEG_HELPER::init_context()
 	}
 
 	av_dump_format(ofctx, 0, rec_target_file.c_str(), 1);
-
-	context_inited = true;
 }
 
 void XA_FFMPEG_HELPER::finish()
@@ -125,6 +122,26 @@ void XA_FFMPEG_HELPER::finish()
 		if (err < 0) {
 			std::cout << "Failed to close file" << err << std::endl;
 		}
+	}
+}
+
+void XA_FFMPEG_HELPER::free()
+{
+	if (videoFrame) {
+		av_frame_free(&videoFrame);
+		videoFrame = nullptr;
+	}
+	if (cctx) {
+		avcodec_free_context(&cctx);
+		cctx = nullptr;
+	}
+	if (ofctx) {
+		avformat_free_context(ofctx);
+		ofctx = nullptr;
+	}
+	if (swsCtx) {
+		sws_freeContext(swsCtx);
+		swsCtx = nullptr;
 	}
 }
 
@@ -171,20 +188,15 @@ void XA_FFMPEG_HELPER::setAVRecordParam(const std::string& filename, int width, 
 	this->width = width;
 	this->height = height;
 	this->frameCounter = 0;
-	if (!context_inited)
-	{
-		init_context();
-	}
+	free();
+	init_context();
 }
 
 void XA_FFMPEG_HELPER::pushFrame(uchar* frameraw)
 {
 	int err;
 
-	if (!videoFrame) {
-		return;
-	}
-	if (!swsCtx) {
+	if (!videoFrame || !swsCtx || !cctx || !ofctx) {
 		return;
 	}
 	int inLinesize[1] = { 3 * cctx->width };
