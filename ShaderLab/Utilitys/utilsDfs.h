@@ -2,11 +2,24 @@
 #define UTILS_SUPPORT
 
 #include <QProcess>
+#include "libgif/gif_lib.h"
+
+namespace utils_video
+{
+	struct GifInfo
+	{
+		int width;
+		int height;
+		int interval;
+		int colors;
+		int loopcount;
+	};
+}
 
 enum XA_UTILS_TASK_TYPE
 {
 	XA_UTIL_PLAYAUDIO = 0,
-	XA_UTIL_COMPILECODE,
+	XA_UTIL_DECODEGIF
 };
 
 enum XA_AUDIO_STATE
@@ -24,9 +37,17 @@ struct PlayAudioTask_param
 	char audio_path[128];
 };
 
+struct DecodeGifTask_param
+{
+	utils_video::GifInfo* info;
+	GifFileType* gifFile;
+	QObject* receiver;
+};
+
 union UTILS_TASK_param
 {
 	PlayAudioTask_param playAudio_param;
+	DecodeGifTask_param decodeGif_param;
 };
 
 struct XA_UTILS_TASK
@@ -34,6 +55,7 @@ struct XA_UTILS_TASK
 	XA_UTILS_TASK_TYPE type;
 	UTILS_TASK_param param;
 };
+
 
 namespace utils_ffmpeg
 {

@@ -42,6 +42,7 @@ private:
 	XA_UIMODULE_WindowInfo* _infoPanel;
 
 	QImage _picture;
+	QImage _recIcon;
 
 	static uchar* _glwgt_pctbuffing;
 	static int _glwgt_buffingsize;
@@ -54,5 +55,6 @@ private:
 	QSize maximum_size;
 	std::string _title;
 	bool size_locked = false;
+	bool recording = false;
 };
 #endif // ifndef UI_GLWIDGET_H

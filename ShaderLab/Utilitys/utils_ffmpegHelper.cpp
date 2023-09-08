@@ -1,5 +1,6 @@
 #include "utils_ffmpegHelper.h"
 #include <iostream>
+#include <QThread>
 #include <memory>
 using namespace std;
 using namespace utils_ffmpeg;
@@ -14,7 +15,18 @@ XA_FFMPEG_HELPER::XA_FFMPEG_HELPER()
 
 XA_FFMPEG_HELPER::~XA_FFMPEG_HELPER()
 {
-
+	if (videoFrame) {
+		av_frame_free(&videoFrame);
+	}
+	if (cctx) {
+		avcodec_free_context(&cctx);
+	}
+	if (ofctx) {
+		avformat_free_context(ofctx);
+	}
+	if (swsCtx) {
+		sws_freeContext(swsCtx);
+	}
 }
 
 void XA_FFMPEG_HELPER::init_context()
@@ -36,6 +48,7 @@ void XA_FFMPEG_HELPER::init_context()
 	stream->codecpar->format = AV_PIX_FMT_YUV420P;
 	stream->codecpar->bit_rate = bitrate * 1000;
 	avcodec_parameters_to_context(cctx, stream->codecpar);
+
 	cctx->time_base = { 1,1 };
 	cctx->max_b_frames = 0;
 	cctx->gop_size = 12;
@@ -106,28 +119,12 @@ void XA_FFMPEG_HELPER::finish()
 	}
 
 	av_write_trailer(ofctx);
+
 	if (!(oformat->flags & AVFMT_NOFILE)) {
 		int err = avio_close(ofctx->pb);
 		if (err < 0) {
 			std::cout << "Failed to close file" << err << std::endl;
 		}
-	}
-	std::cout << "finish record" << std::endl;
-}
-
-void XA_FFMPEG_HELPER::free()
-{
-	if (videoFrame) {
-		av_frame_free(&videoFrame);
-	}
-	if (cctx) {
-		avcodec_free_context(&cctx);
-	}
-	if (ofctx) {
-		avformat_free_context(ofctx);
-	}
-	if (swsCtx) {
-		sws_freeContext(swsCtx);
 	}
 }
 
@@ -197,7 +194,6 @@ void XA_FFMPEG_HELPER::pushFrame(uchar* frameraw)
 	videoFrame->pts = (1.0 / 30.0) * 90000 * (frameCounter++);
 	if ((err = avcodec_send_frame(cctx, videoFrame)) < 0) {
 		frameCounter--;
-		std::cout << "Failed to send frame" << err << std::endl;
 		return;
 	}
 
@@ -217,7 +213,6 @@ void XA_FFMPEG_HELPER::pushFrame(uchar* frameraw)
 void XA_FFMPEG_HELPER::AVRecordDone()
 {
 	finish();
-	free();
 	this->frameCounter = 0;
 }
 

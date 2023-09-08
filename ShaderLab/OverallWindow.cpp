@@ -27,7 +27,6 @@ QMap<QString, QString> global_font_mp = QMap<QString, QString>();
 
 OverallWindow::OverallWindow() 
 {
-
 	init();
 	_owlayout = new QVBoxLayout(this);
 	_menubar = new MenuLayertop(this);

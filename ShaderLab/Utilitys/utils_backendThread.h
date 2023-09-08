@@ -21,7 +21,6 @@ public:
 signals:
 	void audioplayDone();
 
-
 protected:
 	void run() override;
 
@@ -29,6 +28,7 @@ private:
 	XA_UTILS_BACKEND();
 	~XA_UTILS_BACKEND();
 	void handlePlayAudio(const std::pair<QObject*, XA_UTILS_TASK> &crt_task);
+	void handleGifDecode(const std::pair<QObject*, XA_UTILS_TASK>& crt_task);
 	void AudioPlay();
 	void AudioPause();
 	void AudioRewind();

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "Utilitys/utils_ffmpegHelper.h"
+#include "Utilitys/utilsDfs.h"
 
 class XA_VIDEO_PLAYER : public QObject
 {
@@ -11,6 +12,7 @@ public:
 	static XA_VIDEO_PLAYER* get_player();
 	void setRecordParam(const char* name,int width,int height);
 	void writeRecord(uchar* frameraw);
+	bool acquireGifImageSeq(const char* path, QObject* receiver);
 
 public slots:
 	void recordDone();
@@ -33,6 +35,9 @@ private:
 	int height = 1080;
 	int bitrate = 2000;
 	int frameCounter;
+
+	utils_video::GifInfo gif_info;
+	GifFileType* _gif_file;
 };
 
 #endif

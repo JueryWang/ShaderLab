@@ -30,7 +30,6 @@ private:
 	~XA_FFMPEG_HELPER();
 	void init_context();
 	void finish();
-	void free();
 
 private:
 	static XA_FFMPEG_HELPER* _instance;

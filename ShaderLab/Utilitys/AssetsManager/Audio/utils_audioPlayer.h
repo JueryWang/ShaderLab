@@ -5,6 +5,7 @@
 #include <QThread>
 
 class XA_UIMODULE_ASSET_WINDOW;
+
 class XA_AUDIO_PLAYER : public QObject
 {
 	Q_OBJECT
@@ -17,6 +18,8 @@ public:
 	void quit();
 	void resume();
 	void replay();
+
+
 public slots:
 	void playDone();
 

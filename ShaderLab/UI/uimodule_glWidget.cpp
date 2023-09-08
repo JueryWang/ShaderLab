@@ -13,6 +13,9 @@
 uchar* XA_UIMODULE_GLWidget::_glwgt_pctbuffing;
 int XA_UIMODULE_GLWidget::_glwgt_buffingsize;
 bool first_resize = true;
+float alpha_flick = 255;//alpha value for flicking recording Icon
+float alpha_change_step = 5;
+
 
 XA_UIMODULE_GLWidget::XA_UIMODULE_GLWidget(QWidget* parent, const std::string& title, int width, int height)
 	:wgt_width(width),wgt_height(height),_title(title)
@@ -20,6 +23,8 @@ XA_UIMODULE_GLWidget::XA_UIMODULE_GLWidget(QWidget* parent, const std::string& t
 	this->resize(width, height);
 	this->setParent(parent);
 	default_size = QSize(width, height);
+
+	_recIcon = QImage(ICOPATH(rec.png));
 
 	_glBackendRender = new XA_GLMODULE_RENDER(title,XA_GL_RGB,this);
 	XA_UIMODULE_GLWidget::_glwgt_pctbuffing = (uchar*)malloc(XA_GLMODULE_RENDER::SCR_WIDTH * XA_GLMODULE_RENDER::SCR_HEIGHT * 3 * sizeof(uchar));
@@ -75,11 +80,14 @@ void XA_UIMODULE_GLWidget::__reshow()
 void XA_UIMODULE_GLWidget::__startRecord()
 {
 	_glBackendRender->__record();
+	alpha_flick = 255;
+	recording = true;
 }
 
 void XA_UIMODULE_GLWidget::__endRecord()
 {
 	_glBackendRender->__endrecord();
+	recording = false;
 }
 
 void XA_UIMODULE_GLWidget::on_clickLockSize()
@@ -96,7 +104,6 @@ void XA_UIMODULE_GLWidget::on_clickUnlockSize()
 {
 	size_locked = false;
 	this->resize(wgt_width, wgt_height);
-	qDebug() <<"on_clickUnlockSize:"<< wgt_width << wgt_height;
 	_infoPanel->lockbtn->setText(_STRING_WRAPPER("锁定当前宽高"));
 	_infoPanel->lockbtn->setIcon(QIcon(ICOPATH(locksize.svg)));
 	disconnect(_infoPanel->lockbtn, &QPushButton::clicked, this, &XA_UIMODULE_GLWidget::on_clickUnlockSize);
@@ -128,11 +135,33 @@ void XA_UIMODULE_GLWidget::paintEvent(QPaintEvent* event)
 {
 	QPainterPath clipPath;
 	clipPath.addRoundedRect(QRect(0, 0, wgt_width, wgt_height).adjusted(10, 10, -10, -10), 10, 10);
-
 	QPainter painter(this);
 	painter.setRenderHint(QPainter::Antialiasing);
+	
 	painter.setClipPath(clipPath);
 	painter.drawImage(QRect(0, 0, wgt_width, wgt_height), _picture);
+
+	if (recording)
+	{
+		for (int col = 0; col < 48; col++)
+		{
+			for (int row = 0; row < 48; row++)
+			{
+				QColor pixelColor = _recIcon.pixelColor(row, col);
+				if(pixelColor.alpha() != 0)
+					pixelColor.setAlpha(alpha_flick);
+				_recIcon.setPixelColor(row, col, pixelColor);
+			}
+		}
+		QRect recIconRegion = QRect(wgt_width - 70, 10, 48, 48);
+		painter.setRenderHint(QPainter::Antialiasing);
+		painter.drawImage(recIconRegion, _recIcon);
+		if ((alpha_flick + alpha_change_step) < 100|| (alpha_flick + alpha_change_step) > 255)
+		{
+			alpha_change_step = -alpha_change_step;
+		}
+		alpha_flick = alpha_flick + alpha_change_step;
+	}
 	painter.end();
 }
 

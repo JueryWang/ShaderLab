@@ -1,3 +1,4 @@
-[8/24] Shader compileBtn cause memory leak.    solved[not delete program before new Shader create]
+[8/24] Shader compileBtn cause memory leak.    solved[not invoke glDeleteProgram before new Shader create]
 [8/26] open two audio UI block
 [9/3] edit codes by other code editor, XA_UIMODULE_EditorPage dosen't update text
+[9/5] record video only write last frame image data using ffmpeg.	 solved[set AVCodecContext->max_b_frames = 0]

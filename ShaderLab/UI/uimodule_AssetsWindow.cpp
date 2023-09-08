@@ -13,6 +13,7 @@
 #include <QGraphicsDropShadowEffect>
 #include <QFileInfo>
 #include <QPainter>
+#include <QProcess>
 #include <QDebug>
 
 XA_GLMODULE_RENDER* XA_UIMODULE_ASSET_BAR::_glReciver;
@@ -174,6 +175,7 @@ bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 							_window->update();
 							sendAssets(ASSET_WINDOW::AUDIO);
 							playingAudio = true;
+							//QProcess::startDetached("AuVisualizer.exe");
 						}
 						else
 						{
@@ -236,6 +238,7 @@ void XA_UIMODULE_ASSET_WINDOW::unsetupAudioSets()
 
 void XA_UIMODULE_ASSET_WINDOW::setAudioPlayDone()
 {
+	qDebug() << "setAudioPlayDone:: playingAudio = " << playingAudio;
 	playingAudio = false;
 	this->on_clcAudioPause();
 }
@@ -258,7 +261,6 @@ void XA_UIMODULE_ASSET_WINDOW::on_clcAudioResume()
 	disconnect(pauseBtn, &QPushButton::clicked, this, &XA_UIMODULE_ASSET_WINDOW::on_clcAudioResume);
 	pauseBtn->setIcon(QIcon(ICOPATH(pause.svg)));
 	connect(pauseBtn, &QPushButton::clicked, this, &XA_UIMODULE_ASSET_WINDOW::on_clcAudioPause);
-	qDebug() << "XA_UIMODULE_ASSET_WINDOW::on_clcAudioResume end";
 }
 
 void XA_UIMODULE_ASSET_WINDOW::on_clcAudioRewind()

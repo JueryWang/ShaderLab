@@ -1,5 +1,7 @@
+#include "utilsDfs.h"
 #include "utils_backendThread.h"
 #include "utils_ffmpegHelper.h"
+#include "libgif/gif_lib.h"
 #include "AssetsManager/Audio/utils_audioPlayer.h"
 #ifdef Q_OS_WIN
 #include <io.h>
@@ -8,8 +10,8 @@
 #endif // Q_OS_WIN
 #include <QMutex>
 #include <QDir>
+#include <QImage>
 #include <QDebug>
-#include "utilsDfs.h"
 using namespace utils_ffmpeg;
 using namespace std;
 
@@ -47,9 +49,7 @@ void XA_UTILS_BACKEND::cleanCache()
 
 void XA_UTILS_BACKEND::addTask(std::pair<QObject*, XA_UTILS_TASK> newTask)
 {
-	taskLocker.lock();
 	_task_queue.push(newTask);
-	taskLocker.unlock();
 }
 
 void XA_UTILS_BACKEND::setAuVolume(float volume)
@@ -71,6 +71,11 @@ void XA_UTILS_BACKEND::run()
 				case XA_UTIL_PLAYAUDIO:
 				{
 					handlePlayAudio(crt_task);
+					break;
+				}
+				case XA_UTIL_DECODEGIF:
+				{
+					handleGifDecode(crt_task);
 					break;
 				}
 				}
@@ -126,6 +131,7 @@ void XA_UTILS_BACKEND::handlePlayAudio(const std::pair<QObject*, XA_UTILS_TASK>&
 		audio_format.setByteOrder(QAudioFormat::LittleEndian);
 		audio_format.setSampleType(QAudioFormat::UnSignedInt);
 		crt_audioOut = new QAudioOutput(audio_format);
+		crt_audioOut->setVolume(1.0);
 		crt_IO = crt_audioOut->start();
 
 		audio_fileHandler = fopen(default_au_outputFile, "rb");
@@ -148,7 +154,8 @@ void XA_UTILS_BACKEND::handlePlayAudio(const std::pair<QObject*, XA_UTILS_TASK>&
 
 			if (len <= 0)
 			{
-				emit audioplayDone();
+				if(crt_state != AUDIO_ST_PAUSE)
+					emit audioplayDone();
 				return;
 			}
 
@@ -192,6 +199,91 @@ void XA_UTILS_BACKEND::handlePlayAudio(const std::pair<QObject*, XA_UTILS_TASK>&
 			}
 		}
 	}
+}
+
+void XA_UTILS_BACKEND::handleGifDecode(const std::pair<QObject*, XA_UTILS_TASK>& crt_task)
+{
+	GifFileType* gif_file = crt_task.second.param.decodeGif_param.gifFile;
+	QVector<GifByteType> screen_buf(gif_file->SWidth * gif_file->SHeight);
+	QVector<QImage> imgSequence;
+	memset(screen_buf.data(), gif_file->SBackGroundColor, sizeof(GifByteType) * screen_buf.size());
+
+	QImage image_temp = QImage(gif_file->SWidth, gif_file->SHeight, QImage::Format_RGB888);
+	ColorMapObject* color_map;
+	int trans_color = -1;
+	
+	for (int im = 0; im < gif_file->ImageCount; im++)
+	{
+		SavedImage* image = &gif_file->SavedImages[im];
+		for (ExtensionBlock* ep = image->ExtensionBlocks; ep < image->ExtensionBlocks + image->ExtensionBlockCount; ep++)
+		{
+			bool last = (ep - image->ExtensionBlocks == (image->ExtensionBlockCount - 1));
+			if (ep->Function == GRAPHICS_EXT_FUNC_CODE)
+			{
+				GraphicsControlBlock gcb;
+				if (DGifExtensionToGCB(ep->ByteCount, ep->Bytes, &gcb) == GIF_ERROR) {
+					qDebug() << "invalid graphics control block";
+					return;
+				}
+				trans_color = gcb.TransparentColor;
+				crt_task.second.param.decodeGif_param.info->interval = gcb.DelayTime * 10;
+			}
+			else if (!last
+				&& ep->Function == APPLICATION_EXT_FUNC_CODE
+				&& ep->ByteCount >= 11
+				&& (ep + 1)->ByteCount >= 3
+				&& memcmp(ep->Bytes, "NETSCAPE2.0", 11) == 0)
+			{
+				unsigned char* params = (++ep)->Bytes;
+				unsigned int loopcount = params[1] | (params[2] << 8);
+				qDebug() << "netscape loop " << loopcount;
+			}else
+			{
+				while (!last && ep[1].Function == CONTINUE_EXT_FUNC_CODE)
+				{
+					++ep;
+					last = (ep - image->ExtensionBlocks == (image->ExtensionBlockCount - 1));
+				}
+			}
+		}
+		if (image->ImageDesc.Interlace)
+			qDebug() << "image interlaced";
+		color_map = (image->ImageDesc.ColorMap ? image->ImageDesc.ColorMap : gif_file->SColorMap);
+		if (color_map == NULL) {
+			qDebug() << "color map error.";
+			return;
+		}
+
+		//save last frame as P frame
+		QImage img = image_temp.copy();
+		GifColorType* color_map_entry;
+		for (int i = image->ImageDesc.Top; i < image->ImageDesc.Top + image->ImageDesc.Height; i++)
+		{
+			memcpy(screen_buf.data() + i * gif_file->SWidth + image->ImageDesc.Left,
+				image->RasterBits + (i - image->ImageDesc.Top) * image->ImageDesc.Width,
+				image->ImageDesc.Width);
+			for (int j = image->ImageDesc.Left; j < image->ImageDesc.Left + image->ImageDesc.Width; j++)
+			{
+				if (trans_color != -1 && trans_color == screen_buf[i * gif_file->SWidth + j])
+					continue;
+				color_map_entry = &color_map->Colors[screen_buf[i * gif_file->SWidth + j]];
+				img.setPixelColor(j, i, QColor(
+					color_map_entry->Red,
+					color_map_entry->Green,
+					color_map_entry->Blue));
+			}
+		}
+		image_temp = img;
+		imgSequence.push_back(img);
+	}
+	/*crt_task.second.param.decodeGif_param.receiver->setGifSequence(imgSequence);*/
+
+	int error_code;
+	if (DGifCloseFile(gif_file, &error_code) == GIF_ERROR) {
+		const char* gif_error = GifErrorString(error_code);
+		qDebug() << "close error:" << gif_error;
+	}
+	qDebug() << "gif to image finish";
 }
 
 void XA_UTILS_BACKEND::AudioPlay()
