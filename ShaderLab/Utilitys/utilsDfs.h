@@ -1,7 +1,17 @@
+/*
+	ShaderLab source code ,Copyright(c) JueryWang 2023 -
+	This file is part of ShaderLab
+
+	This is free and unencumbered software released into the private domain for personal research or educational purpose.
+	You cannot host, display, distribute or share this Work in any form,
+	including physical and digital. You cannot use this Work in any
+	commercial website or project.
+*/
 #ifndef UTILS_SUPPORT
 #define UTILS_SUPPORT
 
 #include <QProcess>
+#include <QDebug>
 #include "libgif/gif_lib.h"
 
 namespace utils_video
@@ -69,7 +79,7 @@ namespace utils_ffmpeg
 		bool onplay = false;
 	};
 
-	static void _UTILS_GENERATE_PCM(const XA_FFMPEG_AU_INFO &info, const QString& input,const QString& output)
+	static void _UTILS_GENERATE_PCM(const XA_FFMPEG_AU_INFO& info, const QString& input, const QString& output)
 	{
 		QStringList argument;
 		argument << "-y";

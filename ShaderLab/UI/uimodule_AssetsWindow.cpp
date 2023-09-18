@@ -1,4 +1,4 @@
-#include "uimodule_AssetsWindow.h"
+ï»¿#include "uimodule_AssetsWindow.h"
 #include "ui_defaultDfs.h"
 #include "../Utilitys/uitilityDfs.h"
 #include "../GL/gl_defaultDfs.h"
@@ -151,7 +151,7 @@ bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 			{
 				static QStringList pictureSuffixValidator = { "jpg","png" };
 				static QStringList audioSuffixValidator = {"mp3","wav","ogg"};
-				QString fileName = QFileDialog::getOpenFileName(this, _STRING_WRAPPER("´ò¿ªÎÄ¼þ"), "Resources",
+				QString fileName = QFileDialog::getOpenFileName(this, _STRING_WRAPPER("æ‰“å¼€æ–‡ä»¶"), "Resources",
 					"Picuture (*.jpg *.png);; Audio (*.mp3 *.wav *.ogg)");
 				if (fileName.size())
 				{
@@ -175,7 +175,6 @@ bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 							_window->update();
 							sendAssets(ASSET_WINDOW::AUDIO);
 							playingAudio = true;
-							//QProcess::startDetached("AuVisualizer.exe");
 						}
 						else
 						{

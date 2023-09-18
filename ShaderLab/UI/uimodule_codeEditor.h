@@ -1,3 +1,13 @@
+/*
+	ShaderLab source code ,Copyright(c) JueryWang 2023 -
+	This file is part of ShaderLab
+
+	This is free and unencumbered software released into the private domain for personal research or educational purpose.
+	You cannot host, display, distribute or share this Work in any form,
+	including physical and digital. You cannot use this Work in any
+	commercial website or project.
+*/
+
 #ifndef UI_CODE_EDITOR_H
 #define UI_CODE_EDITOR_H
 
