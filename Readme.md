@@ -18,7 +18,7 @@ If you want to be a contributor, contact me by TaylorWalters1971566@gmail.com
 - compatible with most of shader from shadertoy,unless there are complicated mutual reference relationships of frame buffers.
 
 ## Prospect
-I am insist Learning by doing.More feature will be add-in after I familiar with related skills👩‍💻.
+I am insist Learning by doing.More features will be add-in after I familiar with related skills👩‍💻.
 
 - Algorithm storage to facilitate implementing same algorithm between diffrent shaders
 - GPU accerate using CUDA
