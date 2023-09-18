@@ -1,4 +1,4 @@
-<div align=center> <img src="https://i.postimg.cc/qRfLKQW4/Shader-Lab-Ico.png" width = "350" height="380"/></div>
+<div align=center> <img src="https://img1.imgtp.com/2023/09/18/UkPiM0HU.png" alt="ShaderLabIco.png" title="ShaderLabIco.png" width="40%"/></div>
 
 # ShaderLab
 
@@ -10,14 +10,14 @@ ShaderLab is based on `Qt` and `OpenGL`, However, I decide to replace OpenGL wit
 
 If you want to be a contributor, contact me by TaylorWalters1971566@gmail.com
 
-##Feature
+## Feature
 - buid-in CodeEditor.  It is implement by introduce 3rd Module Qscitintilla
 - realtime shader compile system
 - screenshot and recording It is implement by introduce FFMPEG
 - Assets Management, only picutre and audio at current phase of course. 3D models will be introduced soon.
 - compatible with most of shader from shadertoy,unless there are complicated mutual reference relationships of frame buffers.
 
-##Prospect
+## Prospect
 I am insist Learning by doing.More future will be add-in after I familiar with using related skills👩‍💻.
 
 - Algorithm storage to facilitate implementing same algorithm between diffrent shaders
