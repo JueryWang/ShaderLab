@@ -1,4 +1,4 @@
-<div align=center> <img src="https://i.postimg.cc/qRfLKQW4/Shader-Lab-Ico.png"/></div>
+<div align=center> <img src="https://i.postimg.cc/qRfLKQW4/Shader-Lab-Ico.png" width = "350" height="380"/></div>
 
 # ShaderLab
 
