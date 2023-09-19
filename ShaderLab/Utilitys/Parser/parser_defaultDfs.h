@@ -82,13 +82,15 @@ namespace parser
 		"struct runtime_param                   \n"
 		"{                                      \n"
 		"   float iTime;                        \n"
-		"	ivec4 iMouse;						\n"
+		"   int   iFrame;                       \n"
+		"	vec2  iMouse;						\n"
 		"};                                     \n"
 		"uniform runtime_param runtime_data;    \n"
 		"uniform ivec2 iResolution;             \n"
 		"                                       \n"
-		"#define iTime runtime_data.iTime       \n"
-		"#define iMouse runtime_data.iMouse		\n";
+		"float iTime = runtime_data.iTime;      \n"
+		"vec2 iMouse = runtime_data.iMouse;		\n"
+		"int iFrame = runtime_data.iFrame;      \n";
 
 	static QString _UTILS_GET_VALADITOR_RES(const QString& file)
 	{

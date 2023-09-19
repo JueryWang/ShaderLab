@@ -225,16 +225,16 @@ void XA_GLMODULE_RENDER::contextDraw()
 
 		switch (_type)
 		{
-			case XA_GL_RGB:
-				glReadPixels(0, 0, context_width, context_height, GL_RGB, GL_UNSIGNED_BYTE, _windowbuf);
-				break;
-			case XA_GL_RGBA:
-				glReadPixels(0, 0, context_width, context_height, GL_RGBA, GL_UNSIGNED_BYTE, _windowbuf);
-				break;
-			default:
-				break;
+		case XA_GL_RGB:
+			glReadPixels(0, 0, context_width, context_height, GL_RGB, GL_UNSIGNED_BYTE, _windowbuf);
+			break;
+		case XA_GL_RGBA:
+			glReadPixels(0, 0, context_width, context_height, GL_RGBA, GL_UNSIGNED_BYTE, _windowbuf);
+			break;
+		default:
+			break;
 		}
-		flip(&((uint8_t*)_windowbuf),context_width,context_height);
+		flip(&((uint8_t*)_windowbuf), context_width, context_height);
 
 		auto event = std::make_unique<EvSendFrame>(_windowbuf, windowBufSize);
 		QApplication::postEvent(_reciver, event.release(), Qt::HighEventPriority);

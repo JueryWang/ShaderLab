@@ -69,10 +69,21 @@ bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type
 
 
 	pos = 0;
-	re.setPattern("main(.*)?(?:\\{)");
-	re.setMinimal(true);
 	QString replaced;
-	if ((pos = re.indexIn(source, pos)) != -1)
+	parse_res += source;
+	
+	re.setMinimal(true);
+	re.setPattern("\\/\\/(.*)?\\\r\\\n");//filter annotation
+	while ((pos = re.indexIn(parse_res, pos)) != -1)
+	{
+		replaced = re.cap(0);
+		pos += re.matchedLength();
+		parse_res.replace(replaced, " ");
+	}
+
+	pos = 0;
+	re.setPattern("main(.*)?(?:\\{)");
+	if ((pos = re.indexIn(parse_res, pos)) != -1)
 	{
 		replaced = re.cap(0);
 	}
@@ -83,7 +94,6 @@ bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type
 	}
 	else
 	{
-		parse_res += source;
 		parse_res.replace(replaced, "main(){");
 	}
 
