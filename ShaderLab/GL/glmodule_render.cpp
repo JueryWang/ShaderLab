@@ -2,6 +2,7 @@
 #include "glmodule_backstatge.h"
 #include "glmodule_EvSendFrame.h"
 #include "Utilitys/AssetsManager/Video/utils_videoPlayer.h"
+#include "UI/uimodule_glWidget.h"
 #include <QApplication>
 #include <QThread>
 #include <memory>
@@ -236,7 +237,9 @@ void XA_GLMODULE_RENDER::contextDraw()
 		}
 		flip(&((uint8_t*)_windowbuf), context_width, context_height);
 
-		auto event = std::make_unique<EvSendFrame>(_windowbuf, windowBufSize);
+		memcpy(XA_UIMODULE_GLWidget::_glwgt_pctbuffing, _windowbuf, windowBufSize);//copy to unique memory to avoid memory leak
+		
+		auto event = std::make_unique<EvSendFrame>();
 		QApplication::postEvent(_reciver, event.release(), Qt::HighEventPriority);
 
 		if (getFlag(BIT_RECORD_POS))

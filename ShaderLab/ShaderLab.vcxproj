@@ -139,6 +139,7 @@
     <QtMoc Include="UI\uimodule_preferenceWindow.h" />
     <QtMoc Include="UI\ClickableLabel.h" />
     <QtMoc Include="Utilitys\AssetsManager\Video\utils_videoPlayer.h" />
+    <ClInclude Include="GL\glmodule_EvSendFrame.h" />
     <ClInclude Include="Utilitys\utilsDfs.h" />
     <ClInclude Include="Utilitys\utils_ffmpegHelper.h" />
     <QtMoc Include="UI\uimodule_aboutmenu.h" />
@@ -146,7 +147,6 @@
     <QtMoc Include="UI\uimodule_filemenu.h" />
     <QtMoc Include="GL\glmodule_backstatge.h" />
     <QtMoc Include="GL\glmodule_render.h" />
-    <ClInclude Include="GL\glmodule_EvSendFrame.h" />
     <ClInclude Include="GL\gl_defaultDfs.h" />
     <ClInclude Include="GL\include\glad\glad.h" />
     <ClInclude Include="GL\include\GLFW\glfw3.h" />

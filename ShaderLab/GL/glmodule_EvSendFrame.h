@@ -13,15 +13,13 @@
 
 #include <QEvent>
 
-class EvSendFrame : public QEvent
+class EvSendFrame : public QEvent   //Just for informing
 {
 public: 
-	EvSendFrame(void* frameData,int size);
-	~EvSendFrame();
+	EvSendFrame();
 	static Type eventType;
 
 public:
-	uchar* _framedata;
 };
 
 #endif

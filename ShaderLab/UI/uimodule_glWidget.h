@@ -40,10 +40,13 @@ public slots:
 signals:
 	void beginGLDraw();
 	void resetGLWidget(const QSize &size);
-
 protected:
 	void paintEvent(QPaintEvent* event) override;
 	bool eventFilter(QObject* obj, QEvent* event) override;
+
+public:
+	static uchar* _glwgt_pctbuffing;
+	static int _glwgt_buffingsize;
 
 private:
 	QThread* _renderThread;
@@ -53,8 +56,6 @@ private:
 	QImage _picture;
 	QImage _recIcon;
 
-	static uchar* _glwgt_pctbuffing;
-	static int _glwgt_buffingsize;
 
 	int wgt_width;
 	int wgt_height;

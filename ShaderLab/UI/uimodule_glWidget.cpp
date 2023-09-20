@@ -12,6 +12,7 @@
 
 uchar* XA_UIMODULE_GLWidget::_glwgt_pctbuffing;
 int XA_UIMODULE_GLWidget::_glwgt_buffingsize;
+
 bool first_resize = true;
 float alpha_flick = 255;//alpha value for flicking recording Icon
 float alpha_change_step = 5;
@@ -136,7 +137,6 @@ void XA_UIMODULE_GLWidget::paintEvent(QPaintEvent* event)
 	QPainterPath clipPath;
 	clipPath.addRoundedRect(QRect(0, 0, wgt_width, wgt_height).adjusted(10, 10, -10, -10), 10, 10);
 	QPainter painter(this);
-	painter.setRenderHint(QPainter::Antialiasing);
 	
 	painter.setClipPath(clipPath);
 	painter.drawImage(QRect(0, 0, wgt_width, wgt_height), _picture);
@@ -169,8 +169,6 @@ bool XA_UIMODULE_GLWidget::eventFilter(QObject* obj, QEvent* event)
 {
 	if (event->type() == EvSendFrame::eventType)
 	{
-		EvSendFrame* ev = (EvSendFrame*)event;
-		memcpy(_glwgt_pctbuffing,ev->_framedata, XA_UIMODULE_GLWidget::_glwgt_buffingsize);//copy to unique memory to avoid memory leak
 		_picture = QImage(_glwgt_pctbuffing, _glBackendRender->getWidth(), _glBackendRender->getHeight(), QImage::Format_RGB888);
 		this->repaint();
 	}
