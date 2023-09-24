@@ -289,7 +289,7 @@ XA_UIMODULE_ASSET_BAR::XA_UIMODULE_ASSET_BAR(int width)
 	QHBoxLayout* hlay = new QHBoxLayout();
 	hlay->setContentsMargins(10, 0, 10, 0);
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		XA_UIMODULE_ASSET_WINDOW* asset_win = new XA_UIMODULE_ASSET_WINDOW(i);
 		asset_win_list.append(asset_win);

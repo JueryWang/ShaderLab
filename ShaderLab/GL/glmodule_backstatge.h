@@ -51,6 +51,6 @@ private:
 	static XA_GLMODULE_BACKSTG* _instance;
 
 	std::queue<std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK>> _task_queue; 
-	std::array<XA_GL_TEXTURE_INFO,10> _textures;
+	std::vector<XA_GL_TEXTURE_INFO> _textures;
 };
 #endif

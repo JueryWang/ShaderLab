@@ -24,7 +24,7 @@ I am insist Learning by doing.More features will be add-in after I familiar with
 - GPU accerate using CUDA
 - User login,Cloud storage or share
 - IC burning,there is a interesting project named HoloCubic,it present screen image in 3D world using prism,there is the link:[HoloCubic](https://github.com/peng-zhihui/HoloCubic)
-- As a pugin interact with Mainstream 3D software like UE,Blender,etc.
+- As a plugin interact with Mainstream 3D software like UE,Blender,etc.
 
 
 ## ScreenShot

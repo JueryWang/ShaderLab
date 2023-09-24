@@ -52,6 +52,7 @@ void XA_GLMODULE_BACKSTG::deleteTexture(int idx)
 			delete (*texIter).address;
 		}
 		(*texIter).status = TEXTURE_ST_DEPRECATED;
+		glDeleteTextures(1, const_cast<GLuint *>(&(*texIter).textureID));
 	}
 	if (texIter == _textures.end())
 	{
@@ -97,7 +98,7 @@ void XA_GLMODULE_BACKSTG::run()
 			}
 			taskLocker.unlock();
 		}
-		QThread::msleep(100);
+		QThread::msleep(10);
 	}
 }
 
@@ -122,13 +123,15 @@ void XA_GLMODULE_BACKSTG::handleLoadTexture(const std::pair<XA_GLMODULE_RENDER*,
 		else if (nrComponents == 4)
 			format = GL_RGBA;
 
-		int index = crt_task.second.param.loadTexture_param.index;
-		_textures[index].index = index;
-		_textures[index].address = data;
-		_textures[index].width = width;
-		_textures[index].height = height;
-		_textures[index].format = format;
-		_textures[index].status = TEXTURE_ST_UNLOAD;
+		XA_GL_TEXTURE_INFO tex_info;
+		tex_info.index = crt_task.second.param.loadTexture_param.index;
+		tex_info.address = data;
+		tex_info.width = width;
+		tex_info.height = height;
+		tex_info.format = format;
+		tex_info.status = TEXTURE_ST_UNLOAD;
+		_textures.push_back(tex_info);
+
 		crt_task.first->__update();
 	}
 }

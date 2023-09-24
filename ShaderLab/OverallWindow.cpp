@@ -47,8 +47,8 @@ OverallWindow::OverallWindow()
 	connect(_glWindow, &XA_UIMODULE_GLWidget::resetGLWidget, this, &OverallWindow::on_restGLWidget);
 	XA_UIMODULE_ASSET_BAR::setAssetsReciver(_glWindow->getRender());
 
-	XA_UIMODULE_CodeEditor::setEditorSize(this->width() * (1. - GL_WIDGET_DEFAULT_WIDTH_R), this->height()* GL_WIDGET_DEFAULT_HEIGHT_R);
 	XA_UIMODULE_CodeEditor* codeEditorInst = XA_UIMODULE_CodeEditor::getEditor();
+	codeEditorInst->setEditorSize(this->width() * (1. - GL_WIDGET_DEFAULT_WIDTH_R), this->height() * GL_WIDGET_DEFAULT_HEIGHT_R);
 	_windowInfo = new XA_UIMODULE_WindowInfo(this, QSize(_glWindow->width(), _glWindow->height()),_STRING_WRAPPER("Ä¬ÈÏÔ´"));
 	_windowInfo->setFixedHeight(30);
 	_glWindow->setWindowInfoPanel(_windowInfo);

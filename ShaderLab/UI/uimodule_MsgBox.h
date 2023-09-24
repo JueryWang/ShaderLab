@@ -12,6 +12,8 @@
 
 #include <QWidget>
 #include <QHBoxLayout>
+#include <QPushButton>
+#include <functional>
 #include <QLabel>
 
 class XA_UIModule_QUEST_BOX : public QWidget
@@ -20,24 +22,28 @@ class XA_UIModule_QUEST_BOX : public QWidget
 public:
 	XA_UIModule_QUEST_BOX(QWidget* parent, const QString& mainMsg, const QString& attachedMsg);
 	~XA_UIModule_QUEST_BOX();
-	static XA_UIModule_QUEST_BOX* question(QWidget* parent, const QString& title, const QString& text,const QSize& windowSz);
-
-signals:
-	void sendChoose(int val);
+	static XA_UIModule_QUEST_BOX* question(QWidget* parent, const QString& title, const QString& text,const QSize& windowSz,
+		const QStringList& btnTexts,const std::vector<std::function<void(void)>> &callbacks);
+	void setButtonTexts(const QStringList& texts);
+	void setCallbacks(const std::vector<std::function<void(void)>>& callbacks);
 
 private:
-	void on_clcSave();
-	void on_clcUnsave();
-	void on_clcCancel();
+	void on_clcBtn1();
+	void on_clcBtn2();
+	void on_clcBtn3();
 	bool eventFilter(QObject* obj, QEvent* event) override;
 
 private:
 	QWidget* _wgt;
 	QLabel* _icon;
-	QVBoxLayout* _vlay;
-	QHBoxLayout* _hlay;
-	QHBoxLayout* _btnsLay;
 
+	QPushButton* btn1;
+	QPushButton* btn2;
+	QPushButton* btn3;
+
+	std::function<void(void)> cb1;
+	std::function<void(void)> cb2;
+	std::function<void(void)> cb3;
 	bool _isDrag = false;
 	QPoint _offsetPoint = QPoint(0,0);
 	int _exec_res = -1;

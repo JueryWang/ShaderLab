@@ -13,7 +13,7 @@
 
 #include <QEvent>
 
-class EvSendFrame : public QEvent   //Just for informing
+class EvSendFrame : public QEvent   //Just for Inform
 {
 public: 
 	EvSendFrame();

@@ -74,8 +74,8 @@ public:
 	static std::atomic<int> SCR_WIDTH;
 	static std::atomic<int> SCR_HEIGHT;
 	static int resolution[2];
-	void setStatus(uint8_t bit_mask,bool open_bit);
-	bool getFlag(XA_RENDER_FLAG_BIT_POS pos);
+	void inline setStatus(uint8_t bit_mask,bool open_bit);
+	bool inline getFlag(XA_RENDER_FLAG_BIT_POS pos);
 	XA_RENDERER_STATE rd_state = INACTIVE;
 
 private:

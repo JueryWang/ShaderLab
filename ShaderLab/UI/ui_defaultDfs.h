@@ -210,5 +210,15 @@ QLineEdit:read-only {
 	color: #2D2D2D;
 }
 )";
+
+const static QString TYPES_LISTVIEW_STYLE = R"(
+QListView{
+    background-color: white;
+    border-radius:5px;
+    border:1px solid #D3D3D3;
+    padding:5px;
+    color:#1F282F;
+}
+)";
 extern QMap<QString, QString> global_font_mp;
 #endif // UI_DEFAULT_DFS\

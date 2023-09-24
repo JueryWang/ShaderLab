@@ -12,6 +12,7 @@
 #include <QMouseEvent>
 #include <QSizePolicy>
 #include <QToolButton>
+#include <QDebug>
 #include <QCoreApplication>
 
 MenuLayertop::MenuLayertop(OverallWindow* parent /*= NULL*/)
@@ -131,24 +132,6 @@ bool MenuLayertop::eventFilter(QObject* obj, QEvent* event)
 	return QWidget::eventFilter(obj, event);
 }
 
-void MenuLayertop::on_Exit_Msg(int val)
-{
-	switch (val)
-	{
-		case 0:
-			//do Save operation
-			XA_UTILS_ShaderParser::cleanCache();
-			QCoreApplication::exit();
-			break;
-		case 1:
-			XA_UTILS_ShaderParser::cleanCache();
-			QCoreApplication::exit();
-			break;
-		case 2:
-			break;
-	}
-}
-
 void MenuLayertop::on_clcClose()
 {
 	OverallWindow* owWindow = (OverallWindow*)this->parent();
@@ -158,7 +141,15 @@ void MenuLayertop::on_clcClose()
 	}
 	else
 	{
-		XA_UIModule_QUEST_BOX* instance = XA_UIModule_QUEST_BOX::question(this, "Save changes before closing?", "untitled.sdl",owWindow->size());
-		connect(instance, &XA_UIModule_QUEST_BOX::sendChoose, this, &MenuLayertop::on_Exit_Msg);
+		QStringList btnTexts = { "Save","Don't Save","Cancel" };
+		std::vector<std::function<void(void)>> callbacks;
+		callbacks.push_back([]() {		XA_UTILS_ShaderParser::cleanCache();
+										QCoreApplication::exit();});
+		callbacks.push_back([]() {		XA_UTILS_ShaderParser::cleanCache();
+										QCoreApplication::exit(); });
+		callbacks.push_back(nullptr);
+		XA_UIModule_QUEST_BOX* quest = XA_UIModule_QUEST_BOX::question(this, "Save changes before closing?", "untitled.sdl",owWindow->size(),
+																			btnTexts,callbacks);
+
 	}
 }

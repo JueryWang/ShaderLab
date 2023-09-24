@@ -24,9 +24,6 @@ public:
 protected:
 	bool eventFilter(QObject* obj, QEvent* event) override;
 
-public slots:
-	void on_Exit_Msg(int val);
-
 private:
 	void on_clcClose();
 private:

@@ -18,6 +18,7 @@ std::timed_mutex glLocker;
 
 float deltaTime = 0.0f;
 float lastTime = 0.0f;
+int frame = 0;
 unsigned int quadVAO = 0;
 unsigned int quadVBO;
 
@@ -90,7 +91,7 @@ void XA_GLMODULE_RENDER::flip(uint8_t** buf, int context_width, int context_heig
 	}
 }
 
-void XA_GLMODULE_RENDER::setStatus(uint8_t bit_mask,bool open_bit)
+void inline XA_GLMODULE_RENDER::setStatus(uint8_t bit_mask,bool open_bit)
 {
 	if (open_bit)
 	{
@@ -106,7 +107,7 @@ void XA_GLMODULE_RENDER::setStatus(uint8_t bit_mask,bool open_bit)
 
 }
 
-bool XA_GLMODULE_RENDER::getFlag(XA_RENDER_FLAG_BIT_POS pos)
+bool inline XA_GLMODULE_RENDER::getFlag(XA_RENDER_FLAG_BIT_POS pos)
 {
 	return state_bit.load(memory_order_consume) & (1 << pos);
 }
@@ -127,6 +128,7 @@ void XA_GLMODULE_RENDER::__restart()
 {
 	glfwSetTime(0.0f);
 	setStatus(RENDER_PAUSE | RENDER_EXIT, false);
+	frame = 0;
 }
 
 void XA_GLMODULE_RENDER::__update()
@@ -199,7 +201,7 @@ void XA_GLMODULE_RENDER::contextDraw()
 
 	glUniform2iv(glGetUniformLocation(_shader->ID, "iResolution"), 1, &resolution[0]);
 	//glEnable(GL_SAMPLE_SHADING);
-	//glMinSampleShading(0.7f);
+	glMinSampleShading(0.7f);
 
 	while (!getFlag(BIT_EXIT_POS))
 	{
@@ -221,8 +223,9 @@ void XA_GLMODULE_RENDER::contextDraw()
 		int context_height = SCR_HEIGHT.load(memory_order_consume);
 
 		glUniform1f(glGetUniformLocation(_shader->ID, "runtime_data.iTime"), time);
+		glUniform1f(glGetUniformLocation(_shader->ID, "runtime_data.iFrame"), frame);
 		renderQuad(context_width,context_height);
-		
+		frame++;
 
 		switch (_type)
 		{
@@ -299,6 +302,8 @@ void XA_GLMODULE_RENDER::renderQuad(int context_width, int context_height)
 
 void XA_GLMODULE_RENDER::loadTextures()
 {
+	std::vector<int> removeIdxs;
+	int pos = 0;
 	for (XA_GL_TEXTURE_INFO& texture_info : XA_GLMODULE_BACKSTG::getBackStage()->_textures)
 	{
 		if (texture_info.status == TEXTURE_ST_UNLOAD)
@@ -322,7 +327,16 @@ void XA_GLMODULE_RENDER::loadTextures()
 		if(texture_info.status == TEXTURE_ST_DEPRECATED)
 		{
 			glDeleteTextures(1, &texture_info.textureID);
+			removeIdxs.push_back(pos);
 		}
+		pos++;
+	}
+
+	//Remove DEPRECATED textures
+	auto begin = XA_GLMODULE_BACKSTG::getBackStage()->_textures.begin();
+	for (int remove_idx : removeIdxs)
+	{
+		XA_GLMODULE_BACKSTG::getBackStage()->_textures.erase(begin+ remove_idx);
 	}
 }
 

@@ -89,5 +89,7 @@ public:
 private:
 	QList<XA_UIMODULE_ASSET_WINDOW*> asset_win_list;
 	static XA_GLMODULE_RENDER* _glReciver;
+
+
 };
 #endif

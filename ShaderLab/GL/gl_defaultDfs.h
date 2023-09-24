@@ -48,6 +48,18 @@ enum XA_GL_TASK_TYPE
 	XA_GL_RECORD,
 };
 
+enum XA_GL_SCRIPT_TYPE
+{
+	XA_GL_SCRIPT_NOTYPE,
+	XA_GL_SCRIPT_COMMON,
+	XA_GL_SCRIPT_IMAGE,
+	XA_GL_SCRIPT_BUFFERA,
+	XA_GL_SCRIPT_BUFFERB,
+	XA_GL_SCRIPT_BUFFERC,
+	XA_GL_SCRIPT_BUFFERD,
+	XA_GL_SCRIPT_CUBEMAP
+};
+
 struct DrawFrontTask_param
 {
 	QObject* target_reciver;
@@ -99,6 +111,7 @@ struct XA_GL_TEXTURE_INFO
 	GLenum format;
 	GLuint textureID;
 	unsigned char* address;
+	XA_GL_SCRIPT_TYPE shaderType;
 	TEXTURE_STATUS status = TEXTURE_ST_DEPRECATED;
 };
 

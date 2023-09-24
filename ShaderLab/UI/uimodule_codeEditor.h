@@ -11,15 +11,18 @@
 #ifndef UI_CODE_EDITOR_H
 #define UI_CODE_EDITOR_H
 
-#include <deque>
 #include <utility>
+
 #include <memory>
+#include <queue>
 #include <QTabWidget>
 #include <QToolButton>
 #include <QLineEdit>
 #include <QMenu>
+#include <QListView>
 #include <QLabel>
 #include <QTabBar>
+#include "GL/gl_defaultDfs.h"
 
 class QFile;
 class QFont;
@@ -33,28 +36,29 @@ class XA_UIMODULE_CodeEditor : public QTabWidget
 	friend class XA_UIMODULE_EditorPage;
 	Q_OBJECT
 public:
-	static void setEditorSize(int width, int height);
 	static XA_UIMODULE_CodeEditor* getEditor();
+	void setEditorSize(int width, int height);
 	void savefile();
 private:
-	void set_new_tab(const QString& path, bool is_new_file = false);
 	QsciScintilla* get_new_page();
+	void set_new_tab(const QString& path, XA_GL_SCRIPT_TYPE type = XA_GL_SCRIPT_NOTYPE,bool is_new_file = true);
+	void appendTab(QsciScintilla* editor,const QString& tabLabel);
+	void duplicateRenameScript();
+	void closeBuildinTab();
 	void saveas();
 
 protected:
 	virtual void dragEnterEvent(QDragEnterEvent* event);
 	virtual void dropEvent(QDropEvent* event);
+	virtual bool eventFilter(QObject* obj, QEvent* e);
 
 public slots:
 	void on_closeTab(int index);
 	void on_copy();
-	void on_newfile();
 	void on_addNewScript();
 	void on_clickTab(int tabIdx);
 	void on_pageLabelChanged(int index,const QString& newLabel);
-	void on_showClearMenu(const QPoint& pos);
-	void on_clearRightTab();
-	void on_excludeTab();
+	void on_clickTypeScript(const QModelIndex &modelIdx);
 
 private:
 	XA_UIMODULE_CodeEditor();
@@ -63,10 +67,13 @@ private:
 
 public:
 	static XA_UIMODULE_CodeEditor* _codeEditor;
-	static TabLabelEditor* _tabLabelEditor;
-	static QMenu* _custmMenu;
-	static int editor_width;
-	static int editor_height;
+	
+	TabLabelEditor* _tabLabelEditor;
+	QStringList scriptTypeslist;
+	QMap<QString, XA_GL_SCRIPT_TYPE> scriptTypesMp;
+	QListView* _typeScriptView;
+	int editor_width;
+	int editor_height;
 
 	QFont* _editor_font;
 	std::unique_ptr<QFile> _current_file;

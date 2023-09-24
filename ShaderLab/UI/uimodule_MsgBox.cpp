@@ -1,7 +1,6 @@
 #include "uimodule_MsgBox.h"
 #include "ui_defaultDfs.h"
 #include <QMouseEvent>
-#include <QPushButton>
 #include <QIcon>
 
 XA_UIModule_QUEST_BOX::XA_UIModule_QUEST_BOX(QWidget* parent, const QString& mainMsg, const QString& attachedMsg)
@@ -17,9 +16,9 @@ XA_UIModule_QUEST_BOX::XA_UIModule_QUEST_BOX(QWidget* parent, const QString& mai
 	this->setVisible(true);
 	_wgt->installEventFilter(this);
 
-	_vlay = new QVBoxLayout();
-	_hlay = new QHBoxLayout();
-	_btnsLay = new QHBoxLayout();
+	QVBoxLayout* _vlay = new QVBoxLayout();
+	QHBoxLayout* _hlay = new QHBoxLayout();
+	QHBoxLayout* _btnsLay = new QHBoxLayout();
 	_icon = new QLabel();
 	_icon->setFixedSize(64, 64);
 
@@ -32,48 +31,48 @@ XA_UIModule_QUEST_BOX::XA_UIModule_QUEST_BOX(QWidget* parent, const QString& mai
 		"color:#E6E6E6;"
 		"}");
 	maindisp->setFont(textFont);
+	maindisp->setFixedHeight(30);
+	maindisp->setWordWrap(true);
 	maindisp->setText(mainMsg);
 	discripLayout->addWidget(maindisp);
 	QLabel* attachedDisp = new QLabel();
 	attachedDisp->setStyleSheet(".QLabel{"
 		"color:#979797;"
 		"}");
-	attachedDisp->setText(attachedMsg);
 	attachedDisp->setFont(textFont);
+	attachedDisp->setWordWrap(true);
+	attachedDisp->setText(attachedMsg);
 	discripLayout->addWidget(attachedDisp);
 	discripLayout->addSpacing(50);
 	_hlay->addLayout(discripLayout);
 	_vlay->addLayout(_hlay);
 
 	//Ô¤Áô3¸öButtonÎ»
-	QPushButton* btnSave = new QPushButton();
-	connect(btnSave, &QPushButton::clicked, this, &XA_UIModule_QUEST_BOX::on_clcSave);
-	QPushButton* btnUnSave = new QPushButton();
-	connect(btnUnSave, &QPushButton::clicked, this, &XA_UIModule_QUEST_BOX::on_clcUnsave);
-	QPushButton* btnCancel = new QPushButton();
-	connect(btnCancel, &QPushButton::clicked, this, &XA_UIModule_QUEST_BOX::on_clcCancel);
+	btn1 = new QPushButton();
+	connect(btn1, &QPushButton::clicked, this, &XA_UIModule_QUEST_BOX::on_clcBtn1);
+	btn2 = new QPushButton();
+	connect(btn2, &QPushButton::clicked, this, &XA_UIModule_QUEST_BOX::on_clcBtn2);
+	btn3 = new QPushButton();
+	connect(btn3, &QPushButton::clicked, this, &XA_UIModule_QUEST_BOX::on_clcBtn3);
 
 	QFont btnFont("Arial Black", 10, 75);
-	btnSave->setStyleSheet(".QPushButton{"
+	btn1->setStyleSheet(".QPushButton{"
 		"background-color: rgba(71, 114, 179,200);border-radius: 5px;color:rgba(225, 225, 225,200);"
 		"} .QPushButton:hover,pressed,selected{background-color:rgba(98, 139, 202,200);}");
-	btnSave->setText("Save");
-	btnSave->setFont(btnFont);
-	btnUnSave->setStyleSheet(".QPushButton{"
+	btn1->setFont(btnFont);
+	btn2->setStyleSheet(".QPushButton{"
 		"background-color: rgba(101, 101, 101,200);border-radius: 5px;color:rgba(225, 225, 225,200);"
 		"} .QPushButton:hover,pressed,selected{background-color:rgba(98, 139, 202,200);}");
-	btnUnSave->setText("Don't Save");
-	btnUnSave->setFont(btnFont);
-	btnCancel->setStyleSheet(".QPushButton{"
+	btn2->setFont(btnFont);
+	btn3->setStyleSheet(".QPushButton{"
 		"background-color: rgba(101, 101, 101,200);border-radius: 5px;color:rgba(225, 225, 225,200);"
 		"} .QPushButton:hover,pressed,selected{background-color:rgba(98, 139, 202,200);}");
-	btnCancel->setText("Cancel");
-	btnCancel->setFont(btnFont);
+	btn3->setFont(btnFont);
 	_btnsLay->setSpacing(10);
 	_btnsLay->addSpacing(80);
-	_btnsLay->addWidget(btnSave);
-	_btnsLay->addWidget(btnUnSave);
-	_btnsLay->addWidget(btnCancel);
+	_btnsLay->addWidget(btn1);
+	_btnsLay->addWidget(btn2);
+	_btnsLay->addWidget(btn3);
 
 	_vlay->addLayout(_btnsLay);
 	_wgt->setLayout(_vlay);
@@ -84,9 +83,12 @@ XA_UIModule_QUEST_BOX::~XA_UIModule_QUEST_BOX()
 	delete _wgt;
 }
 
-XA_UIModule_QUEST_BOX* XA_UIModule_QUEST_BOX::question(QWidget* parent, const QString& title, const QString& text, const QSize& windowSz)
+XA_UIModule_QUEST_BOX* XA_UIModule_QUEST_BOX::question(QWidget* parent, const QString& title, const QString& text, const QSize& windowSz,
+	const QStringList& btnTexts, const std::vector<std::function<void(void)>>& callbacks)
 {
 	static XA_UIModule_QUEST_BOX* questMsg = new XA_UIModule_QUEST_BOX(parent, title, text);
+	questMsg->setButtonTexts(btnTexts);
+	questMsg->setCallbacks(callbacks);
 	QPixmap pix(ICOPATH(quest.svg));
 	questMsg->_icon->setPixmap(pix);
 	questMsg->move(parent->mapToGlobal(QPoint(windowSz.width() / 2, windowSz.height() / 2)));
@@ -97,21 +99,43 @@ XA_UIModule_QUEST_BOX* XA_UIModule_QUEST_BOX::question(QWidget* parent, const QS
 	return questMsg;
 }
 
-void XA_UIModule_QUEST_BOX::on_clcSave()
+void XA_UIModule_QUEST_BOX::setButtonTexts(const QStringList& texts)
 {
-	sendChoose(0);
+	if (texts[0] != "") { btn1->setText(texts[0]); btn1->show(); }
+	else btn1->hide();
+
+	if (texts[1] != "") { btn2->setText(texts[1]); btn2->show(); }
+	else btn2->hide();
+
+	if (texts[2] != "") { btn3->setText(texts[2]); btn3->show(); }
+	else btn3->hide();
+}
+
+void XA_UIModule_QUEST_BOX::setCallbacks(const std::vector<std::function<void(void)>>& callbacks)
+{
+	if (callbacks[0] != nullptr) cb1 = callbacks[0];
+	if (callbacks[1] != nullptr) cb2 = callbacks[1];
+	if (callbacks[2] != nullptr) cb3 = callbacks[2];
+}
+
+void XA_UIModule_QUEST_BOX::on_clcBtn1()
+{
+	if (cb1) 
+		cb1();
 	this->hide();
 }
 
-void XA_UIModule_QUEST_BOX::on_clcUnsave()
+void XA_UIModule_QUEST_BOX::on_clcBtn2()
 {
-	sendChoose(1);
+	if (cb2)
+		cb2();
 	this->hide();
 }
 
-void XA_UIModule_QUEST_BOX::on_clcCancel()
+void XA_UIModule_QUEST_BOX::on_clcBtn3()
 {
-	sendChoose(2);
+	if (cb3)
+		cb3();
 	this->hide();
 }
 

@@ -67,20 +67,8 @@ bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type
 		//TODO:Add custom_var_mp to parse_res
 	}
 
-
-	pos = 0;
 	QString replaced;
 	parse_res += source;
-	
-	re.setMinimal(true);
-	re.setPattern("\\/\\/(.*)?\\\r\\\n");//filter annotation
-	while ((pos = re.indexIn(parse_res, pos)) != -1)
-	{
-		replaced = re.cap(0);
-		pos += re.matchedLength();
-		parse_res.replace(replaced, " ");
-	}
-
 	pos = 0;
 	re.setPattern("main(.*)?(?:\\{)");
 	if ((pos = re.indexIn(parse_res, pos)) != -1)
