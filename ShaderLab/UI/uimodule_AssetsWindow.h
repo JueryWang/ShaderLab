@@ -18,6 +18,7 @@
 #include <QSlider>
 #include <QLabel>
 #include <QList>
+#include <QMenu>
 
 class XA_GLMODULE_RENDER;
 
@@ -59,7 +60,6 @@ public slots:
 	void on_clcAudioRewind();
 	void on_clcAudioVolume();
 	void on_clcAudioSetting();
-
 private:
 	QVBoxLayout* _vlay;
 	QHBoxLayout* _audioSetsLay;
@@ -82,14 +82,21 @@ private:
 class XA_UIMODULE_ASSET_BAR : public QScrollArea
 {
 	friend class XA_UIMODULE_ASSET_WINDOW;
+	Q_OBJECT
 public:
 	XA_UIMODULE_ASSET_BAR(int width);
 	static void setAssetsReciver(XA_GLMODULE_RENDER* reciver);
 
+public slots:
+	void act_addCommon();
+	void act_addBufferA();
+	void act_addBufferB();
+	void act_addBufferC();
+	void act_addBufferD();
+	void act_addCubeMap();
+
 private:
 	QList<XA_UIMODULE_ASSET_WINDOW*> asset_win_list;
 	static XA_GLMODULE_RENDER* _glReciver;
-
-
 };
 #endif

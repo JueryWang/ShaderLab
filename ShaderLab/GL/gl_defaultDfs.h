@@ -130,4 +130,24 @@ enum XA_RENDER_FLAG_BIT_POS
 	BIT_PAUSE_POS   = 1,
 	BIT_EXIT_POS    = 0
 };
+
+enum XA_GL_SHADER_TYPE
+{
+	XA_GL_MAIN_SHADER,
+	XA_GL_BUFFER_BUFFER,
+	XA_GL_COMBUTE_SHADER
+};
+
+struct XA_GL_SHADER_INFO
+{
+	Shader program;
+	//As the number rises,the priority of decrease,which means 0 should be first executed 
+	int order = 0;
+	char physical_path_vertex[128];
+	char physical_path_fragment[128];
+	std::list<XA_GL_SHADER_INFO*> reference;
+	XA_GL_SCRIPT_TYPE type;
+	XA_GL_TEXTURE_INFO textures[4];
+
+};
 #endif

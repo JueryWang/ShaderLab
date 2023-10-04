@@ -67,6 +67,11 @@ void XA_GLMODULE_RENDER::setTitle(const char* title)
 	_title = title;
 }
 
+void XA_GLMODULE_RENDER::addShader(const XA_GL_SHADER_INFO& shader_info)
+{
+	shaders.emplace_back(shader_info);
+}
+
 int XA_GLMODULE_RENDER::getWidth() const
 {
 	return SCR_WIDTH.load(memory_order_consume);

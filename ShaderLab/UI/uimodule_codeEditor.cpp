@@ -22,7 +22,7 @@
 #include <QStringListModel>
 #include <QDebug>
 XA_UIMODULE_CodeEditor* XA_UIMODULE_CodeEditor::_codeEditor;
-static const QStringList unChangableLabels = { "Common","Image","Buffer A","Buffer B","Buffer C","Cubemap" };
+QStringList XA_UIMODULE_CodeEditor::bufferLabels = { "Common","Image","Buffer A","Buffer B","Buffer C","Cubemap" };
 using namespace std;
 
 int dptTabIdxSrc = 0;
@@ -88,7 +88,7 @@ XA_UIMODULE_CodeEditor::XA_UIMODULE_CodeEditor()
 	scriptTypesMp.insert("Buffer B", XA_GL_SCRIPT_BUFFERB);
 	scriptTypesMp.insert("Buffer C", XA_GL_SCRIPT_BUFFERC);
 	scriptTypesMp.insert("Buffer D", XA_GL_SCRIPT_BUFFERD);
-	scriptTypesMp.insert("Buffer D", XA_GL_SCRIPT_CUBEMAP);
+	scriptTypesMp.insert("Cubemap", XA_GL_SCRIPT_CUBEMAP);
 	_typeScriptView->setModel(new QStringListModel(scriptTypeslist));
 	_typeScriptView->setSpacing(2);
 	_typeScriptView->move(tb->pos()+ QPoint(10, 9));
@@ -335,6 +335,38 @@ void XA_UIMODULE_CodeEditor::savefile()
 	_current_file->close();
 }
 
+bool XA_UIMODULE_CodeEditor::comboShader() const
+{
+	return scriptTypesMp.keys().contains(tabBar()->tabText(tabBar()->currentIndex()));
+}
+
+const QString XA_UIMODULE_CodeEditor::findPagebyName(const QString& name)
+{
+	int tabCount = this->tabBar()->count();
+	for (int i = 0; i < tabCount; i++)
+	{
+		if (this->tabBar()->tabText(i) == name)
+		{
+			QsciScintilla* sci = (QsciScintilla*)this->widget(i);
+			return sci->text();
+		}
+	}
+
+	return nullptr;
+}
+
+QStringList XA_UIMODULE_CodeEditor::buffersInUse()
+{
+	QStringList res;
+	static QStringList validBuffers = { "Buffer A","Buffer B","Buffer C","Buffer D","Cubemap" };
+	for (const QString& buffer : validBuffers)
+	{
+		//if this script cannot be add again,then it's already in use
+		if (!scriptTypeslist.contains(buffer)) res.append(buffer);
+	}
+	return res;
+}
+
 void XA_UIMODULE_CodeEditor::duplicateRenameScript()
 {
 	saved_state.erase(saved_state.begin() + dptTabIdxTarget);
@@ -384,7 +416,7 @@ void XA_UIMODULE_CodeEditor::on_addNewScript()
 
 void XA_UIMODULE_CodeEditor::on_clickTab(int tabIdx)
 {
-	if(!unChangableLabels.contains(this->tabBar()->tabText(tabIdx)))
+	if(!bufferLabels.contains(this->tabBar()->tabText(tabIdx)))
 		_tabLabelEditor->setOriLabel(tabIdx,this->tabText(tabIdx));
 }
 

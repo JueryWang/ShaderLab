@@ -39,6 +39,9 @@ public:
 	static XA_UIMODULE_CodeEditor* getEditor();
 	void setEditorSize(int width, int height);
 	void savefile();
+	bool comboShader() const;
+	const QString findPagebyName(const QString& name);
+	QStringList buffersInUse();
 private:
 	QsciScintilla* get_new_page();
 	void set_new_tab(const QString& path, XA_GL_SCRIPT_TYPE type = XA_GL_SCRIPT_NOTYPE,bool is_new_file = true);
@@ -64,10 +67,10 @@ private:
 	XA_UIMODULE_CodeEditor();
 	~XA_UIMODULE_CodeEditor();
 
-
 public:
 	static XA_UIMODULE_CodeEditor* _codeEditor;
-	
+	static QStringList bufferLabels;
+
 	TabLabelEditor* _tabLabelEditor;
 	QStringList scriptTypeslist;
 	QMap<QString, XA_GL_SCRIPT_TYPE> scriptTypesMp;

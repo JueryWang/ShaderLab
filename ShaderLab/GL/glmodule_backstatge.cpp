@@ -146,40 +146,76 @@ void XA_GLMODULE_BACKSTG::handleCompileShader(const std::pair<XA_GLMODULE_RENDER
 		case parser::ShaderToy:
 		{
 			XA_UTILS_ShaderParser* parser = XA_UTILS_ShaderParser::getParser();
-			QFileInfo fileInfo(XA_UIMODULE_CodeEditor::getEditor()->_current_file->fileName());
-			QString filename = fileInfo.baseName();
-			QsciScintilla* page = (QsciScintilla*)XA_UIMODULE_CodeEditor::getEditor()->currentWidget();
+			XA_UIMODULE_CodeEditor* codeEditor = XA_UIMODULE_CodeEditor::getEditor();
+
 			parser->setContextParserRule(parser::ShaderToy);
 
-			QByteArray s = filename.toLatin1();
-			crt_task.first->setTitle(s.data());
+			if (codeEditor->comboShader())
+			{
+				parser->setComboParse(true);
+				crt_task.first->setTitle("Image");
+				for (auto it = codeEditor->scriptTypesMp.begin(); it != codeEditor->scriptTypesMp.end(); it++)
+				{
+					if (!codeEditor->scriptTypeslist.contains(it.key()))
+					{
+						QByteArray s = it.key().toLatin1();
 
-			strcpy(vs_path, USER_TEMPORARY_SHADER_PATH);
-			strcat(vs_path, "/");
-			strcat(vs_path, s.data());
-			strcat(vs_path, ".vert");
+						strcpy(vs_path, USER_TEMPORARY_SHADER_PATH);
+						strcat(vs_path, "/");
+						strcat(vs_path, s.data());
+						strcat(vs_path, "_combo.vert");
 
-			strcpy(fs_path, USER_TEMPORARY_SHADER_PATH);
-			strcat(fs_path, "/");
-			strcat(fs_path, s.data());
-			strcat(fs_path, ".frag");
+						strcpy(fs_path, USER_TEMPORARY_SHADER_PATH);
+						strcat(fs_path, "/");
+						strcat(fs_path, s.data());
+						strcat(fs_path, "_combo.frag");
 
-			parser->setCurrentFileName(filename + ".vert", parser::VERTEX);
-			parser->parse("", parser::VERTEX);
+						parser->setCurrentFileName(QString::fromLatin1(s.data()) + "_combo.vert", parser::VERTEX);
+						parser->parse("", parser::VERTEX);
 
-			parser->setCurrentFileName(filename + ".frag", parser::FRAGMENT);
-			parser->parse(page->text(), parser::FRAGMENT);
-			emit shaderParsedone();
+						parser->setCurrentFileName(QString::fromLatin1(s.data()) + "_combo.frag", parser::FRAGMENT); 
+						parser->parse(codeEditor->findPagebyName(it.key()), parser::FRAGMENT);
+					}
+				}
+				emit shaderParsedone();
+			}
+			else
+			{
+				parser->setComboParse(false);
 
+				QsciScintilla* page = (QsciScintilla*)codeEditor->currentWidget();
+				QFileInfo fileInfo(codeEditor->_current_file->fileName());
+				QString filename = fileInfo.baseName();
+				QByteArray s = filename.toLatin1();
+				crt_task.first->setTitle(s.data());
+
+				strcpy(vs_path, USER_TEMPORARY_SHADER_PATH);
+				strcat(vs_path, "/");
+				strcat(vs_path, s.data());
+				strcat(vs_path, ".vert");
+
+				strcpy(fs_path, USER_TEMPORARY_SHADER_PATH);
+				strcat(fs_path, "/");
+				strcat(fs_path, s.data());
+				strcat(fs_path, ".frag");
+
+				parser->setCurrentFileName(QString::fromLatin1(s.data()) + ".vert", parser::VERTEX);
+				parser->parse("", parser::VERTEX);
+
+				parser->setCurrentFileName(QString::fromLatin1(s.data()) + ".frag", parser::FRAGMENT);
+				parser->parse(page->text(), parser::FRAGMENT);
+				emit shaderParsedone();
+			}
+
+		crt_task.first->__exit();
+		crt_task.first->_vs_source = vs_path;
+		crt_task.first->_fs_source = fs_path;
+		crt_task.first->rd_state = INACTIVE;
+		XA_UIMODULE_GLWidget* glwgt = (XA_UIMODULE_GLWidget*)crt_task.first->_reciver;
+		glwgt->__reshow();
+		crt_task.first->__start();
+		break;
 	
-			crt_task.first->__exit();
-			crt_task.first->_vs_source = vs_path;
-			crt_task.first->_fs_source = fs_path;
-			crt_task.first->rd_state = INACTIVE;
-			XA_UIMODULE_GLWidget* glwgt = (XA_UIMODULE_GLWidget*)crt_task.first->_reciver;
-			glwgt->__reshow();
-			crt_task.first->__start();
-			break;
 		}
 	}
 }

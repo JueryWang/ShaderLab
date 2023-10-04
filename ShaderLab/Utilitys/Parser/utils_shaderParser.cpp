@@ -37,7 +37,8 @@ bool XA_UTILS_ShaderParser::parse(const QString& source, parser::ShaderType type
 		break;
 	}
 
-	parsedVariant.clear();
+	if(!combo_parse)   parsedVariant.clear();
+
 	QRegExp re("#define\\s+(.*)?\\s+(.*)?\\\r\\\n");//windows
 
 	re.setMinimal(true);
@@ -149,6 +150,11 @@ void XA_UTILS_ShaderParser::setCurrentFileName(const QString& name, parser::Shad
 	this->crt_handle_type = type;
 }
 
+
+void XA_UTILS_ShaderParser::setComboParse(bool flag)
+{
+	combo_parse = flag;
+}
 
 const QString XA_UTILS_ShaderParser::getDebugInfo() const
 {

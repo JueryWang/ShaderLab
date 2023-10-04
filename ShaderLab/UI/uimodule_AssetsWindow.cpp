@@ -1,11 +1,12 @@
 ﻿#include "uimodule_AssetsWindow.h"
 #include "ui_defaultDfs.h"
-#include "../Utilitys/uitilityDfs.h"
-#include "../GL/gl_defaultDfs.h"
-#include "../GL/glmodule_backstatge.h"
-#include "../GL/glmodule_render.h"
-#include "../Utilitys/AssetsManager/Audio/utils_audioPlayer.h"
+#include "Utilitys/uitilityDfs.h"
+#include "GL/gl_defaultDfs.h"
+#include "GL/glmodule_backstatge.h"
+#include "GL/glmodule_render.h"
+#include "Utilitys/AssetsManager/Audio/utils_audioPlayer.h"
 #include "uimodule_radioVolume.h"
+#include "uimodule_codeEditor.h"
 #include <QFont>
 #include <QFileDialog>
 #include <QMouseEvent>
@@ -14,9 +15,14 @@
 #include <QFileInfo>
 #include <QPainter>
 #include <QProcess>
+#include <QAction>
+#include <QStringListModel>
 #include <QDebug>
 
 XA_GLMODULE_RENDER* XA_UIMODULE_ASSET_BAR::_glReciver;
+QMenu* addBufferMenu;
+QMap<QString, QAction*> menuActionsMp;
+void inline clearMenuActions();
 
 XA_UIMODULE_ASSET_WINDOW::XA_UIMODULE_ASSET_WINDOW(int index):_index(index)
 {
@@ -101,14 +107,13 @@ XA_UIMODULE_ASSET_WINDOW::XA_UIMODULE_ASSET_WINDOW(int index):_index(index)
 	_vlay->addWidget(_label);
 	_vlay->setSpacing(0);
 	this->setLayout(_vlay);
-	//Test
 }
-
-
 
 bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 {
-	if (event->type() == QEvent::HoverEnter) 
+	switch (event->type())
+	{
+	case QEvent::HoverEnter:
 	{
 		QGraphicsDropShadowEffect* effect = new QGraphicsDropShadowEffect();
 		effect->setOffset(0, 0);
@@ -117,17 +122,15 @@ bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 		this->setGraphicsEffect(effect);
 		return true;
 	}
-
-	if (event->type() == QEvent::HoverLeave)
+	case QEvent::HoverLeave:
 	{
 		delete this->graphicsEffect();
 		return true;
 	}
-
-	if (event->type() == QEvent::MouseButtonPress)
+	case QEvent::MouseButtonPress:
 	{
 		QMouseEvent* mouseEvent = (QMouseEvent*)event;
-		if (mouseEvent->buttons() && Qt::LeftButton)
+		if (mouseEvent->buttons() & Qt::LeftButton)
 		{
 			if (opened_asset && _window->cross_rect.contains(_window->mapFromGlobal(QCursor().pos())))//close
 			{
@@ -142,7 +145,7 @@ bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 					unsetupAudioSets();
 					playingAudio = false;
 				}
-				
+
 				opened_asset = false;
 				_window->asset_type = ASSET_WINDOW::NONE;
 				_window->repaint();
@@ -150,7 +153,7 @@ bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 			else
 			{
 				static QStringList pictureSuffixValidator = { "jpg","png" };
-				static QStringList audioSuffixValidator = {"mp3","wav","ogg"};
+				static QStringList audioSuffixValidator = { "mp3","wav","ogg" };
 				QString fileName = QFileDialog::getOpenFileName(this, _STRING_WRAPPER("打开文件"), "Resources",
 					"Picuture (*.jpg *.png);; Audio (*.mp3 *.wav *.ogg)");
 				if (fileName.size())
@@ -160,7 +163,7 @@ bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 					{
 						_window->asset_path = fileName;
 						_window->asset_type = ASSET_WINDOW::IMAGE;
-						_window->show_img = QImage(fileName).scaled(_window->width(),_window->height(),Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+						_window->show_img = QImage(fileName).scaled(_window->width(), _window->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 						_window->update();
 						sendAssets(ASSET_WINDOW::IMAGE);
 					}
@@ -186,11 +189,26 @@ bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 						}
 					}
 					opened_asset = true;
-			}
+				}
 			}
 			return true;
 		}
+
+		if (mouseEvent->buttons() & Qt::RightButton)
+		{
+			QStringList bufferUsed = XA_UIMODULE_CodeEditor::getEditor()->buffersInUse();
+			clearMenuActions();
+			for (auto& buffer : bufferUsed)
+			{
+				addBufferMenu->addAction(menuActionsMp[buffer]);
+			}
+			addBufferMenu->exec(QCursor().pos());
+		}
 	}
+	default:
+		break;
+	}
+
 	return QWidget::eventFilter(obj, event);
 }
 
@@ -237,7 +255,6 @@ void XA_UIMODULE_ASSET_WINDOW::unsetupAudioSets()
 
 void XA_UIMODULE_ASSET_WINDOW::setAudioPlayDone()
 {
-	qDebug() << "setAudioPlayDone:: playingAudio = " << playingAudio;
 	playingAudio = false;
 	this->on_clcAudioPause();
 }
@@ -298,11 +315,64 @@ XA_UIMODULE_ASSET_BAR::XA_UIMODULE_ASSET_BAR(int width)
 	}
 	wrapper->setLayout(hlay);
 	this->setWidget(wrapper);
+
+	
+	addBufferMenu = new QMenu(this);
+	addBufferMenu->setStyleSheet(TYPES_MENU_STYLE);
+	addBufferMenu->setAttribute(Qt::WA_TranslucentBackground); //Menu背景透明
+	addBufferMenu->setWindowFlags(addBufferMenu->windowFlags() | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
+
+
+	QStringList labels = XA_UIMODULE_CodeEditor::bufferLabels;
+	typedef void (XA_UIMODULE_ASSET_BAR::* slot_func)(void);
+	QList<slot_func> slot_functions = { &XA_UIMODULE_ASSET_BAR::act_addCommon,
+										&XA_UIMODULE_ASSET_BAR::act_addBufferA,
+										&XA_UIMODULE_ASSET_BAR::act_addBufferB,
+										&XA_UIMODULE_ASSET_BAR::act_addBufferC,
+										&XA_UIMODULE_ASSET_BAR::act_addBufferD,
+										&XA_UIMODULE_ASSET_BAR::act_addCubeMap};
+	int size = labels.size();
+	for (int i = 0; i < size; i++)
+	{
+		QAction* action = new QAction(labels[i]);
+		connect(action, &QAction::triggered, this, slot_functions[i]);
+		menuActionsMp.insert(labels[i], action);
+	}
 }
 
 void XA_UIMODULE_ASSET_BAR::setAssetsReciver(XA_GLMODULE_RENDER* reciver)
 {
 	XA_UIMODULE_ASSET_BAR::_glReciver = reciver;
+}
+
+void XA_UIMODULE_ASSET_BAR::act_addCommon()
+{
+
+}
+
+void XA_UIMODULE_ASSET_BAR::act_addBufferA()
+{
+
+}
+
+void XA_UIMODULE_ASSET_BAR::act_addBufferB()
+{
+
+}
+
+void XA_UIMODULE_ASSET_BAR::act_addBufferC()
+{
+
+}
+
+void XA_UIMODULE_ASSET_BAR::act_addBufferD()
+{
+
+}
+
+void XA_UIMODULE_ASSET_BAR::act_addCubeMap()
+{
+
 }
 
 ASSET_WINDOW::ASSET_WINDOW(const QSize& size)
@@ -343,5 +413,13 @@ void ASSET_WINDOW::paintEvent(QPaintEvent* event)
 		break;
 	default:
 		break;
+	}
+}
+
+void inline clearMenuActions()
+{
+	for (auto& act : menuActionsMp.values())
+	{
+		addBufferMenu->removeAction(act);
 	}
 }

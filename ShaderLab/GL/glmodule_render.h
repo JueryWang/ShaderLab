@@ -33,7 +33,7 @@ public:
 	~XA_GLMODULE_RENDER();
 	void setReciver(QObject* reciver);
 	void setTitle(const char* title);
-	//void addShader(const char* vertexPath, const char* fragmentPath,const char* name);
+	void addShader(const XA_GL_SHADER_INFO &shader_info);
 	inline void flip(uint8_t** buf,int context_width,int context_height);
 	void __exit();
 	void __start();
@@ -81,8 +81,10 @@ public:
 private:
 	void* _windowbuf;
 	std::unique_ptr <GLFWwindow,Deleter> _window;
+
 	QObject* _reciver;
 	StorageType _type;
+	std::vector<XA_GL_SHADER_INFO> shaders;
 	Shader* _shader = nullptr;
 	std::string _title;
 	std::string _vs_source;

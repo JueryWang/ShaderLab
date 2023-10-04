@@ -218,6 +218,34 @@ QListView{
     border:1px solid #D3D3D3;
     padding:5px;
     color:#1F282F;
+};
+QListView::item{width:80px};
+)";
+
+const static QString TYPES_MENU_STYLE = R"(
+
+QMenu {
+	color:black;
+	background-color:white; 
+	border-radius:3px;
+	padding:5px;
+	margin:6px;
+}
+QMenu::item:text { 
+	padding-left:10px;
+	padding-right:10px;
+}
+QMenu::item:selected{ 
+	color:#1aa3ff;
+	background-color: #e5f5ff;
+	border-radius:3px;
+}
+QMenu::separator{
+	height:1px;
+	background:#bbbbbb;
+	margin:5px;
+	margin-left:10px;
+	margin-right:10px;
 }
 )";
 extern QMap<QString, QString> global_font_mp;
