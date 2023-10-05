@@ -22,7 +22,7 @@
 #include <QStringListModel>
 #include <QDebug>
 XA_UIMODULE_CodeEditor* XA_UIMODULE_CodeEditor::_codeEditor;
-QStringList XA_UIMODULE_CodeEditor::bufferLabels = { "Common","Image","Buffer A","Buffer B","Buffer C","Cubemap" };
+QStringList XA_UIMODULE_CodeEditor::bufferLabels = {"Image","Buffer A","Buffer B","Buffer C","Cubemap" };
 using namespace std;
 
 int dptTabIdxSrc = 0;

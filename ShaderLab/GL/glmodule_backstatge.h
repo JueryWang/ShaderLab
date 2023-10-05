@@ -28,6 +28,7 @@ public:
 	static XA_GLMODULE_BACKSTG* getBackStage();
 	void addTask(std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK> newTask);
 	void deleteTexture(int idx);
+	bool findTexture(const XA_GL_TEXTURE_INFO& target);
 
 signals:
 	void shaderParsedone();
@@ -47,7 +48,7 @@ private:
 	* multi Window Instance Rendering need to be reconstructed by vulkan
 	  std::priority_queue<GL_windowBuffer*> hierarchy_layer;
 	*/
-private:
+public:
 	static XA_GLMODULE_BACKSTG* _instance;
 
 	std::queue<std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK>> _task_queue; 

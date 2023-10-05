@@ -69,6 +69,7 @@ struct LoadTextureTask_param
 {
 	int index;
 	char texture_path[64];
+	LoadTextureTask_param* next;//for batch commit
 };
 
 struct CompileTask_param
@@ -111,7 +112,6 @@ struct XA_GL_TEXTURE_INFO
 	GLenum format;
 	GLuint textureID;
 	unsigned char* address;
-	XA_GL_SCRIPT_TYPE shaderType;
 	TEXTURE_STATUS status = TEXTURE_ST_DEPRECATED;
 };
 
@@ -141,13 +141,25 @@ enum XA_GL_SHADER_TYPE
 struct XA_GL_SHADER_INFO
 {
 	Shader program;
+	bool inited = false;
 	//As the number rises,the priority of decrease,which means 0 should be first executed 
-	int order = 0;
-	char physical_path_vertex[128];
-	char physical_path_fragment[128];
+	int order = -1;
+	char path_vertex[128];
+	char path_fragment[128];
 	std::list<XA_GL_SHADER_INFO*> reference;
 	XA_GL_SCRIPT_TYPE type;
 	XA_GL_TEXTURE_INFO textures[4];
-
 };
+
+void inline setShaderOrder(XA_GL_SHADER_INFO* shader_info,int &result)
+{
+	for (auto ref : shader_info->reference)
+	{
+		setShaderOrder(ref, result);
+		if (ref->order+1 > result)
+		{
+			result = ref->order+1;
+		}
+	}
+}
 #endif

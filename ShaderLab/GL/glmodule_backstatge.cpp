@@ -6,7 +6,9 @@
 #include "UI/uimodule_codeEditor.h"
 #include "Utilitys/Parser/utils_shaderParser.h"
 #include "Utilitys/AssetsManager/Video/utils_videoPlayer.h"
+#include <algorithm>
 #include <Qsci/qsciscintilla.h>
+#include <string.h>
 #include <QMutex>
 #include <QDebug>
 
@@ -60,6 +62,12 @@ void XA_GLMODULE_BACKSTG::deleteTexture(int idx)
 	}
 }
 
+bool XA_GLMODULE_BACKSTG::findTexture(const XA_GL_TEXTURE_INFO& target)
+{
+	int targetID = target.textureID;
+	return std::find_if(_textures.begin(), _textures.end(), [targetID](XA_GL_TEXTURE_INFO another)->bool{return targetID == another.textureID; })!=_textures.end();
+}
+
 void XA_GLMODULE_BACKSTG::run()
 {
 	while (true)
@@ -111,29 +119,36 @@ void XA_GLMODULE_BACKSTG::handleDrawFront(const std::pair<XA_GLMODULE_RENDER*, X
 
 void XA_GLMODULE_BACKSTG::handleLoadTexture(const std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK>& crt_task)
 {
-	int width, height, nrComponents;
-	unsigned char* data = stbi_load(crt_task.second.param.loadTexture_param.texture_path, &width, &height, &nrComponents, 0);
-	if (data)
+	LoadTextureTask_param temp = crt_task.second.param.loadTexture_param;
+	for (;;)
 	{
-		GLenum format;
-		if (nrComponents == 1)
-			format = GL_RED;
-		else if (nrComponents == 3)
-			format = GL_RGB;
-		else if (nrComponents == 4)
-			format = GL_RGBA;
+		int width, height, nrComponents;
+		unsigned char* data = stbi_load(temp.texture_path, &width, &height, &nrComponents, 0);
+		if (data)
+		{
+			GLenum format;
+			if (nrComponents == 1)
+				format = GL_RED;
+			else if (nrComponents == 3)
+				format = GL_RGB;
+			else if (nrComponents == 4)
+				format = GL_RGBA;
 
-		XA_GL_TEXTURE_INFO tex_info;
-		tex_info.index = crt_task.second.param.loadTexture_param.index;
-		tex_info.address = data;
-		tex_info.width = width;
-		tex_info.height = height;
-		tex_info.format = format;
-		tex_info.status = TEXTURE_ST_UNLOAD;
-		_textures.push_back(tex_info);
-
-		crt_task.first->__update();
+			XA_GL_TEXTURE_INFO tex_info;
+			tex_info.index = temp.index;
+			tex_info.address = data;
+			tex_info.width = width;
+			tex_info.height = height;
+			tex_info.format = format;
+			tex_info.status = TEXTURE_ST_UNLOAD;
+			_textures.push_back(tex_info);
+		}
+		if(temp.next == nullptr)
+			break;
+		temp = *temp.next;
 	}
+
+	crt_task.first->__update();
 }
 
 void XA_GLMODULE_BACKSTG::handleCompileShader(const std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK>& crt_task)

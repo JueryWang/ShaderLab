@@ -22,6 +22,7 @@
 #include <QDebug>
 
 class XA_GL_TEXTURE_INFO;
+class XA_UIMODULE_EditorPage;
 
 class XA_GLMODULE_RENDER : public QObject
 {
@@ -33,8 +34,8 @@ public:
 	~XA_GLMODULE_RENDER();
 	void setReciver(QObject* reciver);
 	void setTitle(const char* title);
+	void initShader(XA_GL_SHADER_INFO* shader_info);
 	void addShader(const XA_GL_SHADER_INFO &shader_info);
-	inline void flip(uint8_t** buf,int context_width,int context_height);
 	void __exit();
 	void __start();
 	void __pause();
@@ -84,6 +85,7 @@ private:
 
 	QObject* _reciver;
 	StorageType _type;
+	QMap<GLuint, XA_UIMODULE_EditorPage*> shaderPageMp;
 	std::vector<XA_GL_SHADER_INFO> shaders;
 	Shader* _shader = nullptr;
 	std::string _title;

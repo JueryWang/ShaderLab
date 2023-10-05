@@ -88,7 +88,6 @@ public:
 	static void setAssetsReciver(XA_GLMODULE_RENDER* reciver);
 
 public slots:
-	void act_addCommon();
 	void act_addBufferA();
 	void act_addBufferB();
 	void act_addBufferC();

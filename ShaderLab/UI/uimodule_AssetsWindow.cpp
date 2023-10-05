@@ -227,6 +227,7 @@ void XA_UIMODULE_ASSET_WINDOW::sendAssets(ASSET_WINDOW::AssetType type)
 		new_task.second.param.loadTexture_param.index = _index;
 		s = _window->asset_path.toLatin1();
 		strcpy(new_task.second.param.loadTexture_param.texture_path, s.data());
+		new_task.second.param.loadTexture_param.next = nullptr;
 		XA_GLMODULE_BACKSTG::getBackStage()->addTask(new_task);
 		break;
 	}
@@ -325,7 +326,7 @@ XA_UIMODULE_ASSET_BAR::XA_UIMODULE_ASSET_BAR(int width)
 
 	QStringList labels = XA_UIMODULE_CodeEditor::bufferLabels;
 	typedef void (XA_UIMODULE_ASSET_BAR::* slot_func)(void);
-	QList<slot_func> slot_functions = { &XA_UIMODULE_ASSET_BAR::act_addCommon,
+	QList<slot_func> slot_functions = { 
 										&XA_UIMODULE_ASSET_BAR::act_addBufferA,
 										&XA_UIMODULE_ASSET_BAR::act_addBufferB,
 										&XA_UIMODULE_ASSET_BAR::act_addBufferC,
@@ -343,11 +344,6 @@ XA_UIMODULE_ASSET_BAR::XA_UIMODULE_ASSET_BAR(int width)
 void XA_UIMODULE_ASSET_BAR::setAssetsReciver(XA_GLMODULE_RENDER* reciver)
 {
 	XA_UIMODULE_ASSET_BAR::_glReciver = reciver;
-}
-
-void XA_UIMODULE_ASSET_BAR::act_addCommon()
-{
-
 }
 
 void XA_UIMODULE_ASSET_BAR::act_addBufferA()

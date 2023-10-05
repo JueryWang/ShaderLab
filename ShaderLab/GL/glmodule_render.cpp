@@ -2,6 +2,7 @@
 #include "glmodule_backstatge.h"
 #include "glmodule_EvSendFrame.h"
 #include "Utilitys/AssetsManager/Video/utils_videoPlayer.h"
+#include "UI/uimodule_editorpage.h"
 #include "UI/uimodule_glWidget.h"
 #include <QApplication>
 #include <QThread>
@@ -12,15 +13,14 @@ using namespace std;
 std::atomic<int> XA_GLMODULE_RENDER::SCR_WIDTH = 0;
 std::atomic<int> XA_GLMODULE_RENDER::SCR_HEIGHT = 0;
 int XA_GLMODULE_RENDER::resolution[2];
-
-
 std::timed_mutex glLocker;
-
 float deltaTime = 0.0f;
 float lastTime = 0.0f;
 int frame = 0;
 unsigned int quadVAO = 0;
 unsigned int quadVBO;
+
+inline void flip(uint8_t** buf, int context_width, int context_height);
 
 XA_GLMODULE_RENDER::XA_GLMODULE_RENDER(const std::string& title, StorageType type, QObject* reciver) :_title(title),_type(type)
 {
@@ -67,9 +67,29 @@ void XA_GLMODULE_RENDER::setTitle(const char* title)
 	_title = title;
 }
 
+void XA_GLMODULE_RENDER::initShader(XA_GL_SHADER_INFO* shader_info)
+{
+	if (!shader_info->inited)
+	{
+		for (auto ref_shader : shader_info->reference)
+		{
+			if(!ref_shader->inited) initShader(ref_shader);
+		}
+		shader_info->inited = true;
+		shader_info->program = Shader(shader_info->path_vertex, shader_info->path_fragment);
+		setShaderOrder(shader_info, shader_info->order);
+		std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK> loadtextureTsk;
+		loadtextureTsk.first = this;
+		loadtextureTsk.second.type = XA_GL_LOADTEXTURE;
+	}
+}
+
 void XA_GLMODULE_RENDER::addShader(const XA_GL_SHADER_INFO& shader_info)
 {
-	shaders.emplace_back(shader_info);
+	XA_GL_SHADER_INFO temp_info = shader_info;
+	initShader(&temp_info);
+
+	shaders.emplace_back(temp_info);
 }
 
 int XA_GLMODULE_RENDER::getWidth() const
@@ -82,9 +102,9 @@ int XA_GLMODULE_RENDER::getHeight() const
 	return SCR_HEIGHT.load(memory_order_consume);
 }
 
-void XA_GLMODULE_RENDER::flip(uint8_t** buf, int context_width, int context_height)
+void flip(uint8_t** buf, int context_width, int context_height)
 {
-	static uint8_t* tmp_rgb = (uint8_t*)malloc(SCR_WIDTH * SCR_HEIGHT * 3);
+	static uint8_t* tmp_rgb = (uint8_t*)malloc(XA_GLMODULE_RENDER::SCR_WIDTH * XA_GLMODULE_RENDER::SCR_HEIGHT * 3);
 	
 	int totalLength = context_width * context_height * 3;
 	int oneLineLength = context_width * 3;
@@ -206,7 +226,7 @@ void XA_GLMODULE_RENDER::contextDraw()
 
 	glUniform2iv(glGetUniformLocation(_shader->ID, "iResolution"), 1, &resolution[0]);
 	//glEnable(GL_SAMPLE_SHADING);
-	glMinSampleShading(0.7f);
+	//glMinSampleShading(0.7f);
 
 	while (!getFlag(BIT_EXIT_POS))
 	{

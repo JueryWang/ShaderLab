@@ -30,6 +30,8 @@ protected:
 	virtual void dragEnterEvent(QDragEnterEvent* event);
 	virtual void dropEvent(QDropEvent* event);
 
+public:
+	QString label;
 private:
 	void setCustomStyle();
 private:
