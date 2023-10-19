@@ -29,19 +29,24 @@ class QFont;
 class QStatusBar;
 class QsciScintilla;
 class XA_UIMODULE_EditorPage;
+class XA_UIMODULE_ASSET_BAR;
 class TabLabelEditor;
+class OverallWindow;
 
 class XA_UIMODULE_CodeEditor : public QTabWidget
 {
 	friend class XA_UIMODULE_EditorPage;
 	Q_OBJECT
+
 public:
 	static XA_UIMODULE_CodeEditor* getEditor();
 	void setEditorSize(int width, int height);
 	void savefile();
+	void setOverallWindow(OverallWindow* ovWindow);
 	bool comboShader() const;
 	const QString findPagebyName(const QString& name);
 	QStringList buffersInUse();
+
 private:
 	QsciScintilla* get_new_page();
 	void set_new_tab(const QString& path, XA_GL_SCRIPT_TYPE type = XA_GL_SCRIPT_NOTYPE,bool is_new_file = true);
@@ -54,6 +59,9 @@ protected:
 	virtual void dragEnterEvent(QDragEnterEvent* event);
 	virtual void dropEvent(QDropEvent* event);
 	virtual bool eventFilter(QObject* obj, QEvent* e);
+
+signals:
+	void setOvWindowAssetsBar(XA_UIMODULE_ASSET_BAR* newBar);
 
 public slots:
 	void on_closeTab(int index);
@@ -83,6 +91,9 @@ public:
 
 	XA_UIMODULE_EditorPage* _current_page;
 	std::deque<std::pair<bool,std::string>> saved_state;
+
+	OverallWindow* _ovWindow = nullptr;
+	QMap<XA_UIMODULE_EditorPage*, XA_UIMODULE_ASSET_BAR*> page_bar_map;
 };
 
 class TabLabelEditor : public QWidget

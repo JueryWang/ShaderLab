@@ -1,5 +1,8 @@
-#include "uimodule_editorpage.h"
 #include "ui_defaultDfs.h"
+#include "uimodule_editorpage.h"
+#include "uimodule_codeEditor.h"
+#include "uimodule_AssetsWindow.h"
+#include "OverallWindow.h"
 #include <Qsci/qscilexercpp.h>
 #include <Qsci/qsciapis.h>
 #include <QApplication>
@@ -12,7 +15,6 @@
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QFile>
-#include "uimodule_codeEditor.h"
 
 QStringList getIntellisense(const QString& intelliSenseFile);
 

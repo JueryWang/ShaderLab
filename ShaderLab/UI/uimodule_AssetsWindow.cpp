@@ -109,6 +109,13 @@ XA_UIMODULE_ASSET_WINDOW::XA_UIMODULE_ASSET_WINDOW(int index):_index(index)
 	this->setLayout(_vlay);
 }
 
+XA_UIMODULE_ASSET_WINDOW::~XA_UIMODULE_ASSET_WINDOW()
+{
+	delete _label;
+	delete _vlay;
+	delete _window;
+}
+
 bool XA_UIMODULE_ASSET_WINDOW::eventFilter(QObject* obj, QEvent* event)
 {
 	switch (event->type())
@@ -314,6 +321,7 @@ XA_UIMODULE_ASSET_BAR::XA_UIMODULE_ASSET_BAR(int width)
 		asset_win->setFixedWidth(200);
 		hlay->addWidget(asset_win);
 	}
+
 	wrapper->setLayout(hlay);
 	this->setWidget(wrapper);
 
@@ -325,8 +333,9 @@ XA_UIMODULE_ASSET_BAR::XA_UIMODULE_ASSET_BAR(int width)
 
 
 	QStringList labels = XA_UIMODULE_CodeEditor::bufferLabels;
+
 	typedef void (XA_UIMODULE_ASSET_BAR::* slot_func)(void);
-	QList<slot_func> slot_functions = { 
+	static QList<slot_func> slot_functions = { 
 										&XA_UIMODULE_ASSET_BAR::act_addBufferA,
 										&XA_UIMODULE_ASSET_BAR::act_addBufferB,
 										&XA_UIMODULE_ASSET_BAR::act_addBufferC,
@@ -338,6 +347,17 @@ XA_UIMODULE_ASSET_BAR::XA_UIMODULE_ASSET_BAR(int width)
 		QAction* action = new QAction(labels[i]);
 		connect(action, &QAction::triggered, this, slot_functions[i]);
 		menuActionsMp.insert(labels[i], action);
+	}
+}
+
+XA_UIMODULE_ASSET_BAR::~XA_UIMODULE_ASSET_BAR()
+{
+	for (int i = 0; i < 4; i++)
+	{
+		if (asset_win_list[i] != nullptr)
+		{
+			delete asset_win_list[i];
+		}
 	}
 }
 

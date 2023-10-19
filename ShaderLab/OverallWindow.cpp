@@ -2,6 +2,10 @@
 #include "UI/ui_defaultDfs.h"
 #include "UI/uimodule_AssetsWindow.h"
 #include "UI/uimodule_editorpage.h"
+#include "UI/uimodule_glWidget.h"
+#include "UI/uimodule_editorpage.h"
+#include "UI/uimodule_windowInfo.h"
+#include "UI/uimodule_codeEditor.h"
 #include "GL/gl_defaultDfs.h"
 #include "GL/glmodule_render.h"
 #include "GL/glmodule_backstatge.h"
@@ -48,6 +52,8 @@ OverallWindow::OverallWindow()
 	XA_UIMODULE_ASSET_BAR::setAssetsReciver(_glWindow->getRender());
 
 	XA_UIMODULE_CodeEditor* codeEditorInst = XA_UIMODULE_CodeEditor::getEditor();
+	codeEditorInst->setOverallWindow(this);
+
 	codeEditorInst->setEditorSize(this->width() * (1. - GL_WIDGET_DEFAULT_WIDTH_R), this->height() * GL_WIDGET_DEFAULT_HEIGHT_R);
 	_windowInfo = new XA_UIMODULE_WindowInfo(this, QSize(_glWindow->width(), _glWindow->height()),_STRING_WRAPPER("Ä¬ÈÏÔ´"));
 	_windowInfo->setFixedHeight(30);
@@ -162,6 +168,11 @@ void OverallWindow::on_compileCode()
 void OverallWindow::on_updateVarBoard()
 {
 	this->_varboard->setVariantMap(XA_UTILS_ShaderParser::getParser()->getParsedVar());
+}
+
+void OverallWindow::on_changeAssetsBar(XA_UIMODULE_ASSET_BAR* newBar)
+{
+	splitter_v2->replaceWidget(2, newBar);
 }
 
 void OverallWindow::rollbackNormal()

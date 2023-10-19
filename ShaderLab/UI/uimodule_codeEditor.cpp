@@ -1,8 +1,11 @@
 #include "ui_defaultDfs.h"
-#include "../Utilitys/uitilityDfs.h"
+#include "Utilitys/uitilityDfs.h"
 #include "uimodule_codeEditor.h"
 #include "uimodule_editorpage.h"
+#include "uimodule_AssetsWindow.h"
+#include "OverallWindow.h"
 #include "uimodule_MsgBox.h"
+#include "OverallWindow.h"
 #include <QFontDatabase>
 #include <QFileDialog>
 #include <QMimeData>
@@ -215,6 +218,9 @@ void XA_UIMODULE_CodeEditor::appendTab(QsciScintilla* editor,const QString& tabL
 	this->setCurrentIndex(this->count() - 1);
 	_current_file = std::make_unique<QFile>(tabLabel);
 	saved_state.push_back(std::make_pair<bool, string>(false, tabLabel.toStdString()));
+
+	XA_UIMODULE_ASSET_BAR* new_bar = new XA_UIMODULE_ASSET_BAR(this->width());
+	emit setOvWindowAssetsBar(new_bar);
 }
 
 QsciScintilla* XA_UIMODULE_CodeEditor::get_new_page()
@@ -333,6 +339,12 @@ void XA_UIMODULE_CodeEditor::savefile()
 		_current_file->write(editor->text().toUtf8());
 	}
 	_current_file->close();
+}
+
+void XA_UIMODULE_CodeEditor::setOverallWindow(OverallWindow* ovWindow)
+{
+	this->_ovWindow = ovWindow;
+	connect(this, &XA_UIMODULE_CodeEditor::setOvWindowAssetsBar, this->_ovWindow, &OverallWindow::on_changeAssetsBar);
 }
 
 bool XA_UIMODULE_CodeEditor::comboShader() const

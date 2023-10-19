@@ -15,6 +15,7 @@
 #include "UI/uimodule_codeEditor.h"
 #include "UI/uimodule_windowInfo.h"
 #include "UI/uimodule_varShowboard.h"
+#include "UI/uimodule_AssetsWindow.h"
 #include <QVBoxLayout>
 
 class QSplitter;
@@ -35,6 +36,7 @@ public slots:
 	void on_restGLWidget(const QSize& size);
 	void on_compileCode();
 	void on_updateVarBoard();
+	void on_changeAssetsBar(XA_UIMODULE_ASSET_BAR* newBar);
 
 private:
 	QVBoxLayout* _owlayout;

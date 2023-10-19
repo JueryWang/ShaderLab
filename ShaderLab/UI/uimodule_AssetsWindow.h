@@ -47,6 +47,7 @@ class XA_UIMODULE_ASSET_WINDOW : public QWidget
 	Q_OBJECT
 public:
 	XA_UIMODULE_ASSET_WINDOW(int index);
+	~XA_UIMODULE_ASSET_WINDOW();
 	void setAudioPlayDone();
 protected:
 	virtual bool eventFilter(QObject* obj, QEvent* event);
@@ -85,6 +86,7 @@ class XA_UIMODULE_ASSET_BAR : public QScrollArea
 	Q_OBJECT
 public:
 	XA_UIMODULE_ASSET_BAR(int width);
+	~XA_UIMODULE_ASSET_BAR();
 	static void setAssetsReciver(XA_GLMODULE_RENDER* reciver);
 
 public slots:
