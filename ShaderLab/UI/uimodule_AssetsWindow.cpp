@@ -352,6 +352,7 @@ XA_UIMODULE_ASSET_BAR::XA_UIMODULE_ASSET_BAR(int width)
 
 XA_UIMODULE_ASSET_BAR::~XA_UIMODULE_ASSET_BAR()
 {
+	qDebug() << "XA_UIMODULE_ASSET_BAR::~XA_UIMODULE_ASSET_BAR";
 	for (int i = 0; i < 4; i++)
 	{
 		if (asset_win_list[i] != nullptr)

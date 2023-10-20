@@ -48,9 +48,9 @@ public:
 	QStringList buffersInUse();
 
 private:
-	QsciScintilla* get_new_page();
+	XA_UIMODULE_EditorPage* get_new_page();
 	void set_new_tab(const QString& path, XA_GL_SCRIPT_TYPE type = XA_GL_SCRIPT_NOTYPE,bool is_new_file = true);
-	void appendTab(QsciScintilla* editor,const QString& tabLabel);
+	void appendTab(XA_UIMODULE_EditorPage* editor,const QString& tabLabel);
 	void duplicateRenameScript();
 	void closeBuildinTab();
 	void saveas();
@@ -64,8 +64,9 @@ signals:
 	void setOvWindowAssetsBar(XA_UIMODULE_ASSET_BAR* newBar);
 
 public slots:
-	void on_closeTab(int index);
 	void on_copy();
+	void on_closeTab(int index);
+	void on_tabChanged(int index);
 	void on_addNewScript();
 	void on_clickTab(int tabIdx);
 	void on_pageLabelChanged(int index,const QString& newLabel);
@@ -78,6 +79,7 @@ private:
 public:
 	static XA_UIMODULE_CodeEditor* _codeEditor;
 	static QStringList bufferLabels;
+	static XA_UIMODULE_ASSET_BAR* default_asset_bar;
 
 	TabLabelEditor* _tabLabelEditor;
 	QStringList scriptTypeslist;
@@ -93,7 +95,7 @@ public:
 	std::deque<std::pair<bool,std::string>> saved_state;
 
 	OverallWindow* _ovWindow = nullptr;
-	QMap<XA_UIMODULE_EditorPage*, XA_UIMODULE_ASSET_BAR*> page_bar_map;
+	QMap<QString, XA_UIMODULE_ASSET_BAR*> page_bar_map;
 };
 
 class TabLabelEditor : public QWidget

@@ -24,6 +24,7 @@
 #include <QHBoxLayout>
 #include <QStringListModel>
 #include <QDebug>
+XA_UIMODULE_ASSET_BAR* XA_UIMODULE_CodeEditor::default_asset_bar;
 XA_UIMODULE_CodeEditor* XA_UIMODULE_CodeEditor::_codeEditor;
 QStringList XA_UIMODULE_CodeEditor::bufferLabels = {"Image","Buffer A","Buffer B","Buffer C","Cubemap" };
 using namespace std;
@@ -35,7 +36,7 @@ QString dptScriptName;
 
 XA_UIMODULE_CodeEditor::XA_UIMODULE_CodeEditor()
 {
-
+	qDebug() << "XA_UIMODULE_CodeEditor::XA_UIMODULE_CodeEditor()";
 	this->resize(editor_width, editor_height);
 	this->setAttribute(Qt::WA_TranslucentBackground);
 	this->setAcceptDrops(true);
@@ -105,6 +106,7 @@ XA_UIMODULE_CodeEditor::XA_UIMODULE_CodeEditor()
 	_tabLabelEditor = new TabLabelEditor(this);
 
 	connect(this->tabBar(), &QTabBar::tabBarDoubleClicked, this, &XA_UIMODULE_CodeEditor::on_clickTab);
+	connect(this, &XA_UIMODULE_CodeEditor::currentChanged, this, &XA_UIMODULE_CodeEditor::on_tabChanged);
 	connect(_tabLabelEditor, &TabLabelEditor::labelChanged, this, &XA_UIMODULE_CodeEditor::on_pageLabelChanged);
 
 	this->set_new_tab(nullptr, XA_GL_SCRIPT_IMAGE,false);
@@ -132,7 +134,7 @@ XA_UIMODULE_CodeEditor* XA_UIMODULE_CodeEditor::getEditor()
 
 void XA_UIMODULE_CodeEditor::set_new_tab(const QString& path, XA_GL_SCRIPT_TYPE type,bool is_new_file)
 {
-	QsciScintilla* editor = this->get_new_page();
+	XA_UIMODULE_EditorPage* editor = this->get_new_page();
 
 	switch (type)
 	{
@@ -212,18 +214,26 @@ void XA_UIMODULE_CodeEditor::set_new_tab(const QString& path, XA_GL_SCRIPT_TYPE 
 	this->setCurrentIndex(this->count() - 1);
 }
 
-void XA_UIMODULE_CodeEditor::appendTab(QsciScintilla* editor,const QString& tabLabel)
+void XA_UIMODULE_CodeEditor::appendTab(XA_UIMODULE_EditorPage* editor,const QString& tabLabel)
 {
-	this->addTab(editor, tabLabel);
-	this->setCurrentIndex(this->count() - 1);
+	_current_page = editor;
+	_current_page->label = tabLabel;
+	XA_UIMODULE_ASSET_BAR* new_bar = new XA_UIMODULE_ASSET_BAR(this->width());
+	page_bar_map[editor->label] = new_bar;
 	_current_file = std::make_unique<QFile>(tabLabel);
 	saved_state.push_back(std::make_pair<bool, string>(false, tabLabel.toStdString()));
 
-	XA_UIMODULE_ASSET_BAR* new_bar = new XA_UIMODULE_ASSET_BAR(this->width());
-	emit setOvWindowAssetsBar(new_bar);
+	this->addTab(editor, tabLabel);
+	this->setCurrentIndex(this->count() - 1);
 }
 
-QsciScintilla* XA_UIMODULE_CodeEditor::get_new_page()
+void XA_UIMODULE_CodeEditor::on_tabChanged(int index)
+{
+	_current_page = (XA_UIMODULE_EditorPage *)this->widget(index);
+	emit setOvWindowAssetsBar(page_bar_map[_current_page->label]);
+}
+
+XA_UIMODULE_EditorPage* XA_UIMODULE_CodeEditor::get_new_page()
 {
 	_current_page = new XA_UIMODULE_EditorPage();
 
@@ -315,6 +325,7 @@ void XA_UIMODULE_CodeEditor::on_closeTab(int index)
 	}
 	this->removeTab(index);
 }
+
 
 void XA_UIMODULE_CodeEditor::on_copy()
 {
