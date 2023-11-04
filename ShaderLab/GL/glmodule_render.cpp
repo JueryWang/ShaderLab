@@ -73,16 +73,31 @@ void XA_GLMODULE_RENDER::initShader(XA_GL_SHADER_INFO* shader_info)
 	{
 		for (auto ref_shader : shader_info->reference)
 		{
-			if(!ref_shader->inited) initShader(ref_shader);
+			if (!ref_shader->inited) initShader(ref_shader);
+			else return;
 		}
+		setShaderOrder(shader_info, shader_info->order);
 		shader_info->inited = true;
 		shader_info->program = Shader(shader_info->path_vertex, shader_info->path_fragment);
-		setShaderOrder(shader_info, shader_info->order);
-		std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK> loadtextureTsk;
-		loadtextureTsk.first = this;
-		loadtextureTsk.second.type = XA_GL_LOADTEXTURE;
+		for (int i = 0; i < 4; i++)
+		{
+			if (shader_info->textures[i].address != nullptr)
+			{
+				std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK> loadtextureTsk;
+				loadtextureTsk.first = this;
+				loadtextureTsk.second.type = XA_GL_LOADTEXTURE;
+				loadtextureTsk.second.param.loadTexture_param.index = i;
+				XA_GLMODULE_BACKSTG::getBackStage()->addTask(loadtextureTsk);
+			}
+		}
 	}
 }
+
+bool shader_sortFunc(const XA_GL_SHADER_INFO& s1,XA_GL_SHADER_INFO& s2)
+{
+	return s1.order < s2.order;
+}
+
 
 void XA_GLMODULE_RENDER::addShader(const XA_GL_SHADER_INFO& shader_info)
 {
@@ -90,6 +105,10 @@ void XA_GLMODULE_RENDER::addShader(const XA_GL_SHADER_INFO& shader_info)
 	initShader(&temp_info);
 
 	shaders.emplace_back(temp_info);
+	sort(shaders.begin(), shaders.end(), shader_sortFunc);
+	
+	setStatus(RENDER_UPDATE, true);
+	updateGLContex();
 }
 
 int XA_GLMODULE_RENDER::getWidth() const
@@ -365,7 +384,27 @@ void XA_GLMODULE_RENDER::loadTextures()
 	}
 }
 
+
 void XA_GLMODULE_RENDER::updateGLContex()
 {
 	loadTextures();
+	loadShaders();
+}
+
+void XA_GLMODULE_RENDER::loadShaders()
+{
+	for (XA_GL_SHADER_INFO shader : shaders)
+	{
+		shader.program.use();
+		glUniform2iv(glGetUniformLocation(shader.program.ID, "iResolution"), 1, &resolution[0]);
+		if (shader.type == XA_GL_SCRIPT_BUFFERA || shader.type == XA_GL_SCRIPT_BUFFERB || shader.type == XA_GL_SCRIPT_BUFFERC || shader.type == XA_GL_SCRIPT_BUFFERD)
+		{
+			glGenFramebuffers(1, &shader.fbo);
+			glBindFramebuffer(GL_FRAMEBUFFER, shader.fbo);
+			glGenTextures(1, &shader.fbo_Tex);
+			glBindTexture(GL_TEXTURE_2D, shader.fbo_Tex);
+			glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, shader.fbo_Tex, 0);
+			glDrawBuffer(GL_COLOR_ATTACHMENT0);
+		}
+	}
 }

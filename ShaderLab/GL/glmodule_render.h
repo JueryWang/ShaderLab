@@ -48,6 +48,7 @@ public:
 private:
 	void renderQuad(int context_width, int context_height);
 	void loadTextures();
+	void loadShaders();
 	void updateGLContex();
 	struct Deleter {
 		void operator()(GLFWwindow* w)

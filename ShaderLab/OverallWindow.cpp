@@ -94,10 +94,8 @@ OverallWindow::OverallWindow()
 	editor_compilebar_layout->addWidget(compilebar, Qt::AlignLeft);
 	editor_compilebar_wrapper->setLayout(editor_compilebar_layout);
 
-	XA_UIMODULE_ASSET_BAR* assets_bar = new XA_UIMODULE_ASSET_BAR(codeEditorInst->width());
-
 	splitter_v2->addWidget(editor_compilebar_wrapper);
-	splitter_v2->addWidget(codeEditorInst->page_bar_map["Image"]);
+	splitter_v2->addWidget(codeEditorInst->findAssetsBarByLabel("Image"));
 	splitter_v2->setSizes({ int(1.2*codeEditorInst->height()),this->height() - codeEditorInst->height() });
 	splitter_v2->handle(0)->setDisabled(true);
 	//splitter_v2->handle(2)->setDisabled(true);

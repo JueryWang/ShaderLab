@@ -234,7 +234,6 @@ void XA_UIMODULE_ASSET_WINDOW::sendAssets(ASSET_WINDOW::AssetType type)
 		new_task.second.param.loadTexture_param.index = _index;
 		s = _window->asset_path.toLatin1();
 		strcpy(new_task.second.param.loadTexture_param.texture_path, s.data());
-		new_task.second.param.loadTexture_param.next = nullptr;
 		XA_GLMODULE_BACKSTG::getBackStage()->addTask(new_task);
 		break;
 	}

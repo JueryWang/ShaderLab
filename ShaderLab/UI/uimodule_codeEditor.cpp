@@ -219,7 +219,7 @@ void XA_UIMODULE_CodeEditor::appendTab(XA_UIMODULE_EditorPage* editor,const QStr
 	_current_page = editor;
 	_current_page->label = tabLabel;
 	XA_UIMODULE_ASSET_BAR* new_bar = new XA_UIMODULE_ASSET_BAR(this->width());
-	page_bar_map[editor->label] = new_bar;
+	page_bar_map[editor] = new_bar;
 	_current_file = std::make_unique<QFile>(tabLabel);
 	saved_state.push_back(std::make_pair<bool, string>(false, tabLabel.toStdString()));
 
@@ -230,7 +230,7 @@ void XA_UIMODULE_CodeEditor::appendTab(XA_UIMODULE_EditorPage* editor,const QStr
 void XA_UIMODULE_CodeEditor::on_tabChanged(int index)
 {
 	_current_page = (XA_UIMODULE_EditorPage *)this->widget(index);
-	emit setOvWindowAssetsBar(page_bar_map[_current_page->label]);
+	emit setOvWindowAssetsBar(page_bar_map[_current_page]);
 }
 
 XA_UIMODULE_EditorPage* XA_UIMODULE_CodeEditor::get_new_page()
@@ -323,6 +323,11 @@ void XA_UIMODULE_CodeEditor::on_closeTab(int index)
 			BtnTexts, callbacks);
 		return;
 	}
+
+	XA_UIMODULE_EditorPage* page = (XA_UIMODULE_EditorPage*)this->widget(rmvTabIdx);
+	delete page_bar_map[page];
+	page_bar_map.remove(page);
+	delete page;
 	this->removeTab(index);
 }
 
@@ -363,7 +368,7 @@ bool XA_UIMODULE_CodeEditor::comboShader() const
 	return scriptTypesMp.keys().contains(tabBar()->tabText(tabBar()->currentIndex()));
 }
 
-const QString XA_UIMODULE_CodeEditor::findPagebyName(const QString& name)
+const QString XA_UIMODULE_CodeEditor::findPageContentByName(const QString& name)
 {
 	int tabCount = this->tabBar()->count();
 	for (int i = 0; i < tabCount; i++)
@@ -372,6 +377,22 @@ const QString XA_UIMODULE_CodeEditor::findPagebyName(const QString& name)
 		{
 			QsciScintilla* sci = (QsciScintilla*)this->widget(i);
 			return sci->text();
+		}
+	}
+
+	return nullptr;
+}
+
+XA_UIMODULE_ASSET_BAR* XA_UIMODULE_CodeEditor::findAssetsBarByLabel(const QString& s)
+{
+	auto keys = page_bar_map.keys();
+	int key_len = keys.size();
+
+	for (int i = 0; i < key_len; i++)
+	{
+		if (keys[i]->label == s)
+		{
+			return page_bar_map[keys[i]];
 		}
 	}
 
@@ -404,6 +425,12 @@ void XA_UIMODULE_CodeEditor::closeBuildinTab()
 	scriptTypeslist.insert(0, this->tabBar()->tabText(rmvTabIdx));
 	_typeScriptView->model()->insertRow(0);
 	_typeScriptView->model()->setData(_typeScriptView->model()->index(0, 0, QModelIndex()), this->tabBar()->tabText(rmvTabIdx));
+	
+	XA_UIMODULE_EditorPage* page = (XA_UIMODULE_EditorPage*)this->widget(rmvTabIdx);
+	delete page_bar_map[page];
+	page_bar_map.remove(page);
+	delete page;
+
 	this->removeTab(rmvTabIdx);
 }
 

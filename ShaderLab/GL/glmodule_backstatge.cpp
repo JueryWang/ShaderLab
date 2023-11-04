@@ -120,32 +120,27 @@ void XA_GLMODULE_BACKSTG::handleDrawFront(const std::pair<XA_GLMODULE_RENDER*, X
 void XA_GLMODULE_BACKSTG::handleLoadTexture(const std::pair<XA_GLMODULE_RENDER*, XA_GL_TASK>& crt_task)
 {
 	LoadTextureTask_param temp = crt_task.second.param.loadTexture_param;
-	for (;;)
-	{
-		int width, height, nrComponents;
-		unsigned char* data = stbi_load(temp.texture_path, &width, &height, &nrComponents, 0);
-		if (data)
-		{
-			GLenum format;
-			if (nrComponents == 1)
-				format = GL_RED;
-			else if (nrComponents == 3)
-				format = GL_RGB;
-			else if (nrComponents == 4)
-				format = GL_RGBA;
 
-			XA_GL_TEXTURE_INFO tex_info;
-			tex_info.index = temp.index;
-			tex_info.address = data;
-			tex_info.width = width;
-			tex_info.height = height;
-			tex_info.format = format;
-			tex_info.status = TEXTURE_ST_UNLOAD;
-			_textures.push_back(tex_info);
-		}
-		if(temp.next == nullptr)
-			break;
-		temp = *temp.next;
+	int width, height, nrComponents;
+	unsigned char* data = stbi_load(temp.texture_path, &width, &height, &nrComponents, 0);
+	if (data)
+	{
+		GLenum format;
+		if (nrComponents == 1)
+			format = GL_RED;
+		else if (nrComponents == 3)
+			format = GL_RGB;
+		else if (nrComponents == 4)
+			format = GL_RGBA;
+
+		XA_GL_TEXTURE_INFO tex_info;
+		tex_info.index = temp.index;
+		tex_info.address = data;
+		tex_info.width = width;
+		tex_info.height = height;
+		tex_info.format = format;
+		tex_info.status = TEXTURE_ST_UNLOAD;
+		_textures.push_back(tex_info);
 	}
 
 	crt_task.first->__update();
@@ -189,7 +184,7 @@ void XA_GLMODULE_BACKSTG::handleCompileShader(const std::pair<XA_GLMODULE_RENDER
 						parser->parse("", parser::VERTEX);
 
 						parser->setCurrentFileName(QString::fromLatin1(s.data()) + "_combo.frag", parser::FRAGMENT); 
-						parser->parse(codeEditor->findPagebyName(it.key()), parser::FRAGMENT);
+						parser->parse(codeEditor->findPageContentByName(it.key()), parser::FRAGMENT);
 					}
 				}
 				emit shaderParsedone();

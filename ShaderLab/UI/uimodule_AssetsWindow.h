@@ -4,7 +4,6 @@
 #include <QWidget>
 #include <QScrollArea>
 #include <QVBoxLayout>
-#include <QPushButton>
 /*
 	ShaderLab source code ,Copyright(c) JueryWang 2023 -
 	This file is part of ShaderLab
@@ -14,13 +13,14 @@
 	including physical and digital. You cannot use this Work in any
 	commercial website or project.
 */
-
+#include <QPushButton>
 #include <QSlider>
 #include <QLabel>
 #include <QList>
 #include <QMenu>
 
 class XA_GLMODULE_RENDER;
+class XA_UIMODULE_CodeEditor;
 
 class ASSET_WINDOW : public QWidget
 {
@@ -99,5 +99,6 @@ public slots:
 private:
 	QList<XA_UIMODULE_ASSET_WINDOW*> asset_win_list;
 	static XA_GLMODULE_RENDER* _glReciver;
+	XA_UIMODULE_CodeEditor* attachedPage;
 };
 #endif

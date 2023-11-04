@@ -14,8 +14,8 @@
 #include <GLFW/glfw3.h>
 #include <shader.h>
 #include <QObject>
-#include "../Utilitys/Parser/parser_defaultDfs.h"
-#include "../UI/uimodule_varShowboard.h"
+#include "Utilitys/Parser/parser_defaultDfs.h"
+#include "UI/uimodule_varShowboard.h"
 
 #define MAX_GL_RENDERER 3
 //set ratio to fit high dpi screen
@@ -69,7 +69,6 @@ struct LoadTextureTask_param
 {
 	int index;
 	char texture_path[64];
-	LoadTextureTask_param* next;//for batch commit
 };
 
 struct CompileTask_param
@@ -112,6 +111,7 @@ struct XA_GL_TEXTURE_INFO
 	GLenum format;
 	GLuint textureID;
 	unsigned char* address;
+	bool frameTex;
 	TEXTURE_STATUS status = TEXTURE_ST_DEPRECATED;
 };
 
@@ -142,10 +142,13 @@ struct XA_GL_SHADER_INFO
 {
 	Shader program;
 	bool inited = false;
-	//As the number rises,the priority of decrease,which means 0 should be first executed 
-	int order = -1;
+	//As the number rises,the priority of it decrease,which means 0 should be first executed 
+	int order = 0;
+	char name[32];
 	char path_vertex[128];
 	char path_fragment[128];
+	GLuint fbo;
+	GLuint fbo_Tex;
 	std::list<XA_GL_SHADER_INFO*> reference;
 	XA_GL_SCRIPT_TYPE type;
 	XA_GL_TEXTURE_INFO textures[4];
@@ -153,12 +156,14 @@ struct XA_GL_SHADER_INFO
 
 void inline setShaderOrder(XA_GL_SHADER_INFO* shader_info,int &result)
 {
-	for (auto ref : shader_info->reference)
+	if (shader_info->reference.size())
 	{
-		setShaderOrder(ref, result);
-		if (ref->order+1 > result)
+		for (auto ref : shader_info->reference)
 		{
-			result = ref->order+1;
+			if (ref->order+1 > result)
+			{
+				result = ref->order+1;
+			}
 		}
 	}
 }

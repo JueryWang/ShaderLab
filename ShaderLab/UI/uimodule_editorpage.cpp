@@ -63,7 +63,7 @@ XA_UIMODULE_EditorPage::XA_UIMODULE_EditorPage()
 
 XA_UIMODULE_EditorPage::~XA_UIMODULE_EditorPage()
 {
-	
+	qDebug() << "XA_UIMODULE_EditorPage::~XA_UIMODULE_EditorPage";
 }
 
 void XA_UIMODULE_EditorPage::initFont(const QString& font_name,int size)

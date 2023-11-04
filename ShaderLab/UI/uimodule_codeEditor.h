@@ -44,7 +44,8 @@ public:
 	void savefile();
 	void setOverallWindow(OverallWindow* ovWindow);
 	bool comboShader() const;
-	const QString findPagebyName(const QString& name);
+	const QString findPageContentByName(const QString& name);
+	XA_UIMODULE_ASSET_BAR* findAssetsBarByLabel(const QString& s);
 	QStringList buffersInUse();
 
 private:
@@ -95,7 +96,7 @@ public:
 	std::deque<std::pair<bool,std::string>> saved_state;
 
 	OverallWindow* _ovWindow = nullptr;
-	QMap<QString, XA_UIMODULE_ASSET_BAR*> page_bar_map;
+	QMap<XA_UIMODULE_EditorPage*, XA_UIMODULE_ASSET_BAR*> page_bar_map;
 };
 
 class TabLabelEditor : public QWidget
