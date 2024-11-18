@@ -1,0 +1,1 @@
+[2024/9/21]		replace ffmpeg lib with support h264 encode/swscale may cause crash after recording video
