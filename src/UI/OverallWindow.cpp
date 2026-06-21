@@ -22,6 +22,7 @@
 #include <QApplication>
 #include <QSizePolicy>
 #include <QSplitter>
+#include "RegisterWindow.h"
 
 using namespace SDL_UI_MODULE;
 using namespace SDL_GL_MODULE;
@@ -111,6 +112,12 @@ SDL_UI_MODULE::OverallWindow::OverallWindow() {
     m_splitter_h->addWidget(m_splitter_v2);
     m_splitter_h->setStretchFactor(1,1);
     m_ovlayout->addWidget(m_splitter_h);
+
+    //QWidget* wrapper = new QWidget();
+    //QVBoxLayout* vlay3 = new QVBoxLayout();
+    //window->setParent(wrapper);
+    //vlay3->addWidget(window);
+    //wrapper->show();
 
     this->setWindowIcon(QIcon("./Resources/icon/ShaderLabIco.png"));
     this->setWindowFlags(Qt::FramelessWindowHint);

@@ -1,0 +1,6 @@
+QPushButton#SinUpButton
+{
+    background-color: #558DFF;
+    border-radius: 5px;
+    color: rgba(225,225,225,200)   
+}

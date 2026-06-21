@@ -28,7 +28,7 @@ namespace SDL_UTILS {
         ~ShaderParser();
 
         ParserRule m_rule = ParserRule::ShaderToy;
-        ErrorCode m_errCode = ErrorCode::NO_ERROR;
+        ErrorCode m_errCode = ErrorCode::NONE;
         bool combo_parse;
         QMap<QString,QVariant> m_parsedVariant;
 

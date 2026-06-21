@@ -59,6 +59,11 @@ namespace SDL_UI_MODULE {
 
         m_shader.reset(new SDL_GL_MODULE::SDL_SHADER_INFO());
         m_attachedAssetBar = new WindowAssetBar(this);
+
+        connect(this, &EditorPage::cursorPositionChanged, this, []()
+            {
+
+            });
     }
 
     SDL_UI_MODULE::EditorPage::~EditorPage() {

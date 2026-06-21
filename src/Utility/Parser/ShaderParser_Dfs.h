@@ -38,7 +38,7 @@ namespace SDL_UTILS
         NO_FILE_SET,
         NO_MAIN_FUNC,
         NO_DETECTED_VARS,
-        NO_ERROR
+        NONE
     };
 
     const static QString PARSER_PREFIX_VERTEX = \

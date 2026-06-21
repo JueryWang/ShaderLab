@@ -65,7 +65,6 @@ namespace SDL_UTILS
 		if (m_fileHandler == NULL)
 		{
 			m_status = Idle;
-			std::cerr << " Error filePath:" <<filePath<< std::endl;
 			return false;
 		}
 
@@ -116,7 +115,23 @@ namespace SDL_UTILS
 
 		for (int i = 0; i < num_texture; i++)
 		{
+			char c;
+			while ((c = fgetc(m_fileHandler)) != '#' && c != EOF)
+			{
+				continue;
+			}
+			fseek(m_fileHandler, -1, SEEK_CUR);
+			unsigned int textureId;
+			std::string texPath;
+			fscanf(m_fileHandler, "#Texture:%d", &textureId);
+			fscanf(m_fileHandler, "#path:");
 
+			while ((c = fgetc(m_fileHandler)) != '\n' && c != EOF)
+			{
+				texPath += c;
+			}
+
+			m_texPathMp[textureId] = texPath;
 		}
 
 		return false;
@@ -209,9 +224,6 @@ namespace SDL_UTILS
 				if (page->GetShader().get()->textures[i])
 				{
 					fprintf(m_fileHandler, "#Texture:%d", m_textureTable[page->GetShader().get()->textures[i]->textureID]);
-					fwrite(&page->GetShader().get()->textures[i]->width, sizeof(int), 1,m_fileHandler);
-					fwrite(&page->GetShader().get()->textures[i]->height, sizeof(int), 1, m_fileHandler);
-					fwrite(&page->GetShader().get()->textures[i]->channel, sizeof(int), 1, m_fileHandler);
 					fputs("#path:", m_fileHandler);
 					fputs(page->GetShader().get()->textures[i]->path, m_fileHandler);
 					fputs("\n", m_fileHandler);

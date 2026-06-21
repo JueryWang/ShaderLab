@@ -416,35 +416,31 @@ namespace SDL_UI_MODULE {
     }
 
     void SDL_UI_MODULE::CodeEditor::on_closeTab(int index) {
-
-        if(m_scriptTypeMp.keys().contains(this->tabText(index)))
+        if (this->tabText(index) != s_bufferLabels[0])
         {
-            if (this->tabText(index) != s_bufferLabels[0])
-            {
-                rmvTabIdx = index;
-                QStringList BtnText = {"","Confirm","Cancel"};
-                std::vector<std::function<void(void)>> callbacks;
+            rmvTabIdx = index;
+            QStringList BtnText = {"","Confirm","Cancel"};
+            std::vector<std::function<void(void)>> callbacks;
 
-                callbacks.push_back(nullptr);
-                callbacks.push_back([this]
-                {
-                    this->closeBuildinTab();
-                });
-                callbacks.push_back(nullptr);
+            callbacks.push_back(nullptr);
+            callbacks.push_back([this]
+            {
+                this->closeBuildinTab();
+            });
+            callbacks.push_back(nullptr);
  
-                MsgBox::question(this,QString("Do you want to delete the pass?"),QString("%1.glsl").arg(this->tabText(index)),this->size(),BtnText,callbacks);
-            }
-            else
-            {
-				QStringList BtnText = { "","Confirm","Cancel" };
-				std::vector<std::function<void(void)>> callbacks;
+            MsgBox::question(this,QString("Do you want to delete the pass?"),QString("%1.glsl").arg(this->tabText(index)),this->size(),BtnText,callbacks);
+        }
+        else
+        {
+			QStringList BtnText = { "","Confirm","Cancel" };
+			std::vector<std::function<void(void)>> callbacks;
 
-                callbacks.push_back(nullptr);
-                callbacks.push_back(nullptr);
-                callbacks.push_back(nullptr);
+            callbacks.push_back(nullptr);
+            callbacks.push_back(nullptr);
+            callbacks.push_back(nullptr);
 
-               MsgBox::warning(this, QString("mainImage cann't be deleted"), QString("%1.glsl").arg(this->tabText(index)), this->size(), BtnText, callbacks);
-            }
+            MsgBox::warning(this, QString("mainImage cann't be deleted"), QString("%1.glsl").arg(this->tabText(index)), this->size(), BtnText, callbacks);
         }
     }
 
